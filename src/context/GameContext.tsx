@@ -1,8 +1,10 @@
-import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useCallback, useRef, ReactNode } from 'react';
 
 import { truths } from '../data/truths';
 import { dares } from '../data/dares';
 import type { QuestionType, Question } from '../data/questionTypes';
+import { isGeminiConfigured } from '../config/gemini';
+import { generateQuestions } from '../services/GeminiService';
 
 export type Player = {
   name: string;
@@ -17,9 +19,12 @@ const COLORS = [
   '#E879F9', '#FACC15',
 ];
 
+const AI_BATCH_SIZE = 10;
+const AI_REFILL_THRESHOLD = 3;
+
 type Difficulty = 'mild' | 'medium' | 'wild';
 type GameMode = 'standard' | 'physical';
-type AgeGroup = 'kids' | 'teens' | 'adults';
+type AgeGroup = 'kids' | 'teens' | 'adults' | 'family' | 'couple';
 
 type GameState = {
   players: Player[];
@@ -47,6 +52,7 @@ type GameContextType = GameState & {
   nextTurn: () => void;
   resetGame: () => void;
   endGame: () => void;
+  prepareAiDecks: (types: QuestionType[]) => Promise<void>;
   setSpinning: (spinning: boolean) => void;
   setRotation: (rotation: number) => void;
   setSoundEnabled: (enabled: boolean) => void;
@@ -104,7 +110,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const [spinning, setSpinning] = useState(false);
   const [rotation, setRotation] = useState(0);
   const [soundEnabled, setSoundEnabled] = useState(true);
-  const [difficulty, setDifficulty] = useState<Difficulty>('medium');
+  const [difficulty, setDifficulty] = useState<Difficulty>('mild');
   const [gameMode, setGameMode] = useState<GameMode>('standard');
   const [ageGroup, setAgeGroup] = useState<AgeGroup>('adults');
   const [questionTypes, setQuestionTypes] = useState<QuestionType[]>([]);
@@ -113,6 +119,14 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const [dareDeck, setDareDeck] = useState<Question[]>([]);
   const [deckIndex, setDeckIndex] = useState({ truth: 0, dare: 0 });
   const [deckSignature, setDeckSignature] = useState('');
+  const [aiDecks, setAiDecks] = useState<{ truth: Question[]; dare: Question[] }>({
+    truth: [],
+    dare: [],
+  });
+  const [aiUsed, setAiUsed] = useState<string[]>([]);
+  const [aiSignature, setAiSignature] = useState('');
+  const [aiGenerating, setAiGenerating] = useState(false);
+  const aiCallsRef = useRef(0);
   const [round, setRound] = useState(1);
 
   const spin = useCallback(() => {
@@ -133,14 +147,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
     [players.length],
   );
 
-  const selectType = useCallback(
+  const serveStatic = useCallback(
     (type: 'truth' | 'dare') => {
-      setSelectedType(type);
-      if (gameMode === 'physical') {
-        setCurrentQuestion(`Make up a ${type} for the group!`);
-        return;
-      }
-
       const signature = `${ageGroup}|${difficulty}|${[...questionTypes]
         .sort()
         .join(',')}`;
@@ -181,7 +189,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
       setRound(r => r + 1);
     },
     [
-      gameMode,
       ageGroup,
       difficulty,
       questionTypes,
@@ -190,6 +197,93 @@ export function GameProvider({ children }: { children: ReactNode }) {
       dareDeck,
       deckIndex,
     ],
+  );
+
+  const generateAiDeck = useCallback(
+    async (
+      type: 'truth' | 'dare',
+      used: string[],
+      types: QuestionType[] = questionTypes,
+    ) => {
+      aiCallsRef.current += 1;
+      setAiGenerating(true);
+      try {
+        const generated = await generateQuestions({
+          kind: type,
+          ageGroup,
+          difficulty,
+          questionTypes: types,
+          count: AI_BATCH_SIZE,
+          exclude: used,
+        });
+
+        if (generated.length > 0) {
+          setAiDecks(prev => ({ ...prev, [type]: generated }));
+          setAiUsed(prev => [...prev, ...generated.map(q => q.text)]);
+        }
+      } finally {
+        aiCallsRef.current -= 1;
+        if (aiCallsRef.current === 0) setAiGenerating(false);
+      }
+    },
+    [ageGroup, difficulty, questionTypes],
+  );
+
+  const prepareAiDecks = useCallback(
+    async (types: QuestionType[]) => {
+      if (!isGeminiConfigured()) return;
+      const signature = `${ageGroup}|${difficulty}|${[...types]
+        .sort()
+        .join(',')}`;
+      setAiSignature(signature);
+      await Promise.allSettled([
+        generateAiDeck('truth', [], types),
+        generateAiDeck('dare', [], types),
+      ]);
+    },
+    [ageGroup, difficulty, generateAiDeck],
+  );
+
+  const selectType = useCallback(
+    (type: 'truth' | 'dare') => {
+      setSelectedType(type);
+      setCurrentQuestion('');
+
+      if (gameMode === 'physical') {
+        setCurrentQuestion(`Make up a ${type} for the group!`);
+        setRound(r => r + 1);
+        return;
+      }
+
+      if (isGeminiConfigured()) {
+        const signature = `${ageGroup}|${difficulty}|${[...questionTypes]
+          .sort()
+          .join(',')}`;
+        const fresh = aiSignature === signature;
+        const deck = type === 'truth' ? aiDecks.truth : aiDecks.dare;
+        if (fresh && deck.length > 0) {
+          const [next, ...rest] = deck;
+          setAiDecks(prev => ({ ...prev, [type]: rest }));
+          setAiUsed(prev => [...prev, next.text]);
+          setCurrentQuestion(next.text);
+          setRound(r => r + 1);
+          if (rest.length < AI_REFILL_THRESHOLD) {
+            generateAiDeck(type, [...aiUsed, next.text]);
+          }
+          return;
+        }
+        if (!fresh) {
+          setAiDecks({ truth: [], dare: [] });
+          setAiSignature('');
+        }
+        if (!aiGenerating) {
+          prepareAiDecks(questionTypes);
+        }
+      }
+
+      serveStatic(type);
+    },
+    [gameMode, ageGroup, difficulty, questionTypes, aiSignature, aiDecks, aiUsed, aiGenerating, generateAiDeck, prepareAiDecks, serveStatic],
   );
 
   const nextTurn = useCallback(() => {
@@ -269,7 +363,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setScores({});
     setRotation(0);
     setSoundEnabled(true);
-    setDifficulty('medium');
+    setDifficulty('mild');
     setGameMode('standard');
     setAgeGroup('adults');
     setQuestionTypes([]);
@@ -278,6 +372,11 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setDareDeck([]);
     setDeckIndex({ truth: 0, dare: 0 });
     setDeckSignature('');
+    setAiDecks({ truth: [], dare: [] });
+    setAiUsed([]);
+    setAiSignature('');
+    aiCallsRef.current = 0;
+    setAiGenerating(false);
     setRound(1);
   }, []);
 
@@ -315,6 +414,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         nextTurn,
         resetGame,
         endGame,
+        prepareAiDecks,
         setSpinning,
         setRotation,
         setSoundEnabled,

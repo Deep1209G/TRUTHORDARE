@@ -1,10 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-
-import { Pressable } from 'react-native';
-
+import { Pressable, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
 import { Box, Text } from '@src';
 import { useGame } from '../context/GameContext';
 import { lightTap } from '../services/HapticService';
@@ -17,21 +14,33 @@ type Props = {
 const AGE_GROUPS = [
   {
     key: 'kids',
-    emoji: '\u{1F476}',
+    image: require('../assets/images/kids.png'),
     title: 'Kids',
     description: 'Fun and family-friendly',
   },
   {
     key: 'teens',
-    emoji: '\u{1F9D1}',
+    image: require('../assets/images/teens.png'),
     title: 'Teens',
     description: 'A little more playful and daring',
   },
   {
     key: 'adults',
-    emoji: '\u{1F474}',
+    image: require('../assets/images/adults.png'),
     title: 'Adults',
     description: 'Full party mode',
+  },
+  {
+    key: 'family',
+    image: require('../assets/images/family.png'),
+    title: 'Family',
+    description: 'For the whole family to enjoy together',
+  },
+  {
+    key: 'couple',
+    image: require('../assets/images/coplus.png'),
+    title: 'Couple',
+    description: 'Romantic and spicy questions for two',
   },
 ];
 
@@ -65,7 +74,7 @@ export default function AgeSelectionScreen({ navigation }: Props) {
             </Box>
             <Box alignItems="center" flex={1}>
               <Text variant="title" fontSize={28} textAlign="center">
-                TRUTH OR DARE
+                Who's Playing?
               </Text>
             </Box>
             <Box width={42} />
@@ -73,12 +82,9 @@ export default function AgeSelectionScreen({ navigation }: Props) {
         </Box>
 
         {/* Title */}
-        <Box paddingHorizontal={24} paddingTop={32}>
-          <Text fontSize={24} fontWeight="700" color="white">
-            Choose Age Group
-          </Text>
+        <Box paddingHorizontal={24} paddingTop={16}>
           <Text fontSize={13} color="textSecondary" marginTop={4}>
-            We will tailor the questions to your group
+           Enjoy questions designed just for your group.
           </Text>
         </Box>
 
@@ -89,7 +95,7 @@ export default function AgeSelectionScreen({ navigation }: Props) {
               key={group.key}
               onPress={() => {
                 lightTap();
-                setAgeGroup(group.key as 'kids' | 'teens' | 'adults');
+                setAgeGroup(group.key as 'kids' | 'teens' | 'adults' | 'family' | 'couple');
                 navigation.navigate('CategorySelection');
               }}
             >
@@ -104,9 +110,22 @@ export default function AgeSelectionScreen({ navigation }: Props) {
                   borderRadius: 24,
                 }}
               >
-                <Text fontSize={28} marginRight={14}>
-                  {group.emoji}
-                </Text>
+                <Box
+                  width={52}
+                  height={52}
+                  borderRadius="circle"
+                  marginRight={14}
+                  justifyContent="center"
+                  alignItems="center"
+                  style={{
+                    backgroundColor: 'rgba(124,92,255,0.15)',
+                  }}
+                >
+                  <Image
+                    source={group.image}
+                    style={{ width: 40, height: 35, resizeMode: 'contain' }}
+                  />
+                </Box>
                 <Box flex={1}>
                   <Text fontSize={16} fontWeight="700" color="white">
                     {group.title}

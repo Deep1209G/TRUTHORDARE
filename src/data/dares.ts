@@ -37,6 +37,69 @@ export const dares: Question[] = [
   { text: 'Say everything backwards for the next turn.', ageGroup: 'kids', type: 'Silly', category: 'medium' },
   { text: 'Let the group pick a silly nickname for you for the rest of the game.', ageGroup: 'kids', type: 'Silly', category: 'wild' },
   { text: 'Imitate your favorite cartoon character.', ageGroup: 'kids', type: 'Silly', category: 'wild' },
+  // Animals
+  { text: 'Make your best animal sound.', ageGroup: 'kids', type: 'Animals', category: 'mild' },
+  { text: 'Walk like your favorite animal across the room.', ageGroup: 'kids', type: 'Animals', category: 'mild' },
+  { text: 'Do a funny animal impression and let the group guess it.', ageGroup: 'kids', type: 'Animals', category: 'medium' },
+  { text: 'Hop like a bunny 10 times.', ageGroup: 'kids', type: 'Animals', category: 'medium' },
+  { text: 'Act like a cat for the next 2 turns.', ageGroup: 'kids', type: 'Animals', category: 'wild' },
+  { text: 'Tell the group an animal fact in a silly voice.', ageGroup: 'kids', type: 'Animals', category: 'wild' },
+  // Cartoons
+  { text: 'Imitate your favorite cartoon character.', ageGroup: 'kids', type: 'Cartoons', category: 'mild' },
+  { text: 'Say your favorite cartoon catchphrase in your best voice.', ageGroup: 'kids', type: 'Cartoons', category: 'mild' },
+  { text: 'Talk like a cartoon character for the next 2 turns.', ageGroup: 'kids', type: 'Cartoons', category: 'medium' },
+  { text: 'Do the funny walk of your favorite cartoon character.', ageGroup: 'kids', type: 'Cartoons', category: 'medium' },
+  { text: 'Let the group pick a cartoon character for you to act out.', ageGroup: 'kids', type: 'Cartoons', category: 'wild' },
+  { text: 'Make up a new cartoon character and describe it.', ageGroup: 'kids', type: 'Cartoons', category: 'wild' },
+  // Superheroes
+  { text: 'Pose like a superhero and say your hero name.', ageGroup: 'kids', type: 'Superheroes', category: 'mild' },
+  { text: 'Do a superhero landing.', ageGroup: 'kids', type: 'Superheroes', category: 'mild' },
+  { text: 'Pretend to fly across the room.', ageGroup: 'kids', type: 'Superheroes', category: 'medium' },
+  { text: 'Act out a superhero saving someone from danger.', ageGroup: 'kids', type: 'Superheroes', category: 'medium' },
+  { text: 'Come up with your own superhero catchphrase and shout it.', ageGroup: 'kids', type: 'Superheroes', category: 'wild' },
+  { text: 'Do a dramatic superhero slow-motion run.', ageGroup: 'kids', type: 'Superheroes', category: 'wild' },
+  // Food
+  { text: 'Name 5 of your favorite foods as fast as you can.', ageGroup: 'kids', type: 'Food', category: 'mild' },
+  { text: 'Pretend to eat something really delicious.', ageGroup: 'kids', type: 'Food', category: 'mild' },
+  { text: 'Describe a food so well that the group gets hungry.', ageGroup: 'kids', type: 'Food', category: 'medium' },
+  { text: 'Do a silly taste test of a pretend food.', ageGroup: 'kids', type: 'Food', category: 'medium' },
+  { text: 'Make up a funny recipe and name it.', ageGroup: 'kids', type: 'Food', category: 'wild' },
+  { text: 'Let the group pick a food for you to pretend to cook.', ageGroup: 'kids', type: 'Food', category: 'wild' },
+  // Games
+  { text: 'Do 5 jumping jacks.', ageGroup: 'kids', type: 'Games', category: 'mild' },
+  { text: 'Name 5 games you love as fast as you can.', ageGroup: 'kids', type: 'Games', category: 'mild' },
+  { text: 'Invent a new game and teach it in 30 seconds.', ageGroup: 'kids', type: 'Games', category: 'medium' },
+  { text: 'Do a funny victory dance.', ageGroup: 'kids', type: 'Games', category: 'medium' },
+  { text: 'Let the group play a quick round of charades with you.', ageGroup: 'kids', type: 'Games', category: 'wild' },
+  { text: 'Balance on one foot for 15 seconds.', ageGroup: 'kids', type: 'Games', category: 'wild' },
+  // Music
+  { text: 'Sing a song for 10 seconds.', ageGroup: 'kids', type: 'Music', category: 'mild' },
+  { text: 'Hum your favorite tune and let the group guess it.', ageGroup: 'kids', type: 'Music', category: 'mild' },
+  { text: 'Do a silly dance to your favorite song.', ageGroup: 'kids', type: 'Music', category: 'medium' },
+  { text: 'Tap out the rhythm of a song and let the group guess it.', ageGroup: 'kids', type: 'Music', category: 'medium' },
+  { text: 'Make up a song about a group member and sing it.', ageGroup: 'kids', type: 'Music', category: 'wild' },
+  { text: 'Perform a 15-second air guitar solo.', ageGroup: 'kids', type: 'Music', category: 'wild' },
+  // Storybooks
+  { text: 'Tell a 30-second story about a talking animal.', ageGroup: 'kids', type: 'Storybooks', category: 'mild' },
+  { text: 'Act out your favorite storybook character.', ageGroup: 'kids', type: 'Storybooks', category: 'mild' },
+  { text: 'Tell the group a made-up bedtime story.', ageGroup: 'kids', type: 'Storybooks', category: 'medium' },
+  { text: 'Do a dramatic reading of any sentence from a book.', ageGroup: 'kids', type: 'Storybooks', category: 'medium' },
+  { text: 'Invent a fairy tale and act out the hero.', ageGroup: 'kids', type: 'Storybooks', category: 'wild' },
+  { text: 'Tell a story where everything rhymes.', ageGroup: 'kids', type: 'Storybooks', category: 'wild' },
+  // Space
+  { text: 'Walk like an astronaut for 10 seconds.', ageGroup: 'kids', type: 'Space', category: 'mild' },
+  { text: 'Name 3 planets as fast as you can.', ageGroup: 'kids', type: 'Space', category: 'mild' },
+  { text: 'Pretend to be a rocket launching into space.', ageGroup: 'kids', type: 'Space', category: 'medium' },
+  { text: 'Do a zero-gravity dance.', ageGroup: 'kids', type: 'Space', category: 'medium' },
+  { text: 'Make up a greeting for an alien and say it.', ageGroup: 'kids', type: 'Space', category: 'wild' },
+  { text: 'Pretend to float on the moon for 10 seconds.', ageGroup: 'kids', type: 'Space', category: 'wild' },
+  // Nature
+  { text: 'Name 5 things you love about nature.', ageGroup: 'kids', type: 'Nature', category: 'mild' },
+  { text: 'Pretend to be a tree swaying in the wind.', ageGroup: 'kids', type: 'Nature', category: 'mild' },
+  { text: 'Do a funny bug impression.', ageGroup: 'kids', type: 'Nature', category: 'medium' },
+  { text: 'Pretend to pick a flower and smell it dramatically.', ageGroup: 'kids', type: 'Nature', category: 'medium' },
+  { text: 'Act like you are hiking up a big mountain.', ageGroup: 'kids', type: 'Nature', category: 'wild' },
+  { text: 'Do a happy rain dance.', ageGroup: 'kids', type: 'Nature', category: 'wild' },
 
   // ----- TEENS -----
   // Funny
@@ -125,4 +188,78 @@ export const dares: Question[] = [
   { text: 'Eat a spoonful of something spicy.', ageGroup: 'adults', type: 'Extreme', category: 'medium' },
   { text: 'Let the group choose a dare for you from your own bucket list.', ageGroup: 'adults', type: 'Extreme', category: 'wild' },
   { text: 'Call a random contact and sing happy birthday.', ageGroup: 'adults', type: 'Extreme', category: 'wild' },
+
+  // ----- FAMILY -----
+  // Funny
+  { text: 'Tell the funniest joke you know without laughing.', ageGroup: 'family', type: 'Funny', category: 'mild' },
+  { text: 'Imitate a family member until the group guesses who it is.', ageGroup: 'family', type: 'Funny', category: 'mild' },
+  { text: 'Talk like a cartoon character for the next 2 turns.', ageGroup: 'family', type: 'Funny', category: 'medium' },
+  { text: 'Make up a silly song about your family and sing it.', ageGroup: 'family', type: 'Funny', category: 'medium' },
+  { text: 'Do a silly walk across the room twice.', ageGroup: 'family', type: 'Funny', category: 'wild' },
+  { text: 'Let the group pick a funny family nickname for you.', ageGroup: 'family', type: 'Funny', category: 'wild' },
+  // Family
+  { text: 'Say one nice thing about every family member in the room.', ageGroup: 'family', type: 'Family', category: 'mild' },
+  { text: 'Give every family member a high five.', ageGroup: 'family', type: 'Family', category: 'mild' },
+  { text: 'Tell a funny story about your family.', ageGroup: 'family', type: 'Family', category: 'medium' },
+  { text: 'Say thank you to your family for one specific thing.', ageGroup: 'family', type: 'Family', category: 'medium' },
+  { text: 'Call a family member and tell them something you appreciate.', ageGroup: 'family', type: 'Family', category: 'wild' },
+  { text: 'Let the group ask your family one question about you.', ageGroup: 'family', type: 'Family', category: 'wild' },
+  // School
+  { text: 'Recite the alphabet backwards as fast as you can.', ageGroup: 'family', type: 'School', category: 'mild' },
+  { text: 'Name 5 things you learned in school this week.', ageGroup: 'family', type: 'School', category: 'mild' },
+  { text: 'Act out your favorite school subject without speaking.', ageGroup: 'family', type: 'School', category: 'medium' },
+  { text: 'Give a 30-second mini lesson on your favorite subject.', ageGroup: 'family', type: 'School', category: 'medium' },
+  { text: 'Pretend you are the teacher and give a mini lesson.', ageGroup: 'family', type: 'School', category: 'wild' },
+  { text: 'Do 10 jumping jacks while counting by 2s.', ageGroup: 'family', type: 'School', category: 'wild' },
+  // Adventure
+  { text: 'Name 5 places you want to visit with your family.', ageGroup: 'family', type: 'Adventure', category: 'mild' },
+  { text: 'Walk like you are on a tightrope for 10 seconds.', ageGroup: 'family', type: 'Adventure', category: 'mild' },
+  { text: 'Invent a secret handshake with a family member.', ageGroup: 'family', type: 'Adventure', category: 'medium' },
+  { text: 'Pretend you are an explorer searching for treasure.', ageGroup: 'family', type: 'Adventure', category: 'medium' },
+  { text: 'Do an animal walk across the room.', ageGroup: 'family', type: 'Adventure', category: 'wild' },
+  { text: 'Make up a mini adventure story in 30 seconds.', ageGroup: 'family', type: 'Adventure', category: 'wild' },
+  // Silly
+  { text: 'Make the silliest face and hold it for 10 seconds.', ageGroup: 'family', type: 'Silly', category: 'mild' },
+  { text: 'Speak in a silly accent for the next 2 turns.', ageGroup: 'family', type: 'Silly', category: 'mild' },
+  { text: 'Do a funny dance for 15 seconds.', ageGroup: 'family', type: 'Silly', category: 'medium' },
+  { text: 'Say everything backwards for the next turn.', ageGroup: 'family', type: 'Silly', category: 'medium' },
+  { text: 'Let the group pick a silly nickname for you for the rest of the game.', ageGroup: 'family', type: 'Silly', category: 'wild' },
+  { text: 'Imitate your favorite cartoon character.', ageGroup: 'family', type: 'Silly', category: 'wild' },
+
+  // ----- COUPLE -----
+  // Funny
+  { text: 'Give your partner a compliment in your funniest voice.', ageGroup: 'couple', type: 'Funny', category: 'mild' },
+  { text: 'Do your best impression of your partner.', ageGroup: 'couple', type: 'Funny', category: 'mild' },
+  { text: 'Talk like a cartoon character until your next turn.', ageGroup: 'couple', type: 'Funny', category: 'medium' },
+  { text: 'Reenact the funniest moment from your relationship.', ageGroup: 'couple', type: 'Funny', category: 'medium' },
+  { text: 'Let the group pick a funny nickname for you and your partner.', ageGroup: 'couple', type: 'Funny', category: 'wild' },
+  { text: 'Do a dramatic slow-motion walk holding your partner by the hand.', ageGroup: 'couple', type: 'Funny', category: 'wild' },
+  // Romantic
+  { text: 'Say three things you love about your partner.', ageGroup: 'couple', type: 'Romantic', category: 'mild' },
+  { text: 'Tell the group how you first met in 30 seconds.', ageGroup: 'couple', type: 'Romantic', category: 'mild' },
+  { text: 'Write a cheesy love note to your partner and read it out loud.', ageGroup: 'couple', type: 'Romantic', category: 'medium' },
+  { text: 'Give your partner a compliment with your eyes closed.', ageGroup: 'couple', type: 'Romantic', category: 'medium' },
+  { text: 'Tell the group the most romantic thing your partner has ever done.', ageGroup: 'couple', type: 'Romantic', category: 'wild' },
+  { text: 'Plan a dream date for your partner in 30 seconds.', ageGroup: 'couple', type: 'Romantic', category: 'wild' },
+  // Spicy
+  { text: 'Rate your last date out of 10 and explain.', ageGroup: 'couple', type: 'Spicy', category: 'mild' },
+  { text: 'Tell the group the best compliment your partner has given you.', ageGroup: 'couple', type: 'Spicy', category: 'mild' },
+  { text: 'Reveal a flirty line that actually works on your partner.', ageGroup: 'couple', type: 'Spicy', category: 'medium' },
+  { text: 'Describe your partner best quality in one flirty sentence.', ageGroup: 'couple', type: 'Spicy', category: 'medium' },
+  { text: 'Let the group pick a way for you to flirt with your partner right now.', ageGroup: 'couple', type: 'Spicy', category: 'wild' },
+  { text: 'Tell the group your most daring dating story as a couple.', ageGroup: 'couple', type: 'Spicy', category: 'wild' },
+  // Party
+  { text: 'Take a selfie with your partner and show the group.', ageGroup: 'couple', type: 'Party', category: 'mild' },
+  { text: 'Start a dance-off with your partner.', ageGroup: 'couple', type: 'Party', category: 'mild' },
+  { text: 'Do a cheers with your partner and say one thing you are grateful for.', ageGroup: 'couple', type: 'Party', category: 'medium' },
+  { text: 'Host a 30-second dance-off with your partner.', ageGroup: 'couple', type: 'Party', category: 'medium' },
+  { text: 'Let the group pick a drink for you and your partner.', ageGroup: 'couple', type: 'Party', category: 'wild' },
+  { text: 'Do the most dramatic fake proposal to your partner.', ageGroup: 'couple', type: 'Party', category: 'wild' },
+  // Challenge
+  { text: 'Hold a plank for 30 seconds while your partner cheers.', ageGroup: 'couple', type: 'Challenge', category: 'mild' },
+  { text: 'Balance a book on your head for 30 seconds with your partner.', ageGroup: 'couple', type: 'Challenge', category: 'mild' },
+  { text: 'Do 15 pushups with your partner.', ageGroup: 'couple', type: 'Challenge', category: 'medium' },
+  { text: 'Complete a 60-second silence challenge while your partner tries to make you laugh.', ageGroup: 'couple', type: 'Challenge', category: 'medium' },
+  { text: 'Do 20 jumping jacks while singing your couple song.', ageGroup: 'couple', type: 'Challenge', category: 'wild' },
+  { text: 'Let the group choose a challenge for you and your partner to do together.', ageGroup: 'couple', type: 'Challenge', category: 'wild' },
 ];

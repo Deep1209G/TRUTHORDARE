@@ -188,7 +188,7 @@ export default function PlayerSetupScreen({ navigation }: Props) {
             </Box>
             <Box alignItems="center" flex={1}>
               <Text variant="title" fontSize={28} textAlign="center">
-                TRUTH OR DARE
+                Add Players{' '}
               </Text>
             </Box>
             <Box width={42} />

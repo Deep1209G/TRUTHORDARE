@@ -174,7 +174,7 @@ export default function HomeMenuScreen({ navigation }: Props) {
               justifyContent="center"
               alignItems="center"
             >
-              <SettingIcon width={30} height={30} color="white" />
+              <SettingIcon width={24} height={24} color="white" />
             </Box>
           </Pressable>
         </Box>

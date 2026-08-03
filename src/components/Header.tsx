@@ -9,6 +9,7 @@ import { lightTap } from '../services/HapticService';
 import BackIcon from '../assets/icon/back.svg';
 import PeopleIcon from '../assets/icon/people.svg';
 import LeaderboardIcon from '../assets/icon/leaderboard.svg';
+import SettingIcon from '../assets/icon/setting.svg';
 import PlayerListModal from './PlayerListModal';
 import LeaderboardModal from './LeaderboardModal';
 
@@ -157,8 +158,26 @@ export default function Header({ navigation }: Props) {
             backgroundColor="surface"
             justifyContent="center"
             alignItems="center"
+            marginRight={8}
           >
             <LeaderboardIcon width={22} height={22} color="white" />
+          </Box>
+        </Pressable>
+        <Pressable
+          onPress={() => {
+            lightTap();
+            navigation?.navigate('Settings');
+          }}
+        >
+          <Box
+            width={46}
+            height={46}
+            borderRadius="md"
+            backgroundColor="surface"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <SettingIcon width={24} height={24} color="white" />
           </Box>
         </Pressable>
       </Box>

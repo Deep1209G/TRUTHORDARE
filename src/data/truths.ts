@@ -37,6 +37,69 @@ export const truths: Question[] = [
   { text: 'What is a silly song you sing when nobody is listening?', ageGroup: 'kids', type: 'Silly', category: 'medium' },
   { text: 'If you could talk in animal sounds for a day, what animal would you sound like?', ageGroup: 'kids', type: 'Silly', category: 'wild' },
   { text: 'What is the goofiest dance move you know?', ageGroup: 'kids', type: 'Silly', category: 'wild' },
+  // Animals
+  { text: 'What is your favorite animal and why?', ageGroup: 'kids', type: 'Animals', category: 'mild' },
+  { text: 'If you could have any animal as a pet, what would it be?', ageGroup: 'kids', type: 'Animals', category: 'mild' },
+  { text: 'What animal do you think you are most like?', ageGroup: 'kids', type: 'Animals', category: 'medium' },
+  { text: 'If animals could talk, what would your pet say?', ageGroup: 'kids', type: 'Animals', category: 'medium' },
+  { text: 'What is the funniest thing your pet has ever done?', ageGroup: 'kids', type: 'Animals', category: 'wild' },
+  { text: 'If you could turn into any animal for a day, which would you pick?', ageGroup: 'kids', type: 'Animals', category: 'wild' },
+  // Cartoons
+  { text: 'What is your favorite cartoon character?', ageGroup: 'kids', type: 'Cartoons', category: 'mild' },
+  { text: 'Which cartoon do you watch the most?', ageGroup: 'kids', type: 'Cartoons', category: 'mild' },
+  { text: 'If you could be a cartoon character for a day, who would you be?', ageGroup: 'kids', type: 'Cartoons', category: 'medium' },
+  { text: 'What is your favorite cartoon catchphrase?', ageGroup: 'kids', type: 'Cartoons', category: 'medium' },
+  { text: 'Which cartoon villain do you secretly like?', ageGroup: 'kids', type: 'Cartoons', category: 'wild' },
+  { text: 'What is the funniest cartoon episode you have ever seen?', ageGroup: 'kids', type: 'Cartoons', category: 'wild' },
+  // Superheroes
+  { text: 'Who is your favorite superhero and why?', ageGroup: 'kids', type: 'Superheroes', category: 'mild' },
+  { text: 'If you could have one superpower, what would it be?', ageGroup: 'kids', type: 'Superheroes', category: 'mild' },
+  { text: 'What would your superhero name be?', ageGroup: 'kids', type: 'Superheroes', category: 'medium' },
+  { text: 'What superpower would you want for your best friend?', ageGroup: 'kids', type: 'Superheroes', category: 'medium' },
+  { text: 'If you could be a supervillain for a day, what would you do?', ageGroup: 'kids', type: 'Superheroes', category: 'wild' },
+  { text: 'Which superhero team would you want to join?', ageGroup: 'kids', type: 'Superheroes', category: 'wild' },
+  // Food
+  { text: 'What is your favorite food?', ageGroup: 'kids', type: 'Food', category: 'mild' },
+  { text: 'What food do you absolutely refuse to eat?', ageGroup: 'kids', type: 'Food', category: 'mild' },
+  { text: 'What is the weirdest food combination you like?', ageGroup: 'kids', type: 'Food', category: 'medium' },
+  { text: 'If you could only eat one food forever, what would it be?', ageGroup: 'kids', type: 'Food', category: 'medium' },
+  { text: 'What is the worst thing you have ever cooked?', ageGroup: 'kids', type: 'Food', category: 'wild' },
+  { text: 'What dessert could you eat every single day?', ageGroup: 'kids', type: 'Food', category: 'wild' },
+  // Games
+  { text: 'What is your favorite game to play?', ageGroup: 'kids', type: 'Games', category: 'mild' },
+  { text: 'What is your favorite outdoor game?', ageGroup: 'kids', type: 'Games', category: 'mild' },
+  { text: 'What game do you always win?', ageGroup: 'kids', type: 'Games', category: 'medium' },
+  { text: 'If you could invent a game, what would it be like?', ageGroup: 'kids', type: 'Games', category: 'medium' },
+  { text: 'What is the funniest thing that has happened while playing a game?', ageGroup: 'kids', type: 'Games', category: 'wild' },
+  { text: 'What board game makes the whole family fight?', ageGroup: 'kids', type: 'Games', category: 'wild' },
+  // Music
+  { text: 'What is your favorite song right now?', ageGroup: 'kids', type: 'Music', category: 'mild' },
+  { text: 'What song do you sing at the top of your lungs?', ageGroup: 'kids', type: 'Music', category: 'mild' },
+  { text: 'What is your favorite song to dance to?', ageGroup: 'kids', type: 'Music', category: 'medium' },
+  { text: 'If you could be a singer for a day, what would you perform?', ageGroup: 'kids', type: 'Music', category: 'medium' },
+  { text: 'What song is your guilty pleasure?', ageGroup: 'kids', type: 'Music', category: 'wild' },
+  { text: 'What musical instrument do you wish you could play?', ageGroup: 'kids', type: 'Music', category: 'wild' },
+  // Storybooks
+  { text: 'What is your favorite storybook?', ageGroup: 'kids', type: 'Storybooks', category: 'mild' },
+  { text: 'Who is your favorite storybook character?', ageGroup: 'kids', type: 'Storybooks', category: 'mild' },
+  { text: 'If you could live in any storybook, which would you choose?', ageGroup: 'kids', type: 'Storybooks', category: 'medium' },
+  { text: 'What is the scariest story you have ever read?', ageGroup: 'kids', type: 'Storybooks', category: 'medium' },
+  { text: 'What story would you rewrite and how would it end?', ageGroup: 'kids', type: 'Storybooks', category: 'wild' },
+  { text: 'What is the funniest storybook you have ever read?', ageGroup: 'kids', type: 'Storybooks', category: 'wild' },
+  // Space
+  { text: 'What is your favorite planet and why?', ageGroup: 'kids', type: 'Space', category: 'mild' },
+  { text: 'If you could travel to space, where would you go first?', ageGroup: 'kids', type: 'Space', category: 'mild' },
+  { text: 'What would you bring on a trip to the moon?', ageGroup: 'kids', type: 'Space', category: 'medium' },
+  { text: 'If you met an alien, what would you ask them?', ageGroup: 'kids', type: 'Space', category: 'medium' },
+  { text: 'What would you name a new planet you discovered?', ageGroup: 'kids', type: 'Space', category: 'wild' },
+  { text: 'Would you rather visit the moon or Mars and why?', ageGroup: 'kids', type: 'Space', category: 'wild' },
+  // Nature
+  { text: 'What is your favorite place in nature?', ageGroup: 'kids', type: 'Nature', category: 'mild' },
+  { text: 'What is your favorite animal that lives in the wild?', ageGroup: 'kids', type: 'Nature', category: 'mild' },
+  { text: 'If you could grow any plant, what would it be?', ageGroup: 'kids', type: 'Nature', category: 'medium' },
+  { text: 'What is the most beautiful thing you have seen outside?', ageGroup: 'kids', type: 'Nature', category: 'medium' },
+  { text: 'What would you do if you found a treasure in the forest?', ageGroup: 'kids', type: 'Nature', category: 'wild' },
+  { text: 'What is the best thing about being outside?', ageGroup: 'kids', type: 'Nature', category: 'wild' },
 
   // ----- TEENS -----
   // Funny
@@ -125,4 +188,78 @@ export const truths: Question[] = [
   { text: 'What is the most extreme thing you have done for a thrill?', ageGroup: 'adults', type: 'Extreme', category: 'medium' },
   { text: 'What is the most dangerous thing you have ever done?', ageGroup: 'adults', type: 'Extreme', category: 'wild' },
   { text: 'What is a wild secret you have never told anyone at this party?', ageGroup: 'adults', type: 'Extreme', category: 'wild' },
+
+  // ----- FAMILY -----
+  // Funny
+  { text: 'What is the funniest thing a family member has ever said at the dinner table?', ageGroup: 'family', type: 'Funny', category: 'mild' },
+  { text: 'What is the silliest nickname anyone in this family has?', ageGroup: 'family', type: 'Funny', category: 'mild' },
+  { text: 'What is the funniest family photo you have ever seen?', ageGroup: 'family', type: 'Funny', category: 'medium' },
+  { text: 'What is the funniest story about a family trip you remember?', ageGroup: 'family', type: 'Funny', category: 'medium' },
+  { text: 'What is the most embarrassing thing a family member has done in public?', ageGroup: 'family', type: 'Funny', category: 'wild' },
+  { text: 'What is the funniest inside joke in your family?', ageGroup: 'family', type: 'Funny', category: 'wild' },
+  // Family
+  { text: 'What is your favorite family tradition?', ageGroup: 'family', type: 'Family', category: 'mild' },
+  { text: 'Who is the funniest person in your family and why?', ageGroup: 'family', type: 'Family', category: 'mild' },
+  { text: 'What is the best piece of advice a family member has given you?', ageGroup: 'family', type: 'Family', category: 'medium' },
+  { text: 'What is a family recipe you would never share with anyone?', ageGroup: 'family', type: 'Family', category: 'medium' },
+  { text: 'If you could trade lives with one family member for a day, who would it be?', ageGroup: 'family', type: 'Family', category: 'wild' },
+  { text: 'What is a family secret that others here might not know?', ageGroup: 'family', type: 'Family', category: 'wild' },
+  // School
+  { text: 'What is your favorite thing about school?', ageGroup: 'family', type: 'School', category: 'mild' },
+  { text: 'What is the nicest thing a teacher has ever said about you?', ageGroup: 'family', type: 'School', category: 'mild' },
+  { text: 'What is the funniest thing that has ever happened in your classroom?', ageGroup: 'family', type: 'School', category: 'medium' },
+  { text: 'What school subject do you wish your parents understood better?', ageGroup: 'family', type: 'School', category: 'medium' },
+  { text: 'What is the most mischievous thing you have ever done at school?', ageGroup: 'family', type: 'School', category: 'wild' },
+  { text: 'If you could change one rule at your school, what would it be?', ageGroup: 'family', type: 'School', category: 'wild' },
+  // Adventure
+  { text: 'What is the best family trip you have ever taken?', ageGroup: 'family', type: 'Adventure', category: 'mild' },
+  { text: 'If you could travel anywhere with your family, where would you go?', ageGroup: 'family', type: 'Adventure', category: 'mild' },
+  { text: 'What is the most exciting thing you have ever done outdoors?', ageGroup: 'family', type: 'Adventure', category: 'medium' },
+  { text: 'What is a place you have always wanted to visit together?', ageGroup: 'family', type: 'Adventure', category: 'medium' },
+  { text: 'What is the biggest adventure you would plan for the whole family?', ageGroup: 'family', type: 'Adventure', category: 'wild' },
+  { text: 'What is the bravest thing you have ever done on a trip?', ageGroup: 'family', type: 'Adventure', category: 'wild' },
+  // Silly
+  { text: 'What is the silliest thing you have ever seen a family member do?', ageGroup: 'family', type: 'Silly', category: 'mild' },
+  { text: 'What is the funniest face you can make right now?', ageGroup: 'family', type: 'Silly', category: 'mild' },
+  { text: 'What is the weirdest food combination you actually enjoy?', ageGroup: 'family', type: 'Silly', category: 'medium' },
+  { text: 'What is a silly song your family sings together?', ageGroup: 'family', type: 'Silly', category: 'medium' },
+  { text: 'What is the goofiest dance move you can show the group?', ageGroup: 'family', type: 'Silly', category: 'wild' },
+  { text: 'What is the most ridiculous costume you have ever worn?', ageGroup: 'family', type: 'Silly', category: 'wild' },
+
+  // ----- COUPLE -----
+  // Funny
+  { text: 'What is the funniest thing your partner has ever done?', ageGroup: 'couple', type: 'Funny', category: 'mild' },
+  { text: 'What is the silliest argument you have ever had with your partner?', ageGroup: 'couple', type: 'Funny', category: 'mild' },
+  { text: 'What is the funniest thing about how you two met?', ageGroup: 'couple', type: 'Funny', category: 'medium' },
+  { text: 'What is the most embarrassing thing your partner has done in public?', ageGroup: 'couple', type: 'Funny', category: 'medium' },
+  { text: 'What is the funniest inside joke between you two?', ageGroup: 'couple', type: 'Funny', category: 'wild' },
+  { text: 'What is the most ridiculous date you have ever been on?', ageGroup: 'couple', type: 'Funny', category: 'wild' },
+  // Romantic
+  { text: 'What is the most romantic thing your partner has ever done for you?', ageGroup: 'couple', type: 'Romantic', category: 'mild' },
+  { text: 'What is your favorite memory from when you first met?', ageGroup: 'couple', type: 'Romantic', category: 'mild' },
+  { text: 'What is the best love advice you have ever received?', ageGroup: 'couple', type: 'Romantic', category: 'medium' },
+  { text: 'What is a song that always reminds you of your partner?', ageGroup: 'couple', type: 'Romantic', category: 'medium' },
+  { text: 'What is the most spontaneous romantic thing you have ever done?', ageGroup: 'couple', type: 'Romantic', category: 'wild' },
+  { text: 'What is the most romantic trip you have ever taken together?', ageGroup: 'couple', type: 'Romantic', category: 'wild' },
+  // Spicy
+  { text: 'What is a flirty text you would actually send your partner?', ageGroup: 'couple', type: 'Spicy', category: 'mild' },
+  { text: 'What is the most confident you have ever felt with your partner?', ageGroup: 'couple', type: 'Spicy', category: 'mild' },
+  { text: 'What is the boldest thing you have ever done on a date with your partner?', ageGroup: 'couple', type: 'Spicy', category: 'medium' },
+  { text: 'What is something you find secretly attractive about your partner?', ageGroup: 'couple', type: 'Spicy', category: 'medium' },
+  { text: 'What is the spiciest confession you are willing to share about your relationship?', ageGroup: 'couple', type: 'Spicy', category: 'wild' },
+  { text: 'What is the wildest thing you have done together when you first started dating?', ageGroup: 'couple', type: 'Spicy', category: 'wild' },
+  // Party
+  { text: 'What is the best party you have ever attended together?', ageGroup: 'couple', type: 'Party', category: 'mild' },
+  { text: 'What is your signature date night plan?', ageGroup: 'couple', type: 'Party', category: 'mild' },
+  { text: 'What is the most awkward thing that has happened to you two at a party?', ageGroup: 'couple', type: 'Party', category: 'medium' },
+  { text: 'What is a party game you two are suspiciously good at?', ageGroup: 'couple', type: 'Party', category: 'medium' },
+  { text: 'What is the craziest party you have ever been to together?', ageGroup: 'couple', type: 'Party', category: 'wild' },
+  { text: 'What is the most you have ever spent on a night out together?', ageGroup: 'couple', type: 'Party', category: 'wild' },
+  // Challenge
+  { text: 'What is a challenge you two want to conquer together?', ageGroup: 'couple', type: 'Challenge', category: 'mild' },
+  { text: 'What is the hardest thing you have ever tried to learn with your partner?', ageGroup: 'couple', type: 'Challenge', category: 'mild' },
+  { text: 'What is the biggest risk you have taken together as a couple?', ageGroup: 'couple', type: 'Challenge', category: 'medium' },
+  { text: 'What is something you quit together and now regret?', ageGroup: 'couple', type: 'Challenge', category: 'medium' },
+  { text: 'What is the most extreme challenge you have completed as a couple?', ageGroup: 'couple', type: 'Challenge', category: 'wild' },
+  { text: 'What is something you are scared to try together but would love to?', ageGroup: 'couple', type: 'Challenge', category: 'wild' },
 ];

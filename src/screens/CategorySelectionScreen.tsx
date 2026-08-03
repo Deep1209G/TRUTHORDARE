@@ -1,10 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-
 import { Pressable } from 'react-native';
-
 import { SafeAreaView } from 'react-native-safe-area-context';
-
 import { Box, Text } from '@src';
 import { useGame, Difficulty } from '../context/GameContext';
 import { lightTap } from '../services/HapticService';
@@ -55,7 +52,7 @@ export default function CategorySelectionScreen({ navigation }: Props) {
             </Box>
             <Box alignItems="center" flex={1}>
               <Text variant="title" fontSize={28} textAlign="center">
-                TRUTH OR DARE
+                Challenge Level
               </Text>
             </Box>
             <Box width={42} />
@@ -63,10 +60,10 @@ export default function CategorySelectionScreen({ navigation }: Props) {
         </Box>
 
         {/* Title */}
-        <Box paddingHorizontal={24} paddingTop={32}>
-          <Text fontSize={24} fontWeight="700" color="white">
+        <Box paddingHorizontal={24} paddingTop={16}>
+          {/* <Text fontSize={24} fontWeight="700" color="white">
             Choose Category
-          </Text>
+          </Text> */}
           <Text fontSize={13} color="textSecondary" marginTop={4}>
             Pick the intensity level for this game
           </Text>
