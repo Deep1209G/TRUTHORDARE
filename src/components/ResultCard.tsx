@@ -1,15 +1,13 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, { useEffect, useRef } from 'react';
-
 import { Animated } from 'react-native';
-
 import { Box, Text } from '@src';
 
 type Props = {
   type: 'truth' | 'dare';
   playerName: string;
   question: string;
-};
+};  
 
 export default function ResultCard({ type, playerName, question }: Props) {
   const fadeAnim = useRef(new Animated.Value(0)).current;

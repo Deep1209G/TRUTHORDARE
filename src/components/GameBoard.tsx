@@ -335,24 +335,6 @@ export default function GameBoard({ rotation }: Props) {
             />
           </Animated.View>
         </Box>
-
-        {/* Center dot */}
-        <Box
-          position="absolute"
-          width={12}
-          height={12}
-          borderRadius="circle"
-          style={{
-            left: C - 6,
-            top: C - 6,
-            backgroundColor: '#818CF8',
-            shadowColor: '#818CF8',
-            shadowOffset: { width: 0, height: 0 },
-            shadowOpacity: 0.5,
-            shadowRadius: 6,
-            elevation: 5,
-          }}
-        />
       </View>
     </View>
   );

@@ -17,7 +17,8 @@ type Props = {
 };
 
 export default function QuestionTypeScreen({ navigation, route }: Props) {
-  const { ageGroup, questionTypes, setQuestionTypes } = useGame();
+  const { ageGroup, gameMode, questionTypes, setQuestionTypes, prepareAiDecks } =
+    useGame();
   const types = AGE_QUESTION_TYPES[ageGroup];
   const fromGame = route?.params?.source === 'game';
   const [selected, setSelected] = useState<QuestionType[]>(questionTypes);
@@ -34,7 +35,11 @@ export default function QuestionTypeScreen({ navigation, route }: Props) {
   function handleContinue() {
     if (selected.length === 0) return;
     lightTap();
-    setQuestionTypes(selected);
+    const chosen = selected;
+    setQuestionTypes(chosen);
+    if (gameMode === 'standard') {
+      prepareAiDecks(chosen);
+    }
     if (fromGame) {
       navigation.goBack();
     } else {
@@ -69,7 +74,7 @@ export default function QuestionTypeScreen({ navigation, route }: Props) {
             </Box>
             <Box alignItems="center" flex={1}>
               <Text variant="title" fontSize={28} textAlign="center">
-                TRUTH OR DARE
+                Choose a Topic
               </Text>
             </Box>
             <Box width={42} />
@@ -77,10 +82,10 @@ export default function QuestionTypeScreen({ navigation, route }: Props) {
         </Box>
 
         {/* Title */}
-        <Box paddingHorizontal={24} paddingTop={32}>
-          <Text fontSize={24} fontWeight="700" color="white">
+        <Box paddingHorizontal={24} paddingTop={16}>
+          {/* <Text fontSize={24} fontWeight="700" color="white">
             Choose Question Types
-          </Text>
+          </Text> */}
           <Text fontSize={13} color="textSecondary" marginTop={4}>
             Select one or more types for this game
           </Text>

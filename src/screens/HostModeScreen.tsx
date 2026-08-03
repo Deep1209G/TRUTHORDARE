@@ -1,7 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 
-import { Pressable } from 'react-native';
+import { Pressable, Image } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -17,14 +17,14 @@ type Props = {
 const MODES = [
   {
     key: 'standard',
-    emoji: '\u{1F916}',
+    image: require('../assets/images/robot.png'),
     title: 'App Host',
     description: 'The app asks all Truth and Dare questions',
     screen: 'AgeSelection',
   },
   {
     key: 'physical',
-    emoji: '\u{1F464}',
+    image: require('../assets/images/people.png'),
     title: 'Player Host',
     description: 'Players create and ask their own Truths and Dares',
     screen: 'TurnTimer',
@@ -61,7 +61,7 @@ export default function HostModeScreen({ navigation }: Props) {
             </Box>
             <Box alignItems="center" flex={1}>
               <Text variant="title" fontSize={28} textAlign="center">
-                TRUTH OR DARE
+                Game Host
               </Text>
             </Box>
             <Box width={42} />
@@ -69,10 +69,10 @@ export default function HostModeScreen({ navigation }: Props) {
         </Box>
 
         {/* Title */}
-        <Box paddingHorizontal={24} paddingTop={32}>
-          <Text fontSize={24} fontWeight="700" color="white">
+        <Box paddingHorizontal={24} paddingTop={16}>
+          {/* <Text fontSize={24} fontWeight="700" color="white">
             Choose Host Mode
-          </Text>
+          </Text> */}
           <Text fontSize={13} color="textSecondary" marginTop={4}>
             Who should ask the Truths and Dares?
           </Text>
@@ -100,9 +100,22 @@ export default function HostModeScreen({ navigation }: Props) {
                   borderRadius: 24,
                 }}
               >
-                <Text fontSize={28} marginRight={14}>
-                  {mode.emoji}
-                </Text>
+                <Box
+                  width={52}
+                  height={52}
+                  borderRadius="circle"
+                  marginRight={14}
+                  justifyContent="center"
+                  alignItems="center"
+                  style={{
+                    backgroundColor: 'rgba(124,92,255,0.15)',
+                  }}
+                >
+                  <Image
+                    source={mode.image}
+                    style={{ width: 40, height: 40, resizeMode: 'contain' }}
+                  />
+                </Box>
                 <Box flex={1}>
                   <Text fontSize={16} fontWeight="700" color="white">
                     {mode.title}

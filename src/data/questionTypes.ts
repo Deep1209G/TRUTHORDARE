@@ -6,6 +6,15 @@ export type QuestionType =
   | 'School'
   | 'Adventure'
   | 'Silly'
+  | 'Animals'
+  | 'Cartoons'
+  | 'Superheroes'
+  | 'Food'
+  | 'Games'
+  | 'Music'
+  | 'Storybooks'
+  | 'Space'
+  | 'Nature'
   | 'Friends'
   | 'Party'
   | 'Embarrassing'
@@ -22,7 +31,20 @@ export type Question = {
 };
 
 export const AGE_QUESTION_TYPES: Record<AgeGroup, QuestionType[]> = {
-  kids: ['Funny', 'Family', 'School', 'Adventure', 'Silly'],
+  kids: [
+    'Animals',
+    'Cartoons',
+    'Superheroes',
+    'Food',
+    'Games',
+    'Music',
+    'Storybooks',
+    'Space',
+    'Nature',
+    'Funny',
+  ],
   teens: ['Funny', 'Friends', 'School', 'Party', 'Embarrassing', 'Challenge'],
   adults: ['Funny', 'Friends', 'Party', 'Romantic', 'Spicy', 'Extreme'],
+  family: ['Funny', 'Family', 'School', 'Adventure', 'Silly'],
+  couple: ['Funny', 'Romantic', 'Spicy', 'Party', 'Challenge'],
 };

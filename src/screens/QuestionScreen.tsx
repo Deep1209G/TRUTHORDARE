@@ -1,7 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, { useEffect, useState } from 'react';
 
-import { Pressable } from 'react-native';
+import { Pressable, ActivityIndicator } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -41,9 +41,10 @@ export default function QuestionScreen({ navigation }: Props) {
   const [timerStarted, setTimerStarted] = useState<boolean>(
     gameMode !== 'physical',
   );
+  const questionReady = !!currentQuestion;
 
   useEffect(() => {
-    if (!hasTimer || !timerStarted || timeLeft <= 0) return;
+    if (!hasTimer || !timerStarted || timeLeft <= 0 || !questionReady) return;
     const interval = setInterval(() => {
       setTimeLeft(prev => {
         if (prev <= 1) {
@@ -55,9 +56,9 @@ export default function QuestionScreen({ navigation }: Props) {
       });
     }, 1000);
     return () => clearInterval(interval);
-  }, [hasTimer, timerStarted, timeLeft, soundEnabled]);
+  }, [hasTimer, timerStarted, timeLeft, soundEnabled, questionReady]);
 
-  if (!player || !selectedType || !currentQuestion) {
+  if (!player || !selectedType) {
     return null;
   }
 
@@ -122,7 +123,7 @@ export default function QuestionScreen({ navigation }: Props) {
                 {player.name}
               </Text>
             </Box>
-            {hasTimer && !timerStarted ? (
+            {hasTimer && questionReady && !timerStarted ? (
               <Pressable onPress={handleStartTimer} style={{ flex: 1 }}>
                 <Box
                   height={60}
@@ -146,7 +147,7 @@ export default function QuestionScreen({ navigation }: Props) {
                   </Text>
                 </Box>
               </Pressable>
-            ) : hasTimer ? (
+            ) : hasTimer && questionReady ? (
               <Box
                 flex={1}
                 height={60}
@@ -204,41 +205,64 @@ export default function QuestionScreen({ navigation }: Props) {
 
           {/* Truth badge + question */}
           <Box flex={1} alignItems="center" marginTop={80}>
-            <Box
-              borderRadius="md"
-              paddingHorizontal={20}
-              paddingVertical={8}
-              marginBottom={20}
-              style={{
-                backgroundColor: accentColor,
-                shadowColor: glowColor,
-                shadowOffset: { width: 0, height: 0 },
-                shadowOpacity: 0.5,
-                shadowRadius: 14,
-                elevation: 8,
-              }}
-            >
-              <Text
-                fontSize={16}
-                fontWeight="800"
-                color="white"
-                letterSpacing={3}
-              >
-                {selectedType === 'truth' ? 'TRUTH' : 'DARE'}
-              </Text>
-            </Box>
+            {!currentQuestion ? (
+              <Box alignItems="center" justifyContent="center" flex={1}>
+                <ActivityIndicator size="large" color={accentColor} />
+                <Text
+                  fontSize={14}
+                  fontWeight="700"
+                  color="textSecondary"
+                  marginTop={20}
+                  letterSpacing={1}
+                >
+                  GENERATING YOUR{' '}
+                  {selectedType === 'truth' ? 'TRUTH' : 'DARE'}...
+                </Text>
+              </Box>
+            ) : (
+              <>
+                <Box
+                  borderRadius="md"
+                  paddingHorizontal={20}
+                  paddingVertical={8}
+                  marginBottom={20}
+                  style={{
+                    backgroundColor: accentColor,
+                    shadowColor: glowColor,
+                    shadowOffset: { width: 0, height: 0 },
+                    shadowOpacity: 0.5,
+                    shadowRadius: 14,
+                    elevation: 8,
+                  }}
+                >
+                  <Text
+                    fontSize={16}
+                    fontWeight="800"
+                    color="white"
+                    letterSpacing={3}
+                  >
+                    {selectedType === 'truth' ? 'TRUTH' : 'DARE'}
+                  </Text>
+                </Box>
 
-            <Box width="100%">
-              <ResultCard
-                type={selectedType}
-                playerName={player.name}
-                question={currentQuestion}
-              />
-            </Box>
+                <Box width="100%">
+                  <ResultCard
+                    type={selectedType}
+                    playerName={player.name}
+                    question={currentQuestion}
+                  />
+                </Box>
+              </>
+            )}
           </Box>
 
           {/* Actions */}
-          <Box flexDirection="row" paddingBottom={32}>
+          <Box
+            flexDirection="row"
+            paddingBottom={32}
+            pointerEvents={!currentQuestion ? 'none' : 'auto'}
+            opacity={!currentQuestion ? 0.4 : 1}
+          >
             <Pressable
               onPress={() => handleResult(false)}
               style={{ flex: 1, marginRight: 8 }}
