@@ -190,10 +190,6 @@ export default function GameScreen({ navigation }: any) {
                     width: playSize,
                     height: playSize,
                     borderRadius: playSize / 2,
-                    shadowColor: '#7C5CFF',
-                    shadowOffset: { width: 0, height: 0 },
-                    shadowRadius: 24,
-                    elevation: 12,
                   },
                   glowShadowStyle,
                 ]}
@@ -211,7 +207,7 @@ export default function GameScreen({ navigation }: any) {
                     position="absolute"
                     width={playSize}
                     height={playSize}
-                    borderRadius="circle"
+                    borderRadius="circle" 
                     style={{
                       borderWidth: 2,
                       borderColor: 'rgba(255,255,255,0.15)',
@@ -221,11 +217,6 @@ export default function GameScreen({ navigation }: any) {
                     variant="title"
                     color="white"
                     letterSpacing={3}
-                    style={{
-                      textShadowColor: 'rgba(124,92,255,0.6)',
-                      textShadowOffset: { width: 0, height: 0 },
-                      textShadowRadius: 12,
-                    }}
                   >
                     {spinning ? '...' : t('app.play')}
                   </Text>
