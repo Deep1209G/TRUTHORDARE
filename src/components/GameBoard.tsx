@@ -55,7 +55,8 @@ function arcPath(
 const softColors = ['#FBBF24', '#34D399', '#F472B6', '#FB923C', '#A78BFA', '#67E8F9'];
 
 export default function GameBoard({ rotation }: Props) {
-  const { players, selectedPlayerIndex, spinning } = useGame();
+  const { players, selectedPlayerIndex, spinning, selectedBottle, selectedBoard } =
+    useGame();
   const device = useDeviceHelper();
   const bottleRotation = useSharedValue(0);
   const highlightAnim = useSharedValue(0);
@@ -140,7 +141,7 @@ export default function GameBoard({ rotation }: Props) {
         height={device.scaleHeight(22)}
         viewBox="0 0 24 22"
         style={{ position: 'absolute', top: board * (16 / 360), zIndex: 10 }}>
-        <Path d="M12,22 L2,0 L22,0 Z" fill="#E2E8F0" />
+        <Path d="M12,22 L2,0 L22,0 Z" fill={selectedBoard.pointer} />
       </Svg>
 
       {/* Board */}
@@ -154,29 +155,29 @@ export default function GameBoard({ rotation }: Props) {
         <Svg width={board} height={board} viewBox={`0 0 ${board} ${board}`}>
           <Defs>
             <RadialGradient id="boardBg" cx="50%" cy="50%" r="50%">
-              <Stop offset="0%" stopColor="#1E293B" />
-              <Stop offset="100%" stopColor="#0F172A" />
+              <Stop offset="0%" stopColor={selectedBoard.bgStart} />
+              <Stop offset="100%" stopColor={selectedBoard.bgEnd} />
             </RadialGradient>
 
             <RadialGradient id="centerBg" cx="50%" cy="50%" r="50%">
-              <Stop offset="0%" stopColor="#1E293B" />
-              <Stop offset="100%" stopColor="#0F172A" />
+              <Stop offset="0%" stopColor={selectedBoard.bgStart} />
+              <Stop offset="100%" stopColor={selectedBoard.bgEnd} />
             </RadialGradient>
 
             <RadialGradient id="softGlow" cx="50%" cy="50%" r="50%">
-              <Stop offset="0%" stopColor="#818CF8" stopOpacity="0.08" />
-              <Stop offset="100%" stopColor="#818CF8" stopOpacity="0" />
+              <Stop offset="0%" stopColor={selectedBoard.glow} stopOpacity="0.08" />
+              <Stop offset="100%" stopColor={selectedBoard.glow} stopOpacity="0" />
             </RadialGradient>
 
             <LinearGradient id="borderGrad" x1="0" y1="0" x2="1" y2="1">
-              <Stop offset="0%" stopColor="#818CF8" stopOpacity="0.4" />
-              <Stop offset="50%" stopColor="#C084FC" stopOpacity="0.25" />
-              <Stop offset="100%" stopColor="#818CF8" stopOpacity="0.4" />
+              <Stop offset="0%" stopColor={selectedBoard.borderC1} stopOpacity="0.4" />
+              <Stop offset="50%" stopColor={selectedBoard.borderC2} stopOpacity="0.25" />
+              <Stop offset="100%" stopColor={selectedBoard.borderC1} stopOpacity="0.4" />
             </LinearGradient>
           </Defs>
 
           {/* Board background */}
-          <Circle cx={c} cy={c} r={outerR + d6} fill="#0F172A" />
+          <Circle cx={c} cy={c} r={outerR + d6} fill={selectedBoard.bgEnd} />
           <Circle cx={c} cy={c} r={outerR + d3} fill="url(#boardBg)" />
 
           {/* Thin outer glow border */}
@@ -237,7 +238,7 @@ export default function GameBoard({ rotation }: Props) {
             cy={c}
             r={innerR + d12}
             fill="none"
-            stroke="#334155"
+            stroke={selectedBoard.ring}
             strokeWidth="1"
           />
 
@@ -253,7 +254,7 @@ export default function GameBoard({ rotation }: Props) {
             cy={c}
             r={innerR}
             fill="none"
-            stroke="#334155"
+            stroke={selectedBoard.ring}
             strokeWidth="0.75"
           />
         </Svg>
@@ -345,7 +346,7 @@ export default function GameBoard({ rotation }: Props) {
           alignItems="center">
           <Animated.View style={bottleStyle}>
             <Image
-              source={require('../assets/images/vodka.png')}
+              source={selectedBottle.image}
               style={{
                 width: board * (70 / 360),
                 height: board * (180 / 360),

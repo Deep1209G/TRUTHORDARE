@@ -1,7 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, { useEffect, useRef, useState } from 'react';
 
-import { Pressable } from 'react-native';
+import { Pressable, BackHandler, Modal } from 'react-native';
 
 import Animated, {
   useSharedValue,
@@ -24,7 +24,12 @@ import { useDeviceHelper } from '../hooks/useDeviceHelper';
 
 import GameHeader from '../components/GameHeader';
 import GameBoard from '../components/GameBoard';
+import BottleBottomSheet from '../components/BottleBottomSheet';
+import BoardBottomSheet from '../components/BoardBottomSheet';
+import TruthOrDareModal from '../components/TruthOrDareModal';
+import QuestionModal from '../components/QuestionModal';
 import BottleIcon from '../assets/icon/bottle.svg';
+import BoardIcon from '../assets/icon/gameboard.svg';
 
 export default function GameScreen({ navigation }: any) {
   const {
@@ -37,9 +42,16 @@ export default function GameScreen({ navigation }: any) {
     soundEnabled,
     selectedPlayerIndex,
     lastPlayerIndex,
+    resetGame,
+    setPlayers,
   } = useGame();
   const rotationRef = useRef(rotation);
   const [revealed, setRevealed] = useState(false);
+  const [isBottleSheetVisible, setIsBottleSheetVisible] = useState(false);
+  const [isBoardSheetVisible, setIsBoardSheetVisible] = useState(false);
+  const [isTruthOrDareVisible, setIsTruthOrDareVisible] = useState(false);
+  const [isQuestionVisible, setIsQuestionVisible] = useState(false);
+  const [showLeave, setShowLeave] = useState(false);
   const pulseAnim = useSharedValue(1);
   const glowAnim = useSharedValue(0);
   const device = useDeviceHelper();
@@ -69,7 +81,7 @@ export default function GameScreen({ navigation }: any) {
     if (revealed) {
       const timer = setTimeout(() => {
         setRevealed(false);
-        navigation.navigate('TruthOrDare');
+        setIsTruthOrDareVisible(true);
       }, 1800);
       return () => clearTimeout(timer);
     }
@@ -106,6 +118,34 @@ export default function GameScreen({ navigation }: any) {
     };
   }, [pulseAnim, glowAnim]);
 
+  useEffect(() => {
+    if (showLeave || isBottleSheetVisible || isBoardSheetVisible || isTruthOrDareVisible || isQuestionVisible) {
+      return;
+    }
+    const subscription = BackHandler.addEventListener(
+      'hardwareBackPress',
+      () => {
+        setShowLeave(true);
+        return true;
+      },
+    );
+    return () => subscription.remove();
+  }, [
+    showLeave,
+    isBottleSheetVisible,
+    isBoardSheetVisible,
+    isTruthOrDareVisible,
+    isQuestionVisible,
+  ]);
+
+  function handleLeave() {
+    lightTap();
+    setShowLeave(false);
+    resetGame();
+    setPlayers([]);
+    navigation?.reset({ index: 0, routes: [{ name: 'MainMenu' }] });
+  }
+
   const pulseStyle = useAnimatedStyle(() => ({
     transform: [{ scale: interpolate(pulseAnim.value, [0.85, 1], [0.92, 1]) }],
   }));
@@ -125,7 +165,10 @@ export default function GameScreen({ navigation }: any) {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#120826' }}>
       <Box flex={1} backgroundColor="background">
-        <GameHeader navigation={navigation} />
+        <GameHeader
+          navigation={navigation}
+          onLeaveRequest={() => setShowLeave(true)}
+        />
 
         <Box flex={1} justifyContent="center" alignItems="center">
           <GameBoard rotation={rotation} />
@@ -230,28 +273,176 @@ export default function GameScreen({ navigation }: any) {
               </Text>
             )}
 
-            <Pressable
-              onPress={() => { () => console.log('Bottle pressed')}}
+            <Box
+              flexDirection="row"
+              alignItems="center"
+              justifyContent="center"
+              marginTop={20}
             >
-              <Box
-                width={44}
-                height={44}
-                borderRadius="circle"
-                marginTop={20}
-                justifyContent="center"
-                alignItems="center"
-                opacity={spinning ? 0.5 : 1}
-                style={{
-                  backgroundColor: 'rgba(124,92,255,0.15)',
-                  borderWidth: 1,
-                  borderColor: 'rgba(255,255,255,0.12)',
+              <Pressable
+                onPress={() => {
+                  lightTap();
+                  playSound('tap', soundEnabled);
+                  setIsBoardSheetVisible(true);
                 }}
               >
-                <BottleIcon width={device.scaleWidth(30)} height={device.scaleHeight(25)} color="white"  />
-              </Box>
-            </Pressable>
+                <Box
+                  width={44}
+                  height={44}
+                  borderRadius="circle"
+                  marginRight={14}
+                  justifyContent="center"
+                  alignItems="center"
+                  opacity={spinning ? 0.5 : 1}
+                  style={{
+                    backgroundColor: 'rgba(124,92,255,0.15)',
+                    borderWidth: 1,
+                    borderColor: 'rgba(255,255,255,0.12)',
+                  }}
+                >
+                  <BoardIcon
+                    width={device.scaleWidth(30)}
+                    height={device.scaleHeight(30)}
+                    color="white"
+                  />
+                </Box>
+              </Pressable>
+
+              <Pressable
+                onPress={() => {
+                  lightTap();
+                  playSound('tap', soundEnabled);
+                  setIsBottleSheetVisible(true);
+                }}
+              >
+                <Box
+                  width={44}
+                  height={44}
+                  borderRadius="circle"
+                  justifyContent="center"
+                  alignItems="center"
+                  opacity={spinning ? 0.5 : 1}
+                  style={{
+                    backgroundColor: 'rgba(124,92,255,0.15)',
+                    borderWidth: 1,
+                    borderColor: 'rgba(255,255,255,0.12)',
+                  }}
+                >
+                  <BottleIcon
+                    width={device.scaleWidth(30)}
+                    height={device.scaleHeight(28)}
+                    color="white"
+                  />
+                </Box>
+              </Pressable>
+            </Box>
           </Box>
         </Box>
+
+        <BottleBottomSheet
+          visible={isBottleSheetVisible}
+          onClose={() => setIsBottleSheetVisible(false)}
+        />
+
+        <BoardBottomSheet
+          visible={isBoardSheetVisible}
+          onClose={() => setIsBoardSheetVisible(false)}
+        />
+
+        <TruthOrDareModal
+          visible={isTruthOrDareVisible}
+          onSelectType={() => {
+            setIsTruthOrDareVisible(false);
+            setIsQuestionVisible(true);
+          }}
+        />
+
+        <QuestionModal
+          visible={isQuestionVisible}
+          onClose={() => setIsQuestionVisible(false)}
+        />
+
+        <Modal visible={showLeave} transparent animationType="fade" onRequestClose={() => setShowLeave(false)}>
+          <Box
+            flex={1}
+            style={{ backgroundColor: 'rgba(12,4,24,0.88)' }}
+            justifyContent="center"
+            alignItems="center"
+            paddingHorizontal={20}
+          >
+            <Box
+              backgroundColor="bgDeep"
+              borderRadius="xl"
+              padding={device.scaleWidth(24)}
+              width="80%"
+              style={{
+                borderWidth: 1,
+                borderColor: 'rgba(255,255,255,0.08)',
+              }}
+            >
+              <Text
+                variant="heading"
+                color="white"
+                textAlign="center"
+                marginBottom={6}
+              >
+                {t('header.leaveTitle')}
+              </Text>
+              <Text
+                variant="note"
+                color="textSecondary"
+                textAlign="center"
+                marginBottom={device.scaleHeight(20)}
+              >
+                {t('header.leaveBody')}
+              </Text>
+
+              <Pressable onPress={handleLeave}>
+                <Box
+                  height={device.scaleHeight(50)}
+                  borderRadius="lg"
+                  justifyContent="center"
+                  alignItems="center"
+                  marginBottom={10}
+                  style={{
+                    backgroundColor: '#EF4444',
+                    shadowColor: '#EF4444',
+                    shadowOffset: { width: 0, height: 4 },
+                    shadowOpacity: 0.4,
+                    shadowRadius: 12,
+                    elevation: 8,
+                  }}
+                >
+                  <Text variant="bodyBold" color="white" letterSpacing={1}>
+                    {t('header.leaveBtn')}
+                  </Text>
+                </Box>
+              </Pressable>
+
+              <Pressable
+                onPress={() => {
+                  lightTap();
+                  setShowLeave(false);
+                }}
+              >
+                <Box
+                  height={device.scaleHeight(50)}
+                  borderRadius="lg"
+                  justifyContent="center"
+                  alignItems="center"
+                  style={{
+                    borderWidth: 1.5,
+                    borderColor: 'rgba(255,255,255,0.15)',
+                  }}
+                >
+                  <Text variant="bodyBold" color="white">
+                    {t('common.cancel')}
+                  </Text>
+                </Box>
+              </Pressable>
+            </Box>
+          </Box>
+        </Modal>
       </Box>
     </SafeAreaView>
   );

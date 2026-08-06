@@ -9,6 +9,7 @@
     "cancel": "CANCEL",
     "close": "CLOSE",
     "remove": "REMOVE",
+    "edit": "EDIT",
     "quickAdd": "+ Quick Add",
     "enterName": "Enter name...",
     "namePlaceholder": "Name...",
@@ -222,6 +223,29 @@
   },
   "leaderboard": {
     "title": "LEADERBOARD"
+  },
+  "bottles": {
+    "title": "Choose Your Bottle",
+    "subtitle": "Pick a bottle for the board",
+    "b1": "Bottle 1",
+    "b2": "Bottle 2",
+    "b3": "Bottle 3",
+    "b4": "Bottle 4",
+    "b5": "Bottle 5",
+    "b6": "Bottle 6",
+    "b7": "Bottle 7"
+  },
+  "boards": {
+    "title": "Choose Your Board",
+    "subtitle": "Pick a style for the board",
+    "classic": "Classic",
+    "sunset": "Sunset",
+    "ocean": "Ocean",
+    "emerald": "Emerald",
+    "rose": "Rose",
+    "gold": "Gold",
+    "ice": "Ice",
+    "midnight": "Midnight"
   },
   "playerModal": {
     "players": "PLAYERS",

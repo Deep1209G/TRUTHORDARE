@@ -10,6 +10,10 @@ import React, {
 import { truths } from '../data/truths';
 import { dares } from '../data/dares';
 import type { QuestionType, Question } from '../data/questionTypes';
+import { getBottleById, BOTTLES } from '../data/bottles';
+import type { Bottle } from '../data/bottles';
+import { getBoardById, BOARDS } from '../data/boards';
+import type { BoardTheme } from '../data/boards';
 import { isGeminiConfigured } from '../config/gemini';
 import { generateQuestions } from '../services/GeminiService';
 
@@ -56,6 +60,8 @@ type GameState = {
   turnTimer: number;
   round: number;
   lastPlayerIndex: number;
+  selectedBottle: Bottle;
+  selectedBoard: BoardTheme;
 };
 
 type GameContextType = GameState & {
@@ -76,6 +82,8 @@ type GameContextType = GameState & {
   setAgeGroup: (ageGroup: AgeGroup) => void;
   setQuestionTypes: (questionTypes: QuestionType[]) => void;
   setTurnTimer: (seconds: number) => void;
+  setSelectedBottleId: (id: string) => void;
+  setSelectedBoardId: (id: string) => void;
   addPlayer: (name: string) => boolean;
   removePlayer: (index: number) => boolean;
   renamePlayer: (index: number, newName: string) => boolean;
@@ -117,6 +125,11 @@ export function getRandomColor(index: number): string {
   return COLORS[index % COLORS.length];
 }
 
+export function getNextColor(players: { color: string }[]): string {
+  const used = new Set(players.map(p => p.color));
+  return COLORS.find(c => !used.has(c)) ?? getRandomColor(players.length);
+}
+
 const GameContext = createContext<GameContextType | undefined>(undefined);
 
 export function GameProvider({ children }: { children: ReactNode }) {
@@ -150,6 +163,23 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const aiCallsRef = useRef(0);
   const [lastPlayerIndex, setLastPlayerIndex] = useState(-1);
   const [round, setRound] = useState(1);
+  const [selectedBottleId, setSelectedBottleIdState] = useState<string>('b1');
+  const [selectedBoardId, setSelectedBoardIdState] = useState<string>('classic');
+
+  const selectedBottle = getBottleById(selectedBottleId);
+  const selectedBoard = getBoardById(selectedBoardId);
+
+  const setSelectedBottleId = useCallback((id: string) => {
+    if (BOTTLES.some(bottle => bottle.id === id)) {
+      setSelectedBottleIdState(id);
+    }
+  }, []);
+
+  const setSelectedBoardId = useCallback((id: string) => {
+    if (BOARDS.some(board => board.id === id)) {
+      setSelectedBoardIdState(id);
+    }
+  }, []);
 
   const spin = useCallback(() => {
     if (spinning) return;
@@ -369,7 +399,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
       if (prev.some(p => p.name.toLowerCase() === trimmed.toLowerCase()))
         return prev;
       success = true;
-      return [...prev, { name: trimmed, color: getRandomColor(prev.length) }];
+      return [
+        ...prev,
+        { name: trimmed, color: getNextColor(prev) },
+      ];
     });
     return success;
   }, []);
@@ -444,8 +477,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setAiSignature('');
     aiCallsRef.current = 0;
     setAiGenerating(false);
+    setSelectedBottleId('b1');
+    setSelectedBoardId('classic');
     setRound(1);
-  }, []);
+  }, [setSelectedBottleId, setSelectedBoardId]);
 
   const endGame = useCallback(() => {
     setSelectedPlayerIndex(0);
@@ -475,6 +510,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
         turnTimer,
         round,
         lastPlayerIndex,
+        selectedBottle,
+        selectedBoard,
         setPlayers,
         spin,
         resolvePlayer,
@@ -492,6 +529,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
         setAgeGroup,
         setQuestionTypes,
         setTurnTimer,
+        setSelectedBottleId,
+        setSelectedBoardId,
         addPlayer,
         removePlayer,
         renamePlayer,

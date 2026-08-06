@@ -11,7 +11,7 @@ import { useDeviceHelper } from '../hooks/useDeviceHelper';
 import BackIcon from '../assets/icon/back.svg';
 import PeopleIcon from '../assets/icon/people.svg';
 import LeaderboardIcon from '../assets/icon/leaderboard.svg';
-import SettingIcon from '../assets/icon/setting.svg';
+// import SettingIcon from '../assets/icon/setting.svg';
 import PlayerListModal from './PlayerListModal';
 import LeaderboardModal from './LeaderboardModal';
 
@@ -27,9 +27,10 @@ const CATEGORIES: {
 
 type Props = {
   navigation?: any;
+  onLeaveRequest?: () => void;
 };
 
-export default function GameHeader({ navigation }: Props) {
+export default function GameHeader({ navigation, onLeaveRequest }: Props) {
   const {
     players,
     selectedPlayerIndex,
@@ -71,7 +72,11 @@ export default function GameHeader({ navigation }: Props) {
       <Pressable
         onPress={() => {
           lightTap();
-          setShowLeave(true);
+          if (onLeaveRequest) {
+            onLeaveRequest();
+          } else {
+            setShowLeave(true);
+          }
         }}
       >
         <Box
@@ -174,7 +179,7 @@ export default function GameHeader({ navigation }: Props) {
             navigation?.navigate('Settings');
           }}
         >
-          <Box
+          {/* <Box
             width={iconButton}
             height={iconButtonH}
             borderRadius="md"
@@ -183,7 +188,7 @@ export default function GameHeader({ navigation }: Props) {
             alignItems="center"
           >
             <SettingIcon width={device.scaleWidth(24)} height={device.scaleHeight(24)} color="white" />
-          </Box>
+          </Box> */}
         </Pressable>
       </Box>
 

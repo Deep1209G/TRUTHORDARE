@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 
 import {
   Modal,
@@ -16,6 +16,8 @@ import { useGame } from '../context/GameContext';
 import { lightTap } from '../services/HapticService';
 import { useDeviceHelper } from '../hooks/useDeviceHelper';
 import CloseIcon from '../assets/icon/close.svg';
+import TickIcon from '../assets/icon/tick.svg';
+import EditIcon from '../assets/icon/edit.svg';
 import AddPlayerIcon from '../assets/icon/addplayer.svg';
 
 type Props = {
@@ -43,28 +45,13 @@ export default function PlayerListModal({ visible, onClose }: Props) {
   const [newName, setNewName] = useState('');
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editingName, setEditingName] = useState('');
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [confirmIndex, setConfirmIndex] = useState<number | null>(null);
-  const errorTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(() => {
-    return () => {
-      if (errorTimer.current) clearTimeout(errorTimer.current);
-    };
-  }, []);
-
-  function showError(msg: string) {
-    setErrorMsg(msg);
-    if (errorTimer.current) clearTimeout(errorTimer.current);
-    errorTimer.current = setTimeout(() => setErrorMsg(null), 2500);
-  }
 
   function handleAdd() {
     lightTap();
     const name = newName.trim();
     if (!name) return;
     if (!addPlayer(name)) {
-      showError(t('playerModal.errorExists'));
       return;
     }
     setNewName('');
@@ -76,9 +63,7 @@ export default function PlayerListModal({ visible, onClose }: Props) {
     const name =
       PRESET_NAMES.find(n => !used.has(n.toLowerCase())) ||
       t('players.playerFallback', { number: players.length + 1 });
-    if (!addPlayer(name)) {
-      showError(t('playerModal.errorMax'));
-    }
+    addPlayer(name);
   }
 
   function startRename(index: number, currentName: string) {
@@ -96,7 +81,6 @@ export default function PlayerListModal({ visible, onClose }: Props) {
     lightTap();
     if (editingIndex === null) return;
     if (!renamePlayer(editingIndex, editingName)) {
-      showError(t('playerModal.errorEmpty'));
       return;
     }
     cancelRename();
@@ -106,12 +90,13 @@ export default function PlayerListModal({ visible, onClose }: Props) {
     lightTap();
     if (confirmIndex === null) return;
     if (!removePlayer(confirmIndex)) {
-      showError(t('playerModal.errorMin'));
+      return;
     }
     setConfirmIndex(null);
   }
 
   const confirmPlayer = confirmIndex !== null ? players[confirmIndex] : null;
+  const isFull = players.length >= 10;
 
   return (
     <Modal visible={visible} transparent animationType="fade">
@@ -137,26 +122,12 @@ export default function PlayerListModal({ visible, onClose }: Props) {
           >
             {/* Header */}
             <Box flexDirection="row" alignItems="center" marginBottom={16}>
-              <Text variant="caption" letterSpacing={2} color="purple">
-                {'\u{1F465}'} {t('players.section')}
-              </Text>
-              <Box flex={1} />
-              <Box
-                borderRadius="md"
-                paddingHorizontal={device.scaleWidth(10)}
-                paddingVertical={4}
-                marginRight={device.scaleWidth(8)}
-                style={{ backgroundColor: 'rgba(129,140,248,0.15)' }}
-              >
-                <Text variant="label" style={{ color: '#818CF8' }}>
-                  {players.length} / 10
-                </Text>
-              </Box>
               <Pressable
                 onPress={() => {
                   lightTap();
                   onClose();
                 }}
+                style={{ marginRight: device.scaleWidth(12) }}
               >
                 <Box
                   width={device.scaleWidth(36)}
@@ -166,94 +137,106 @@ export default function PlayerListModal({ visible, onClose }: Props) {
                   justifyContent="center"
                   alignItems="center"
                 >
-                  <CloseIcon width={device.scaleWidth(16)} height={device.scaleHeight(16)} color="white" />
+                  <CloseIcon
+                    width={device.scaleWidth(16)}
+                    height={device.scaleHeight(16)}
+                    color="white"
+                  />
                 </Box>
               </Pressable>
+              <Text variant="caption" letterSpacing={2} color="purple">
+                {t('players.section')}
+              </Text>
+              <Box flex={1} />
+              <Box
+                borderRadius="md"
+                paddingHorizontal={device.scaleWidth(10)}
+                paddingVertical={4}
+                style={{ backgroundColor: 'rgba(129,140,248,0.15)' }}
+              >
+                <Text variant="label" style={{ color: '#818CF8' }}>
+                  {players.length} / 10
+                </Text>
+              </Box>
             </Box>
 
             {/* Add player input */}
-            <Box
-              flexDirection="row"
-              alignItems="center"
-              backgroundColor="surface"
-              borderRadius="md"
-              paddingHorizontal={device.scaleWidth(14)}
-              paddingVertical={4}
-              marginBottom={10}
-              style={{
-                borderWidth: 1,
-                borderColor: 'rgba(255,255,255,0.1)',
-              }}
-            >
-              <Box flex={1}>
-                <TextInput
-                  value={newName}
-                  onChangeText={setNewName}
-                  placeholder={t('common.enterName')}
-                  placeholderTextColor="rgba(255,255,255,0.3)"
-                  style={{
-                    color: '#FFF',
-                    fontSize: device.scaleWidth(14),
-                    paddingVertical: 8,
-                  }}
-                  returnKeyType="done"
-                  onSubmitEditing={handleAdd}
-                />
-              </Box>
-              <Pressable onPress={handleAdd}>
-                <Box
-                  width={device.scaleWidth(32)}
-                  height={device.scaleHeight(32)}
-                  borderRadius="circle"
-                  backgroundColor="purple"
-                  justifyContent="center"
-                  alignItems="center"
-                >
-                  <AddPlayerIcon width={device.scaleWidth(16)} height={device.scaleHeight(16)} color="white" />
-                </Box>
-              </Pressable>
-            </Box>
-
-            <Pressable onPress={handleQuickAdd}>
+            {!isFull && (
               <Box
-                height={device.scaleHeight(38)}
-                borderRadius="md"
-                justifyContent="center"
+                flexDirection="row"
                 alignItems="center"
-                marginBottom={16}
-                style={{
-                  borderWidth: 1.5,
-                  borderColor: 'rgba(129,140,248,0.35)',
-                  borderStyle: 'dashed',
-                  borderRadius: 12,
-                }}
-              >
-                <Text variant="label" style={{ color: '#818CF8' }}>
-                  {t('common.quickAdd')}
-                </Text>
-              </Box>
-            </Pressable>
-
-            {errorMsg && (
-              <Box
+                backgroundColor="surface"
                 borderRadius="md"
-                paddingHorizontal={device.scaleWidth(12)}
-                paddingVertical={8}
-                marginBottom={12}
+                paddingHorizontal={device.scaleWidth(14)}
+                paddingVertical={4}
+                marginBottom={10}
                 style={{
-                  backgroundColor: 'rgba(239,68,68,0.12)',
                   borderWidth: 1,
-                  borderColor: 'rgba(239,68,68,0.3)',
+                  borderColor: 'rgba(255,255,255,0.1)',
                 }}
               >
-                <Text variant="label" style={{ color: '#EF4444' }}>
-                  {errorMsg}
-                </Text>
+                <Box flex={1}>
+                  <TextInput
+                    value={newName}
+                    onChangeText={setNewName}
+                    placeholder={t('common.enterName')}
+                    placeholderTextColor="rgba(255,255,255,0.3)"
+                    style={{
+                      color: '#FFF',
+                      fontSize: device.scaleWidth(14),
+                      paddingVertical: 8,
+                    }}
+                    returnKeyType="done"
+                    onSubmitEditing={handleAdd}
+                  />
+                </Box>
+                <Pressable onPress={handleAdd}>
+                  <Box
+                    width={device.scaleWidth(32)}
+                    height={device.scaleHeight(32)}
+                    borderRadius="circle"
+                    backgroundColor="purple"
+                    justifyContent="center"
+                    alignItems="center"
+                  >
+                    <AddPlayerIcon
+                      width={device.scaleWidth(16)}
+                      height={device.scaleHeight(16)}
+                      color="white"
+                    />
+                  </Box>
+                </Pressable>
               </Box>
             )}
 
+            {!isFull && (
+              <Pressable onPress={handleQuickAdd}>
+                <Box
+                  height={device.scaleHeight(38)}
+                  borderRadius="md"
+                  justifyContent="center"
+                  alignItems="center"
+                  marginBottom={16}
+                  style={{
+                    borderWidth: 1.5,
+                    borderColor: 'rgba(129,140,248,0.35)',
+                    borderStyle: 'dashed',
+                    borderRadius: 12,
+                  }}
+                >
+                  <Text variant="label" style={{ color: '#818CF8' }}>
+                    {t('common.quickAdd')}
+                  </Text>
+                </Box>
+              </Pressable>
+            )}
+
             {/* Player list */}
-            <ScrollView showsVerticalScrollIndicator={false}>
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              keyboardShouldPersistTaps="handled"
+              style={{ height: device.scaleHeight(4 * 54) }}
+            >
               {players.map((player, index) => {
                 const editing = editingIndex === index;
                 return (
@@ -267,13 +250,17 @@ export default function PlayerListModal({ visible, onClose }: Props) {
                       borderBottomColor: 'rgba(255,255,255,0.06)',
                     }}
                   >
-                    <Box width={device.scaleWidth(34)} alignItems="center" marginRight={device.scaleWidth(10)}>
+                    <Box
+                      width={device.scaleWidth(34)}
+                      alignItems="center"
+                      marginRight={device.scaleWidth(10)}
+                    >
                       <Text
                         variant="caption"
                         color="textSecondary"
                         style={{ fontVariant: ['tabular-nums'] }}
                       >
-                        {index + 1}/{players.length}
+                        {index + 1}
                       </Text>
                     </Box>
 
@@ -323,54 +310,77 @@ export default function PlayerListModal({ visible, onClose }: Props) {
                           onSubmitEditing={saveRename}
                           autoFocus
                         />
-                        <Pressable onPress={saveRename} style={{ marginRight: 8 }}>
-                          <Text variant="bodyBold" style={{ color: '#34D399' }}>
-                            {'\u2713'}
-                          </Text>
+                        <Pressable
+                          onPress={saveRename}
+                          style={{ marginRight: 8 }}
+                        >
+                          <TickIcon
+                            width={device.scaleWidth(16)}
+                            height={device.scaleHeight(16)}
+                            color="#34D399"
+                          />
                         </Pressable>
                         <Pressable onPress={cancelRename}>
-                          <Text variant="bodyBold" style={{ color: '#EF4444' }}>
-                            {'\u2715'}
-                          </Text>
+                          <CloseIcon
+                            width={device.scaleWidth(16)}
+                            height={device.scaleHeight(16)}
+                            color="#EF4444"
+                          />
                         </Pressable>
                       </Box>
                     ) : (
-                      <Box flex={1}>
+                      <Pressable
+                        style={{ flex: 1 }}
+                        onPress={() => startRename(index, player.name)}
+                      >
                         <Text variant="bodyBold" color="white">
                           {player.name}
                         </Text>
-                      </Box>
+                      </Pressable>
                     )}
 
                     {!editing && (
                       <>
-                        <Pressable onPress={() => startRename(index, player.name)}>
+                        <Pressable
+                          onPress={() => startRename(index, player.name)}
+                        >
                           <Box
-                            width={device.scaleWidth(30)}
-                            height={device.scaleHeight(30)}
+                            width={device.scaleWidth(34)}
+                            height={device.scaleHeight(34)}
                             borderRadius="circle"
                             justifyContent="center"
                             alignItems="center"
                             marginRight={device.scaleWidth(10)}
-                            style={{ backgroundColor: 'rgba(129,140,248,0.15)' }}
+                            style={{
+                              backgroundColor: 'rgba(129,140,248,0.15)',
+                            }}
                           >
-                            <Text variant="note" style={{ color: '#818CF8' }}>
-                              {'\u270E'}
-                            </Text>
+                            <EditIcon
+                              width={device.scaleWidth(14)}
+                              height={device.scaleHeight(14)}
+                              color="#818CF8"
+                            />
                           </Box>
                         </Pressable>
-                        <Pressable onPress={() => { lightTap(); setConfirmIndex(index); }}>
+                        <Pressable
+                          onPress={() => {
+                            lightTap();
+                            setConfirmIndex(index);
+                          }}
+                        >
                           <Box
-                            width={device.scaleWidth(30)}
-                            height={device.scaleHeight(30)}
+                            width={device.scaleWidth(34)}
+                            height={device.scaleHeight(34)}
                             borderRadius="circle"
                             justifyContent="center"
                             alignItems="center"
                             style={{ backgroundColor: 'rgba(239,68,68,0.15)' }}
                           >
-                            <Text style={{ color: '#EF4444' }}>
-                              x
-                            </Text>
+                            <CloseIcon
+                              width={device.scaleWidth(14)}
+                              height={device.scaleHeight(14)}
+                              color="#EF4444"
+                            />
                           </Box>
                         </Pressable>
                       </>

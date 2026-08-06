@@ -16,7 +16,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Box, Text } from '@src';
 import { useTranslation } from 'react-i18next';
-import { useGame, getRandomColor, Player } from '../context/GameContext';
+import { useGame, getNextColor, Player } from '../context/GameContext';
 import { useDeviceHelper } from '../hooks/useDeviceHelper';
 
 import AddPlayerIcon from '../assets/icon/addplayer.svg';
@@ -54,6 +54,7 @@ export default function PlayerSetupScreen({ navigation }: Props) {
   const [modalVisible, setModalVisible] = useState(false);
   const [newName, setNewName] = useState('');
   const [modalPlayers, setModalPlayers] = useState<Player[]>([]);
+  const isModalFull = players.length + modalPlayers.length >= 10;
 
   function openModal() {
     setNewName('');
@@ -82,7 +83,7 @@ export default function PlayerSetupScreen({ navigation }: Props) {
       ...prev,
       {
         name,
-        color: getRandomColor(allPlayers.length),
+        color: getNextColor(allPlayers),
       },
     ]);
 
@@ -108,7 +109,7 @@ export default function PlayerSetupScreen({ navigation }: Props) {
       ...prev,
       {
         name,
-        color: getRandomColor(allPlayers.length),
+        color: getNextColor(allPlayers),
       },
     ]);
   }
@@ -396,78 +397,82 @@ export default function PlayerSetupScreen({ navigation }: Props) {
                   </Text>
 
                   {/* Input */}
-                  <Box
-                    flexDirection="row"
-                    alignItems="center"
-                    backgroundColor="surface"
-                    borderRadius="md"
-                    paddingHorizontal={device.scaleWidth(14)}
-                    paddingVertical={4}
-                    marginBottom={12}
-                    style={{
-                      borderWidth: 1,
-                      borderColor: 'rgba(255,255,255,0.1)',
-                    }}
-                  >
-                    <Box flex={1}>
-                      <TextInput
-                        value={newName}
-                        onChangeText={setNewName}
-                        placeholder={t('common.enterName')}
-                        placeholderTextColor="rgba(255,255,255,0.3)"
-                        style={{
-                          color: '#FFF',
-                          fontSize: device.scaleWidth(15),
-                          paddingVertical: 8,
-                        }}
-                        returnKeyType="done"
-                        onSubmitEditing={addPlayerToModal}
-                      />
-                    </Box>
-
-                    <Pressable onPress={addPlayerToModal}>
-                      <Box
-                        width={device.scaleWidth(34)}
-                        height={device.scaleHeight(34)}
-                        borderRadius="circle"
-                        backgroundColor="purple"
-                        justifyContent="center"
-                        alignItems="center"
-                      >
-                        <AddPlayerIcon
-                          width={device.scaleWidth(18)}
-                          height={device.scaleHeight(18)}
-                          color="white"
-                        />
-                      </Box>
-                    </Pressable>
-                  </Box>
-
-                  {/* Quick add */}
-                  <Pressable onPress={quickAddToModal}>
+                  {!isModalFull && (
                     <Box
-                      height={device.scaleHeight(42)}
-                      borderRadius="md"
-                      justifyContent="center"
+                      flexDirection="row"
                       alignItems="center"
-                      marginBottom={16}
+                      backgroundColor="surface"
+                      borderRadius="md"
+                      paddingHorizontal={device.scaleWidth(14)}
+                      paddingVertical={4}
+                      marginBottom={12}
                       style={{
-                        borderWidth: 1.5,
-                        borderColor: 'rgba(129,140,248,0.35)',
-                        borderStyle: 'dashed',
-                        borderRadius: 12,
+                        borderWidth: 1,
+                        borderColor: 'rgba(255,255,255,0.1)',
                       }}
                     >
-                      <Text
-                        variant="micro"
+                      <Box flex={1}>
+                        <TextInput
+                          value={newName}
+                          onChangeText={setNewName}
+                          placeholder={t('common.enterName')}
+                          placeholderTextColor="rgba(255,255,255,0.3)"
+                          style={{
+                            color: '#FFF',
+                            fontSize: device.scaleWidth(15),
+                            paddingVertical: 8,
+                          }}
+                          returnKeyType="done"
+                          onSubmitEditing={addPlayerToModal}
+                        />
+                      </Box>
+
+                      <Pressable onPress={addPlayerToModal}>
+                        <Box
+                          width={device.scaleWidth(34)}
+                          height={device.scaleHeight(34)}
+                          borderRadius="circle"
+                          backgroundColor="purple"
+                          justifyContent="center"
+                          alignItems="center"
+                        >
+                          <AddPlayerIcon
+                            width={device.scaleWidth(18)}
+                            height={device.scaleHeight(18)}
+                            color="white"
+                          />
+                        </Box>
+                      </Pressable>
+                    </Box>
+                  )}
+
+                  {/* Quick add */}
+                  {!isModalFull && (
+                    <Pressable onPress={quickAddToModal}>
+                      <Box
+                        height={device.scaleHeight(42)}
+                        borderRadius="md"
+                        justifyContent="center"
+                        alignItems="center"
+                        marginBottom={16}
                         style={{
-                          color: '#818CF8',
+                          borderWidth: 1.5,
+                          borderColor: 'rgba(129,140,248,0.35)',
+                          borderStyle: 'dashed',
+                          borderRadius: 12,
                         }}
                       >
-                        {t('common.quickAdd')}
-                      </Text>
-                    </Box>
-                  </Pressable>
+                        <Text
+                          variant="micro"
+                          style={{
+                            color: '#818CF8',
+                          }}
+                        >
+                          {t('common.quickAdd')}
+                        </Text>
+                      </Box>
+                    </Pressable>
+                  )}
 
                   {/* Preview */}
                   {modalPlayers.length > 0 && (
