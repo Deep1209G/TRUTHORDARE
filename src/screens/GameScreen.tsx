@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { Pressable } from 'react-native';
 
@@ -16,29 +16,37 @@ import Animated, {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Box, Text } from '@src';
+import { useTranslation } from 'react-i18next';
 import { useGame } from '../context/GameContext';
 import { playSound } from '../services/SoundService';
 import { lightTap } from '../services/HapticService';
+import { useDeviceHelper } from '../hooks/useDeviceHelper';
 
-import Header from '../components/Header';
+import GameHeader from '../components/GameHeader';
 import GameBoard from '../components/GameBoard';
-import TruthDareModal from '../components/TruthDareModal';
+import BottleIcon from '../assets/icon/bottle.svg';
 
-export default function HomeScreen({ navigation }: any) {
+export default function GameScreen({ navigation }: any) {
   const {
     players,
-    scores,
     spinning,
     setSpinning,
     rotation,
     spin,
     resolvePlayer,
     soundEnabled,
+    selectedPlayerIndex,
+    lastPlayerIndex,
   } = useGame();
-  const [showModal, setShowModal] = useState(false);
   const rotationRef = useRef(rotation);
+  const [revealed, setRevealed] = useState(false);
   const pulseAnim = useSharedValue(1);
   const glowAnim = useSharedValue(0);
+  const device = useDeviceHelper();
+  const { t } = useTranslation();
+  const playSize = device.scaleWidth(128);
+  const winner = players[selectedPlayerIndex];
+  const spinner = players[(lastPlayerIndex + 1) % players.length];
 
   useEffect(() => {
     rotationRef.current = rotation;
@@ -50,12 +58,22 @@ export default function HomeScreen({ navigation }: any) {
       const timer = setTimeout(() => {
         setSpinning(false);
         resolvePlayer(rotationRef.current);
-        setShowModal(true);
+        setRevealed(true);
         playSound('result', soundEnabled);
       }, 4200);
       return () => clearTimeout(timer);
     }
-  }, [spinning, setSpinning, resolvePlayer, soundEnabled]);
+  }, [spinning, setSpinning, resolvePlayer, soundEnabled, navigation]);
+
+  useEffect(() => {
+    if (revealed) {
+      const timer = setTimeout(() => {
+        setRevealed(false);
+        navigation.navigate('TruthOrDare');
+      }, 1800);
+      return () => clearTimeout(timer);
+    }
+  }, [revealed, navigation]);
 
   useEffect(() => {
     if (!spinning) {
@@ -102,17 +120,12 @@ export default function HomeScreen({ navigation }: any) {
 
   function handleSpin() {
     spin();
-    setShowModal(false);
-  }
-
-  function handleCloseModal() {
-    setShowModal(false);
   }
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#120826' }}>
       <Box flex={1} backgroundColor="background">
-        <Header navigation={navigation} />
+        <GameHeader navigation={navigation} />
 
         <Box flex={1} justifyContent="center" alignItems="center">
           <GameBoard rotation={rotation} />
@@ -125,15 +138,15 @@ export default function HomeScreen({ navigation }: any) {
                 playSound('tap', soundEnabled);
                 handleSpin();
               }}
-              disabled={spinning}
+              disabled={spinning || revealed}
             >
               <Animated.View
                 style={[
                   pulseStyle,
                   {
-                    width: 128,
-                    height: 128,
-                    borderRadius: 64,
+                    width: playSize,
+                    height: playSize,
+                    borderRadius: playSize / 2,
                     shadowColor: '#7C5CFF',
                     shadowOffset: { width: 0, height: 0 },
                     shadowRadius: 24,
@@ -143,8 +156,8 @@ export default function HomeScreen({ navigation }: any) {
                 ]}
               >
                 <Box
-                  width={128}
-                  height={128}
+                  width={playSize}
+                  height={playSize}
                   borderRadius="circle"
                   justifyContent="center"
                   alignItems="center"
@@ -153,8 +166,8 @@ export default function HomeScreen({ navigation }: any) {
                 >
                   <Box
                     position="absolute"
-                    width={128}
-                    height={128}
+                    width={playSize}
+                    height={playSize}
                     borderRadius="circle"
                     style={{
                       borderWidth: 2,
@@ -162,8 +175,7 @@ export default function HomeScreen({ navigation }: any) {
                     }}
                   />
                   <Text
-                    fontSize={24}
-                    fontWeight="800"
+                    variant="title"
                     color="white"
                     letterSpacing={3}
                     style={{
@@ -172,88 +184,74 @@ export default function HomeScreen({ navigation }: any) {
                       textShadowRadius: 12,
                     }}
                   >
-                    {spinning ? '...' : 'PLAY'}
+                    {spinning ? '...' : t('app.play')}
                   </Text>
                 </Box>
               </Animated.View>
             </Pressable>
 
-            <Animated.View style={[glowStyle, { marginTop: 14 }]}>
+            {spinning ? (
+              <Animated.View style={[glowStyle, { marginTop: 14 }]}>
+                <Text
+                  variant="caption"
+                  color="textSecondary"
+                  letterSpacing={2}
+                >
+                  {t('game.spinning')}
+                </Text>
+              </Animated.View>
+            ) : revealed && winner ? (
               <Text
-                fontSize={11}
-                fontWeight="700"
-                color="textSecondary"
+                variant="bodyBold"
+                color="white"
                 letterSpacing={2}
-              >
-                {spinning ? 'SPINNING...' : 'TAP TO SPIN'}
-              </Text>
-            </Animated.View>
-          </Box>
-        </Box>
-
-        {/* Scoreboard */}
-        <Box
-          flexDirection="row"
-          justifyContent="center"
-          flexWrap="wrap"
-          paddingHorizontal={16}
-          paddingVertical={14}
-          style={{
-            borderTopWidth: 1,
-            borderTopColor: 'rgba(255,255,255,0.06)',
-          }}
-        >
-          {players.map(player => (
-            <Box
-              key={`score-${player.name}`}
-              alignItems="center"
-              marginHorizontal={10}
-              marginBottom={4}
-            >
-              <Box
-                width={38}
-                height={38}
-                borderRadius="circle"
-                justifyContent="center"
-                alignItems="center"
+                marginTop={14}
                 style={{
-                  backgroundColor: player.color,
-                  shadowColor: player.color,
-                  shadowOffset: { width: 0, height: 0 },
-                  shadowOpacity: 0.4,
-                  shadowRadius: 8,
-                  elevation: 6,
+                  textShadowColor: winner.color,
+                  textShadowOffset: { width: 0, height: 0 },
+                  textShadowRadius: 8,
                 }}
               >
-                <Text fontSize={15} fontWeight="700" color="bgDeep">
-                  {player.name[0]}
-                </Text>
-              </Box>
-              <Text
-                fontSize={9}
-                fontWeight="600"
-                color="textSecondary"
-                marginTop={4}
-              >
-                {player.name}
+                {winner.name}! {t('tord.yourTurn')}
               </Text>
+            ) : (
               <Text
-                fontSize={18}
-                fontWeight="800"
-                marginTop={2}
-                style={{ color: player.color }}
+                variant="bodyBold"
+                color="white"
+                letterSpacing={2}
+                marginTop={14}
+                style={{
+                  textShadowColor: spinner.color,
+                  textShadowOffset: { width: 0, height: 0 },
+                  textShadowRadius: 8,
+                }}
               >
-                {scores[player.name] || 0}
+                {spinner.name}! {t('tord.yourTurn')}
               </Text>
-            </Box>
-          ))}
-        </Box>
+            )}
 
-        <TruthDareModal
-          visible={showModal}
-          onClose={handleCloseModal}
-          onSelectType={() => navigation.navigate('Question')}
-        />
+            <Pressable
+              onPress={() => { () => console.log('Bottle pressed')}}
+            >
+              <Box
+                width={44}
+                height={44}
+                borderRadius="circle"
+                marginTop={20}
+                justifyContent="center"
+                alignItems="center"
+                opacity={spinning ? 0.5 : 1}
+                style={{
+                  backgroundColor: 'rgba(124,92,255,0.15)',
+                  borderWidth: 1,
+                  borderColor: 'rgba(255,255,255,0.12)',
+                }}
+              >
+                <BottleIcon width={device.scaleWidth(30)} height={device.scaleHeight(25)} color="white"  />
+              </Box>
+            </Pressable>
+          </Box>
+        </Box>
       </Box>
     </SafeAreaView>
   );

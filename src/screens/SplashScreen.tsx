@@ -14,6 +14,8 @@ import Svg, {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Box, Text } from '@src';
+import { useTranslation } from 'react-i18next';
+import { useDeviceHelper } from '../hooks/useDeviceHelper';
 
 type Props = {
   navigation: any;
@@ -29,9 +31,11 @@ const COLORS = [
 ];
 
 export default function SplashScreen({ navigation }: Props) {
+  const { t } = useTranslation();
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(0.8)).current;
   const subtitleAnim = useRef(new Animated.Value(0)).current;
+  const device = useDeviceHelper();
 
   useEffect(() => {
     Animated.sequence([
@@ -57,7 +61,7 @@ export default function SplashScreen({ navigation }: Props) {
     ]).start();
 
     const timer = setTimeout(() => {
-      navigation.replace('HomeMenu');
+      navigation.replace('MainMenu');
     }, 2800);
 
     return () => clearTimeout(timer);
@@ -87,7 +91,11 @@ export default function SplashScreen({ navigation }: Props) {
             justifyContent: 'center',
           }}
         >
-          <Svg width={220} height={220} viewBox="0 0 280 280">
+          <Svg
+            width={device.scaleWidth(220)}
+            height={device.scaleWidth(220)}
+            viewBox="0 0 280 280"
+          >
             <Defs>
               <RadialGradient id="boardBg" cx="50%" cy="50%" r="50%">
                 <Stop offset="0%" stopColor="#1E293B" />
@@ -141,25 +149,28 @@ export default function SplashScreen({ navigation }: Props) {
           <Box position="absolute" alignItems="center" justifyContent="center">
             <Image
               source={require('../assets/images/vodka.png')}
-              style={{ width: 60, height: 160, resizeMode: 'contain' }}
+              style={{
+                width: device.scaleWidth(60),
+                height: device.scaleHeight(120),
+                resizeMode: 'contain',
+              }}
             />
           </Box>
         </Animated.View>
 
-        <Animated.View style={{ opacity: fadeAnim, marginTop: 40 }}>
+        <Animated.View style={{ opacity: fadeAnim, marginTop: device.scaleHeight(40) }}>
           <Text
-            variant="header"
-            fontSize={36}
+            variant="hero"
             textAlign="center"
             letterSpacing={3}
           >
-            TRUTH OR DARE
+            {t('app.title')}
           </Text>
         </Animated.View>
 
-        <Animated.View style={{ opacity: subtitleAnim, marginTop: 12 }}>
-          <Text variant="subtitle" fontSize={13} textAlign="center">
-            SPIN THE BOTTLE
+        <Animated.View style={{ opacity: subtitleAnim, marginTop: device.scaleHeight(12) }}>
+          <Text variant="note" color="textSecondary" letterSpacing={2} textAlign="center">
+            {t('app.tagline')}
           </Text>
         </Animated.View>
       </Box>

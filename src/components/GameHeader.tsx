@@ -4,8 +4,10 @@ import React, { useState } from 'react';
 import { Modal, Pressable } from 'react-native';
 
 import { Box, Text } from '@src';
+import { useTranslation } from 'react-i18next';
 import { useGame } from '../context/GameContext';
 import { lightTap } from '../services/HapticService';
+import { useDeviceHelper } from '../hooks/useDeviceHelper';
 import BackIcon from '../assets/icon/back.svg';
 import PeopleIcon from '../assets/icon/people.svg';
 import LeaderboardIcon from '../assets/icon/leaderboard.svg';
@@ -14,20 +16,20 @@ import PlayerListModal from './PlayerListModal';
 import LeaderboardModal from './LeaderboardModal';
 
 const CATEGORIES: {
-  label: string;
+  labelKey: string;
   value: 'mild' | 'medium' | 'wild';
-  description: string;
+  descKey: string;
 }[] = [
-  { label: 'Mild', value: 'mild', description: 'Playful & fun' },
-  { label: 'Medium', value: 'medium', description: 'A bit spicy' },
-  { label: 'Wild', value: 'wild', description: 'Full chaos' },
+  { labelKey: 'difficulty.mild', value: 'mild', descKey: 'difficulty.mildDesc' },
+  { labelKey: 'difficulty.medium', value: 'medium', descKey: 'difficulty.mediumDesc' },
+  { labelKey: 'difficulty.wild', value: 'wild', descKey: 'difficulty.wildDesc' },
 ];
 
 type Props = {
   navigation?: any;
 };
 
-export default function Header({ navigation }: Props) {
+export default function GameHeader({ navigation }: Props) {
   const {
     players,
     selectedPlayerIndex,
@@ -41,6 +43,10 @@ export default function Header({ navigation }: Props) {
   const [showLeave, setShowLeave] = useState(false);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [showCategory, setShowCategory] = useState(false);
+  const { t } = useTranslation();
+  const device = useDeviceHelper();
+  const iconButton = device.scaleWidth(46);
+  const iconButtonH = device.scaleHeight(46);
   const turn =
     players.length > 0 ? (selectedPlayerIndex % players.length) + 1 : 0;
   const total = players.length;
@@ -50,14 +56,14 @@ export default function Header({ navigation }: Props) {
     setShowLeave(false);
     resetGame();
     setPlayers([]);
-    navigation?.reset({ index: 0, routes: [{ name: 'HomeMenu' }] });
+    navigation?.reset({ index: 0, routes: [{ name: 'MainMenu' }] });
   }
 
   return (
     <Box
       width="100%"
-      paddingHorizontal={22}
-      paddingTop={20}
+      paddingHorizontal={device.scaleWidth(22)}
+      paddingTop={device.scaleHeight(20)}
       flexDirection="row"
       alignItems="center"
       justifyContent="space-between"
@@ -69,14 +75,14 @@ export default function Header({ navigation }: Props) {
         }}
       >
         <Box
-          width={46}
-          height={46}
+          width={iconButton}
+          height={iconButtonH}
           borderRadius="md"
           backgroundColor="surface"
           justifyContent="center"
           alignItems="center"
         >
-          <BackIcon width={18} height={18} color="white" />
+          <BackIcon width={device.scaleWidth(18)} height={device.scaleHeight(18)} color="white" />
         </Box>
       </Pressable>
 
@@ -86,22 +92,20 @@ export default function Header({ navigation }: Props) {
           alignItems="center"
           borderRadius="md"
           backgroundColor="surface"
-          height={46}
-          width={60}
+          height={iconButtonH}
+          width={device.scaleWidth(60)}
           justifyContent="center"
-          marginRight={8}
+          marginRight={device.scaleWidth(8)}
         >
           <Text
-            fontSize={11}
-            fontWeight="700"
+            variant="caption"
             color="textSecondary"
-            marginRight={6}
+            marginRight={device.scaleWidth(6)}
           >
-            ROUND
+            {t('header.round')}
           </Text>
           <Text
-            fontSize={11}
-            fontWeight="700"
+            variant="caption"
             color="white"
             style={{
               textShadowColor: 'rgba(124,92,255,0.5)',
@@ -120,20 +124,21 @@ export default function Header({ navigation }: Props) {
           }}
         >
           <Box
-            width={55}
-            height={46}
+            width={device.scaleWidth(55)}
+            height={iconButtonH}
             borderRadius="md"
             backgroundColor="surface"
             justifyContent="center"
             alignItems="center"
             flexDirection="row"
           >
-            <PeopleIcon width={18} height={18} color="white" />
+            <PeopleIcon width={device.scaleWidth(18)} height={device.scaleHeight(18)} color="white" />
             {total > 0 && (
               <Text
-                paddingLeft={4}
-                variant="subtitle"
+                paddingLeft={device.scaleWidth(4)}
+                variant="caption"
                 color="white"
+                letterSpacing={2}
                 marginTop={2}
                 style={{ fontVariant: ['tabular-nums'] }}
               >
@@ -152,15 +157,15 @@ export default function Header({ navigation }: Props) {
           }}
         >
           <Box
-            width={46}
-            height={46}
+            width={iconButton}
+            height={iconButtonH}
             borderRadius="md"
             backgroundColor="surface"
             justifyContent="center"
             alignItems="center"
-            marginRight={8}
+            marginRight={device.scaleWidth(8)}
           >
-            <LeaderboardIcon width={22} height={22} color="white" />
+            <LeaderboardIcon width={device.scaleWidth(22)} height={device.scaleHeight(22)} color="white" />
           </Box>
         </Pressable>
         <Pressable
@@ -170,14 +175,14 @@ export default function Header({ navigation }: Props) {
           }}
         >
           <Box
-            width={46}
-            height={46}
+            width={iconButton}
+            height={iconButtonH}
             borderRadius="md"
             backgroundColor="surface"
             justifyContent="center"
             alignItems="center"
           >
-            <SettingIcon width={24} height={24} color="white" />
+            <SettingIcon width={device.scaleWidth(24)} height={device.scaleHeight(24)} color="white" />
           </Box>
         </Pressable>
       </Box>
@@ -203,7 +208,7 @@ export default function Header({ navigation }: Props) {
           <Box
             backgroundColor="bgDeep"
             borderRadius="xl"
-            padding={24}
+            padding={device.scaleWidth(24)}
             width="85%"
             style={{
               borderWidth: 1,
@@ -211,21 +216,20 @@ export default function Header({ navigation }: Props) {
             }}
           >
             <Text
-              fontSize={18}
-              fontWeight="800"
+              variant="heading"
               color="white"
               textAlign="center"
               marginBottom={4}
             >
-              Category
+              {t('header.category')}
             </Text>
             <Text
-              fontSize={13}
+              variant="note"
               color="textSecondary"
               textAlign="center"
-              marginBottom={20}
+              marginBottom={device.scaleHeight(20)}
             >
-              Pick the difficulty for questions
+              {t('header.categoryDesc')}
             </Text>
 
             {CATEGORIES.map(item => {
@@ -243,8 +247,8 @@ export default function Header({ navigation }: Props) {
                     flexDirection="row"
                     justifyContent="space-between"
                     alignItems="center"
-                    paddingHorizontal={18}
-                    height={54}
+                    paddingHorizontal={device.scaleWidth(18)}
+                    height={device.scaleHeight(54)}
                     borderRadius="lg"
                     marginBottom={10}
                     backgroundColor={active ? 'bgDeep' : 'transparent'}
@@ -256,16 +260,16 @@ export default function Header({ navigation }: Props) {
                     }}
                   >
                     <Box>
-                      <Text fontSize={15} fontWeight="700" color="white">
-                        {item.label}
+                      <Text variant="bodyBold" color="white">
+                        {t(item.labelKey)}
                       </Text>
-                      <Text fontSize={12} color="textSecondary">
-                        {item.description}
+                      <Text variant="label" color="textSecondary">
+                        {t(item.descKey)}
                       </Text>
                     </Box>
                     <Box
-                      width={22}
-                      height={22}
+                      width={device.scaleWidth(22)}
+                      height={device.scaleHeight(22)}
                       borderRadius="sm"
                       borderWidth={1.5}
                       justifyContent="center"
@@ -278,7 +282,7 @@ export default function Header({ navigation }: Props) {
                       }}
                     >
                       {active && (
-                        <Text fontSize={13} fontWeight="800" color="white">
+                        <Text variant="note" color="white">
                           ✓
                         </Text>
                       )}
@@ -295,7 +299,7 @@ export default function Header({ navigation }: Props) {
               }}
             >
               <Box
-                height={50}
+                height={device.scaleHeight(50)}
                 borderRadius="lg"
                 justifyContent="center"
                 alignItems="center"
@@ -305,8 +309,8 @@ export default function Header({ navigation }: Props) {
                   borderColor: 'rgba(255,255,255,0.15)',
                 }}
               >
-                <Text fontSize={15} fontWeight="700" color="white">
-                  CLOSE
+                <Text variant="bodyBold" color="white">
+                  {t('common.close')}
                 </Text>
               </Box>
             </Pressable>
@@ -325,7 +329,7 @@ export default function Header({ navigation }: Props) {
           <Box
             backgroundColor="bgDeep"
             borderRadius="xl"
-            padding={24}
+            padding={device.scaleWidth(24)}
             width="80%"
             style={{
               borderWidth: 1,
@@ -333,26 +337,25 @@ export default function Header({ navigation }: Props) {
             }}
           >
             <Text
-              fontSize={18}
-              fontWeight="800"
+              variant="heading"
               color="white"
               textAlign="center"
               marginBottom={6}
             >
-              Leave the game?
+              {t('header.leaveTitle')}
             </Text>
             <Text
-              fontSize={13}
+              variant="note"
               color="textSecondary"
               textAlign="center"
-              marginBottom={20}
+              marginBottom={device.scaleHeight(20)}
             >
-              Your progress will be lost.
+              {t('header.leaveBody')}
             </Text>
 
             <Pressable onPress={handleLeave}>
               <Box
-                height={50}
+                height={device.scaleHeight(50)}
                 borderRadius="lg"
                 justifyContent="center"
                 alignItems="center"
@@ -367,12 +370,11 @@ export default function Header({ navigation }: Props) {
                 }}
               >
                 <Text
-                  fontSize={15}
-                  fontWeight="700"
+                  variant="bodyBold"
                   color="white"
                   letterSpacing={1}
                 >
-                  LEAVE GAME
+                  {t('header.leaveBtn')}
                 </Text>
               </Box>
             </Pressable>
@@ -384,7 +386,7 @@ export default function Header({ navigation }: Props) {
               }}
             >
               <Box
-                height={50}
+                height={device.scaleHeight(50)}
                 borderRadius="lg"
                 justifyContent="center"
                 alignItems="center"
@@ -393,8 +395,8 @@ export default function Header({ navigation }: Props) {
                   borderColor: 'rgba(255,255,255,0.15)',
                 }}
               >
-                <Text fontSize={15} fontWeight="700" color="white">
-                  CANCEL
+                <Text variant="bodyBold" color="white">
+                  {t('common.cancel')}
                 </Text>
               </Box>
             </Pressable>

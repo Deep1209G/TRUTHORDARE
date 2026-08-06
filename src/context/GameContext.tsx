@@ -1,4 +1,11 @@
-import React, { createContext, useContext, useState, useCallback, useRef, ReactNode } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useRef,
+  ReactNode,
+} from 'react';
 
 import { truths } from '../data/truths';
 import { dares } from '../data/dares';
@@ -14,9 +21,16 @@ export type Player = {
 type GameType = 'truth' | 'dare' | null;
 
 const COLORS = [
-  '#FBBF24', '#34D399', '#F472B6', '#FB923C',
-  '#A78BFA', '#67E8F9', '#F87171', '#4ADE80',
-  '#E879F9', '#FACC15',
+  '#FBBF24',
+  '#34D399',
+  '#F472B6',
+  '#FB923C',
+  '#A78BFA',
+  '#67E8F9',
+  '#F87171',
+  '#4ADE80',
+  '#E879F9',
+  '#FACC15',
 ];
 
 const AI_BATCH_SIZE = 10;
@@ -41,6 +55,7 @@ type GameState = {
   questionTypes: QuestionType[];
   turnTimer: number;
   round: number;
+  lastPlayerIndex: number;
 };
 
 type GameContextType = GameState & {
@@ -82,8 +97,11 @@ const buildPool = (
   types: QuestionType[],
 ): Question[] => {
   const matchesAge = (q: Question) => q.ageGroup === age;
-  const matchesTypes = (q: Question) => types.length === 0 || types.includes(q.type);
-  let pool = source.filter(q => matchesAge(q) && matchesTypes(q) && q.category === cat);
+  const matchesTypes = (q: Question) =>
+    types.length === 0 || types.includes(q.type);
+  let pool = source.filter(
+    q => matchesAge(q) && matchesTypes(q) && q.category === cat,
+  );
   if (pool.length === 0) {
     pool = source.filter(q => matchesAge(q) && matchesTypes(q));
   }
@@ -119,7 +137,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const [dareDeck, setDareDeck] = useState<Question[]>([]);
   const [deckIndex, setDeckIndex] = useState({ truth: 0, dare: 0 });
   const [deckSignature, setDeckSignature] = useState('');
-  const [aiDecks, setAiDecks] = useState<{ truth: Question[]; dare: Question[] }>({
+  const [aiDecks, setAiDecks] = useState<{
+    truth: Question[];
+    dare: Question[];
+  }>({
     truth: [],
     dare: [],
   });
@@ -127,21 +148,33 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const [aiSignature, setAiSignature] = useState('');
   const [aiGenerating, setAiGenerating] = useState(false);
   const aiCallsRef = useRef(0);
+  const [lastPlayerIndex, setLastPlayerIndex] = useState(-1);
   const [round, setRound] = useState(1);
 
   const spin = useCallback(() => {
     if (spinning) return;
+
     setSpinning(true);
     setSelectedType(null);
     setCurrentQuestion('');
-    setRotation(prev => prev + 5 * 360 + Math.floor(Math.random() * 360));
-  }, [spinning]);
+
+    const segmentSize = 360 / players.length;
+
+    // Each player gets a turn in order (round-robin)
+    const randomIndex = (lastPlayerIndex + 1) % players.length;
+
+    // Aim for the middle of that player's segment
+    const targetAngle = randomIndex * segmentSize + segmentSize / 2;
+
+    setRotation(prev => prev - (prev % 360) + 5 * 360 + targetAngle);
+  }, [spinning, players, lastPlayerIndex]);
 
   const resolvePlayer = useCallback(
     (finalRotation: number) => {
       const normalizedAngle = finalRotation % 360;
       const segmentSize = 360 / players.length;
       const index = Math.floor(normalizedAngle / segmentSize) % players.length;
+      setLastPlayerIndex(index);
       setSelectedPlayerIndex(index);
     },
     [players.length],
@@ -158,8 +191,18 @@ export function GameProvider({ children }: { children: ReactNode }) {
       let index: number;
 
       if (signature !== deckSignature) {
-        const newTruthDeck = buildPool(truths, ageGroup, difficulty, questionTypes);
-        const newDareDeck = buildPool(dares, ageGroup, difficulty, questionTypes);
+        const newTruthDeck = buildPool(
+          truths,
+          ageGroup,
+          difficulty,
+          questionTypes,
+        );
+        const newDareDeck = buildPool(
+          dares,
+          ageGroup,
+          difficulty,
+          questionTypes,
+        );
         setTruthDeck(newTruthDeck);
         setDareDeck(newDareDeck);
         setDeckSignature(signature);
@@ -283,7 +326,19 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
       serveStatic(type);
     },
-    [gameMode, ageGroup, difficulty, questionTypes, aiSignature, aiDecks, aiUsed, aiGenerating, generateAiDeck, prepareAiDecks, serveStatic],
+    [
+      gameMode,
+      ageGroup,
+      difficulty,
+      questionTypes,
+      aiSignature,
+      aiDecks,
+      aiUsed,
+      aiGenerating,
+      generateAiDeck,
+      prepareAiDecks,
+      serveStatic,
+    ],
   );
 
   const nextTurn = useCallback(() => {
@@ -291,16 +346,19 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setCurrentQuestion('');
   }, []);
 
-  const completeDare = useCallback((nailed: boolean) => {
-    const playerName = players[selectedPlayerIndex]?.name;
-    if (playerName) {
-      setScores(prev => ({
-        ...prev,
-        [playerName]: (prev[playerName] || 0) + (nailed ? 1 : 0),
-      }));
-    }
-    nextTurn();
-  }, [players, selectedPlayerIndex, nextTurn]);
+  const completeDare = useCallback(
+    (nailed: boolean) => {
+      const playerName = players[selectedPlayerIndex]?.name;
+      if (playerName) {
+        setScores(prev => ({
+          ...prev,
+          [playerName]: (prev[playerName] || 0) + (nailed ? 1 : 0),
+        }));
+      }
+      nextTurn();
+    },
+    [players, selectedPlayerIndex, nextTurn],
+  );
 
   const addPlayer = useCallback((name: string) => {
     const trimmed = name.trim();
@@ -308,7 +366,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
     let success = false;
     setPlayers(prev => {
       if (prev.length >= 10) return prev;
-      if (prev.some(p => p.name.toLowerCase() === trimmed.toLowerCase())) return prev;
+      if (prev.some(p => p.name.toLowerCase() === trimmed.toLowerCase()))
+        return prev;
       success = true;
       return [...prev, { name: trimmed, color: getRandomColor(prev.length) }];
     });
@@ -340,11 +399,18 @@ export function GameProvider({ children }: { children: ReactNode }) {
       const trimmed = newName.trim();
       const target = players[index];
       if (!target || !trimmed) return false;
-      if (players.some((p, i) => i !== index && p.name.toLowerCase() === trimmed.toLowerCase())) {
+      if (
+        players.some(
+          (p, i) =>
+            i !== index && p.name.toLowerCase() === trimmed.toLowerCase(),
+        )
+      ) {
         return false;
       }
       const oldName = target.name;
-      setPlayers(prev => prev.map((p, i) => (i === index ? { ...p, name: trimmed } : p)));
+      setPlayers(prev =>
+        prev.map((p, i) => (i === index ? { ...p, name: trimmed } : p)),
+      );
       setScores(prev => {
         const next = { ...prev };
         next[trimmed] = next[oldName] || 0;
@@ -358,6 +424,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
   const resetGame = useCallback(() => {
     setSelectedPlayerIndex(0);
+    setLastPlayerIndex(-1);
     setSelectedType(null);
     setCurrentQuestion('');
     setScores({});
@@ -382,6 +449,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
   const endGame = useCallback(() => {
     setSelectedPlayerIndex(0);
+    setLastPlayerIndex(-1);
     setSelectedType(null);
     setCurrentQuestion('');
     setSpinning(false);
@@ -406,6 +474,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         questionTypes,
         turnTimer,
         round,
+        lastPlayerIndex,
         setPlayers,
         spin,
         resolvePlayer,
@@ -426,7 +495,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
         addPlayer,
         removePlayer,
         renamePlayer,
-      }}>
+      }}
+    >
       {children}
     </GameContext.Provider>
   );

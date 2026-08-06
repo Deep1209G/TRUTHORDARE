@@ -6,11 +6,13 @@ import { Pressable, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Box, Text } from '@src';
+import { useTranslation } from 'react-i18next';
 import { useGame } from '../context/GameContext';
 import { playSound } from '../services/SoundService';
 import { lightTap } from '../services/HapticService';
-import Header from '../components/Header';
-import ResultCard from '../components/ResultCard';
+import { useDeviceHelper } from '../hooks/useDeviceHelper';
+import GameHeader from '../components/GameHeader';
+import QuestionCard from '../components/QuestionCard';
 
 type Props = {
   navigation: any;
@@ -27,6 +29,8 @@ export default function QuestionScreen({ navigation }: Props) {
     turnTimer,
     soundEnabled,
   } = useGame();
+  const { t } = useTranslation();
+  const device = useDeviceHelper();
 
   const player = players[selectedPlayerIndex];
   const isTruth = selectedType === 'truth';
@@ -82,35 +86,33 @@ export default function QuestionScreen({ navigation }: Props) {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#120826' }}>
       <Box flex={1} backgroundColor="background">
-        <Header navigation={navigation} />
+        <GameHeader navigation={navigation} />
 
         {/* Body */}
-        <Box flex={1} paddingHorizontal={24} paddingTop={32}>
+        <Box flex={1} paddingHorizontal={device.scaleWidth(24)} paddingTop={device.scaleHeight(32)}>
           {/* Player + timer */}
           <Box flexDirection="row" alignItems="center" marginBottom={16}>
             <Box
               flex={1}
-              height={60}
+              height={device.scaleHeight(60)}
               borderRadius="lg"
               backgroundColor="surface"
               justifyContent="center"
-              paddingHorizontal={16}
+              paddingHorizontal={device.scaleWidth(16)}
               marginRight={6}
               style={{ borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)' }}
             >
               <Text
-                fontSize={9}
-                fontWeight="700"
+                variant="micro"
                 color="textSecondary"
                 alignSelf='center'
                 letterSpacing={2}
                 marginBottom={2}
               >
-                NOW PLAYING
+                {t('question.nowPlaying')}
               </Text>
               <Text
-                fontSize={16}
-                fontWeight="800"
+                variant="bodyBold"
                 alignSelf='center'
                 color="white"
                 numberOfLines={1}
@@ -126,12 +128,12 @@ export default function QuestionScreen({ navigation }: Props) {
             {hasTimer && questionReady && !timerStarted ? (
               <Pressable onPress={handleStartTimer} style={{ flex: 1 }}>
                 <Box
-                  height={60}
+                  height={device.scaleHeight(60)}
                   borderRadius="lg"
                   backgroundColor="surface"
                   justifyContent="center"
                   alignItems="center"
-                  paddingHorizontal={16}
+                  paddingHorizontal={device.scaleWidth(16)}
                   marginLeft={6}
                   style={{
                     borderWidth: 1,
@@ -139,37 +141,34 @@ export default function QuestionScreen({ navigation }: Props) {
                   }}
                 >
                   <Text
-                    fontSize={13}
-                    fontWeight="800"
+                    variant="note"
                     letterSpacing={1}
                   >
-                    START TIMER
+                    {t('question.startTimer')}
                   </Text>
                 </Box>
               </Pressable>
             ) : hasTimer && questionReady ? (
               <Box
                 flex={1}
-                height={60}
+                height={device.scaleHeight(60)}
                 borderRadius="lg"
                 backgroundColor="surface"
                 justifyContent="center"
                 alignItems="center"
-                paddingHorizontal={16}
+                paddingHorizontal={device.scaleWidth(16)}
                 marginLeft={6}
               >
                 <Text
-                  fontSize={9}
-                  fontWeight="700"
+                  variant="micro"
                   color="textSecondary"
                   letterSpacing={2}
                   marginBottom={2}
                 >
-                  TIME LEFT
+                  {t('question.timeLeft')}
                 </Text>
                 <Text
-                  fontSize={22}
-                  fontWeight="800"
+                  variant="title"
                   style={{
                     color: timerColor,
                     fontVariant: ['tabular-nums'],
@@ -181,51 +180,54 @@ export default function QuestionScreen({ navigation }: Props) {
             ) : (
               <Box
                 flex={1}
-                height={60}
+                height={device.scaleHeight(60)}
                 borderRadius="lg"
                 justifyContent="center"
                 alignItems="center"
-                paddingHorizontal={16}
+                paddingHorizontal={device.scaleWidth(16)}
                 marginLeft={6}
                 style={{
                   backgroundColor: accentColor,
                 }}
               >
                 <Text
-                  fontSize={13}
-                  fontWeight="800"
+                  variant="note"
                   color="white"
                   letterSpacing={2}
                 >
-                  {selectedType === 'truth' ? 'TRUTH' : 'DARE'}
+                  {selectedType === 'truth'
+                    ? t('common.truth')
+                    : t('common.dare')}
                 </Text>
               </Box>
             )}
           </Box>
 
           {/* Truth badge + question */}
-          <Box flex={1} alignItems="center" marginTop={80}>
+          <Box flex={1} alignItems="center" marginTop={device.scaleHeight(80)}>
             {!currentQuestion ? (
               <Box alignItems="center" justifyContent="center" flex={1}>
                 <ActivityIndicator size="large" color={accentColor} />
                 <Text
-                  fontSize={14}
-                  fontWeight="700"
+                  variant="bodyBold"
                   color="textSecondary"
-                  marginTop={20}
+                  marginTop={device.scaleHeight(20)}
                   letterSpacing={1}
                 >
-                  GENERATING YOUR{' '}
-                  {selectedType === 'truth' ? 'TRUTH' : 'DARE'}...
+                  {t('question.generating', {
+                    type: selectedType === 'truth'
+                      ? t('common.truth')
+                      : t('common.dare'),
+                  })}
                 </Text>
               </Box>
             ) : (
               <>
                 <Box
                   borderRadius="md"
-                  paddingHorizontal={20}
+                  paddingHorizontal={device.scaleWidth(20)}
                   paddingVertical={8}
-                  marginBottom={20}
+                  marginBottom={device.scaleHeight(20)}
                   style={{
                     backgroundColor: accentColor,
                     shadowColor: glowColor,
@@ -236,17 +238,18 @@ export default function QuestionScreen({ navigation }: Props) {
                   }}
                 >
                   <Text
-                    fontSize={16}
-                    fontWeight="800"
+                    variant="bodyBold"
                     color="white"
                     letterSpacing={3}
                   >
-                    {selectedType === 'truth' ? 'TRUTH' : 'DARE'}
+                    {selectedType === 'truth'
+                      ? t('common.truth')
+                      : t('common.dare')}
                   </Text>
                 </Box>
 
                 <Box width="100%">
-                  <ResultCard
+                  <QuestionCard
                     type={selectedType}
                     playerName={player.name}
                     question={currentQuestion}
@@ -259,7 +262,7 @@ export default function QuestionScreen({ navigation }: Props) {
           {/* Actions */}
           <Box
             flexDirection="row"
-            paddingBottom={32}
+            paddingBottom={device.scaleHeight(32)}
             pointerEvents={!currentQuestion ? 'none' : 'auto'}
             opacity={!currentQuestion ? 0.4 : 1}
           >
@@ -268,7 +271,7 @@ export default function QuestionScreen({ navigation }: Props) {
               style={{ flex: 1, marginRight: 8 }}
             >
               <Box
-                height={58}
+                height={device.scaleHeight(58)}
                 borderRadius="lg"
                 justifyContent="center"
                 alignItems="center"
@@ -279,12 +282,11 @@ export default function QuestionScreen({ navigation }: Props) {
                 }}
               >
                 <Text
-                  fontSize={15}
-                  fontWeight="700"
+                  variant="bodyBold"
                   letterSpacing={1}
                   style={{ color: '#EF4444' }}
                 >
-                  FORFEIT
+                  {t('question.forfeit')}
                 </Text>
               </Box>
             </Pressable>
@@ -293,7 +295,7 @@ export default function QuestionScreen({ navigation }: Props) {
               style={{ flex: 1, marginLeft: 8 }}
             >
               <Box
-                height={58}
+                height={device.scaleHeight(58)}
                 borderRadius="lg"
                 justifyContent="center"
                 alignItems="center"
@@ -302,12 +304,11 @@ export default function QuestionScreen({ navigation }: Props) {
                 }}
               >
                 <Text
-                  fontSize={15}
-                  fontWeight="700"
+                  variant="bodyBold"
                   color="white"
                   letterSpacing={1}
                 >
-                  NAILED IT
+                  {t('question.nailedIt')}
                 </Text>
               </Box>
             </Pressable>

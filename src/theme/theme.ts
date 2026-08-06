@@ -1,4 +1,46 @@
 import { createTheme } from '@shopify/restyle';
+import { Dimensions } from 'react-native';
+
+const { width: screenWidth } = Dimensions.get('window');
+
+const fontScale = (size: number) => (size * screenWidth) / 390;
+
+const baseSpacing = {
+  0: 0,
+  2: 2,
+  3: 3,
+  4: 4,
+  6: 6,
+  8: 8,
+  10: 10,
+  12: 12,
+  14: 14,
+  16: 16,
+  18: 18,
+  20: 20,
+  22: 22,
+  24: 24,
+  32: 32,
+  40: 40,
+  48: 48,
+  54: 54,
+  60: 60,
+  64: 64,
+  80: 80,
+};
+
+const spacing = new Proxy(baseSpacing, {
+  get(target, prop) {
+    if (
+      typeof prop === 'string' &&
+      !(prop in target) &&
+      /^\d+(\.\d+)?$/.test(prop)
+    ) {
+      return Number(prop);
+    }
+    return target[prop as unknown as keyof typeof baseSpacing];
+  },
+});
 
 const theme = createTheme({
   colors: {
@@ -22,29 +64,7 @@ const theme = createTheme({
     transparent: 'transparent',
   },
 
-  spacing: {
-    0: 0,
-    2: 2,
-    3: 3,
-    4: 4,
-    6: 6,
-    8: 8,
-    10: 10,
-    12: 12,
-    14: 14,
-    16: 16,
-    18: 18,
-    20: 20,
-    22: 22,
-    24: 24,
-    32: 32,
-    40: 40,
-    48: 48,
-    54: 54,
-    60: 60,
-    64: 64,
-    80: 80,
-  },
+  spacing,
 
   borderRadii: {
     sm: 8,
@@ -57,37 +77,47 @@ const theme = createTheme({
 
   textVariants: {
     defaults: {
-      fontSize: 14,
+      fontSize: fontScale(14),
       color: 'white',
+    },
+    micro: {
+      fontSize: fontScale(9),
+      fontWeight: '700',
+    },
+    caption: {
+      fontSize: fontScale(11),
+      fontWeight: '700',
+    },
+    label: {
+      fontSize: fontScale(12),
+      fontWeight: '600',
+    },
+    note: {
+      fontSize: fontScale(13),
+      fontWeight: '600',
+    },
+    bodyBold: {
+      fontSize: fontScale(15),
+      fontWeight: '700',
+    },
+    heading: {
+      fontSize: fontScale(18),
+      fontWeight: '700',
     },
     title: {
       fontFamily: 'Fredoka',
-      fontSize: 22,
+      fontSize: fontScale(22),
       fontWeight: '700',
-      color: 'yellow',
     },
-    header: {
+    screenTitle: {
       fontFamily: 'Fredoka',
-      fontSize: 28,
+      fontSize: fontScale(28),
       fontWeight: '700',
-      color: 'white',
     },
-    subtitle: {
-      fontSize: 11,
-      fontWeight: '700',
-      color: 'textSecondary',
-      letterSpacing: 2,
-    },
-    button: {
+    hero: {
       fontFamily: 'Fredoka',
-      fontSize: 20,
-      fontWeight: '700',
-      color: 'bgDeep',
-    },
-    small: {
-      fontSize: 10,
+      fontSize: fontScale(36),
       fontWeight: '800',
-      color: 'white',
     },
   },
 
@@ -121,6 +151,10 @@ const theme = createTheme({
   },
 });
 
-export type Theme = typeof theme;
+export type Theme = typeof theme & {
+  spacing: {
+    [key: number]: number;
+  };
+};
 
 export default theme;

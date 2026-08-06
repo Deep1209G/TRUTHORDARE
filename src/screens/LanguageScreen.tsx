@@ -3,9 +3,12 @@ import React, { useState } from 'react';
 import { Pressable } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 
 import { Box, Text } from '@src';
 import { lightTap } from '../services/HapticService';
+import { useDeviceHelper } from '../hooks/useDeviceHelper';
+import { SUPPORTED_LANGUAGES, setLanguage, type AppLanguage } from '../i18n';
 import TickIcon from '../assets/icon/tick.svg';
 import BackIcon from '../assets/icon/back.svg';
 
@@ -13,34 +16,26 @@ type Props = {
   navigation: any;
 };
 
-const LANGUAGES = [
-  { code: 'en', label: 'English', native: 'English' },
-  { code: 'es', label: 'Spanish', native: 'Espa\u00F1ol' },
-  { code: 'fr', label: 'French', native: 'Fran\u00E7ais' },
-  { code: 'de', label: 'German', native: 'Deutsch' },
-  { code: 'it', label: 'Italian', native: 'Italiano' },
-  { code: 'pt', label: 'Portuguese', native: 'Portugu\u00EAs' },
-  {
-    code: 'hi',
-    label: 'Hindi',
-    native: '\u0939\u093F\u0928\u094D\u0926\u0940',
-  },
-  { code: 'ja', label: 'Japanese', native: '\u65E5\u672C\u8A9E' },
-];
-
 export default function LanguageScreen({ navigation }: Props) {
-  const [selected, setSelected] = useState('en');
+  const { t, i18n } = useTranslation();
+  const [selected, setSelected] = useState<AppLanguage>(
+    (SUPPORTED_LANGUAGES.some(l => l.code === i18n.language)
+      ? i18n.language
+      : 'en') as AppLanguage,
+  );
+  const device = useDeviceHelper();
 
-  function handleSelect(code: string) {
+  function handleSelect(code: AppLanguage) {
     lightTap();
     setSelected(code);
+    setLanguage(code);
   }
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#120826' }}>
       <Box flex={1} backgroundColor="background">
-        <Box paddingHorizontal={24} paddingTop={16} paddingBottom={40}>
-          <Box flexDirection="row" alignItems="center" marginBottom={32}>
+        <Box paddingHorizontal={device.scaleWidth(24)} paddingTop={device.scaleHeight(16)} paddingBottom={device.scaleHeight(40)}>
+          <Box flexDirection="row" alignItems="center" marginBottom={device.scaleHeight(32)}>
             <Pressable
               onPress={() => {
                 lightTap();
@@ -48,23 +43,23 @@ export default function LanguageScreen({ navigation }: Props) {
               }}
             >
               <Box
-                width={40}
-                height={40}
+                width={device.scaleWidth(40)}
+                height={device.scaleHeight(40)}
                 borderRadius="md"
                 backgroundColor="surface"
                 justifyContent="center"
                 alignItems="center"
-                marginRight={16}
+                marginRight={device.scaleWidth(16)}
               >
-                <BackIcon width={18} height={18} color="white" />
+                <BackIcon width={device.scaleWidth(18)} height={device.scaleHeight(18)} color="white" />
               </Box>
             </Pressable>
-            <Text variant="header" fontSize={28}>
-              Language
+            <Text variant="screenTitle">
+              {t('language.title')}
             </Text>
           </Box>
 
-          {LANGUAGES.map(lang => {
+          {SUPPORTED_LANGUAGES.map(lang => {
             const active = selected === lang.code;
             return (
               <Pressable
@@ -76,8 +71,8 @@ export default function LanguageScreen({ navigation }: Props) {
                   alignItems="center"
                   backgroundColor="surface"
                   borderRadius="md"
-                  paddingHorizontal={16}
-                  paddingVertical={14}
+                  paddingHorizontal={device.scaleWidth(16)}
+                  paddingVertical={device.scaleHeight(14)}
                   marginBottom={8}
                   style={{
                     borderWidth: 1,
@@ -86,26 +81,22 @@ export default function LanguageScreen({ navigation }: Props) {
                 >
                   <Box flex={1}>
                     <Text
-                      fontSize={15}
-                      fontWeight="600"
+                      variant="bodyBold"
                       color={active ? 'white' : 'textSecondary'}
                     >
-                      {lang.label}
-                    </Text>
-                    <Text fontSize={13} color="textSecondary" marginTop={2}>
-                      {lang.native}
+                      {t(lang.labelKey)}
                     </Text>
                   </Box>
                   {active && (
                     <Box
-                      width={22}
-                      height={22}
+                      width={device.scaleWidth(22)}
+                      height={device.scaleHeight(22)}
                       borderRadius="circle"
                       backgroundColor="purple"
                       justifyContent="center"
                       alignItems="center"
                     >
-                      <TickIcon width={12} height={12} color="white" />
+                      <TickIcon width={device.scaleWidth(12)} height={device.scaleHeight(12)} color="white" />
                     </Box>
                   )}
                 </Box>
@@ -114,15 +105,14 @@ export default function LanguageScreen({ navigation }: Props) {
           })}
 
           <Box
-            marginTop={24}
+            marginTop={device.scaleHeight(24)}
             backgroundColor="surface"
             borderRadius="md"
-            padding={16}
+            padding={device.scaleWidth(16)}
             style={{ borderWidth: 1, borderColor: 'rgba(255,255,255,0.06)' }}
           >
-            <Text fontSize={13} color="textSecondary" lineHeight={20}>
-              Language selection changes the app text. Currently only English is
-              fully supported — other languages coming soon.
+            <Text variant="note" color="textSecondary" lineHeight={device.scaleHeight(20)}>
+              {t('language.info')}
             </Text>
           </Box>
         </Box>

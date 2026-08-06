@@ -2,6 +2,8 @@
 import React, { useEffect, useRef } from 'react';
 import { Animated } from 'react-native';
 import { Box, Text } from '@src';
+import { useTranslation } from 'react-i18next';
+import { useDeviceHelper } from '../hooks/useDeviceHelper';
 
 type Props = {
   type: 'truth' | 'dare';
@@ -9,9 +11,11 @@ type Props = {
   question: string;
 };  
 
-export default function ResultCard({ type, playerName, question }: Props) {
+export default function QuestionCard({ type, playerName, question }: Props) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(20)).current;
+  const { t } = useTranslation();
+  const device = useDeviceHelper();
 
   useEffect(() => {
     Animated.parallel([
@@ -44,8 +48,8 @@ export default function ResultCard({ type, playerName, question }: Props) {
         width="100%"
         backgroundColor="surface"
         borderRadius="md"
-        padding={20}
-        marginBottom={24}
+        padding={device.scaleWidth(20)}
+        marginBottom={device.scaleHeight(24)}
         style={{
           borderWidth: 1,
           borderColor: accentColor,
@@ -58,27 +62,29 @@ export default function ResultCard({ type, playerName, question }: Props) {
       >
         <Box flexDirection="row" alignItems="center" marginBottom={12}>
           <Box
-            width={8}
-            height={8}
+            width={device.scaleWidth(8)}
+            height={device.scaleHeight(8)}
             borderRadius="circle"
-            marginRight={8}
+            marginRight={device.scaleWidth(8)}
             style={{ backgroundColor: accentColor }}
           />
           <Text
-            fontSize={11}
-            fontWeight="700"
+            variant="caption"
+            color="textSecondary"
             letterSpacing={2}
             style={{ color: accentColor }}
           >
-            {isTruth ? 'TRUTH' : 'DARE'} — {playerName}
+            {t('questionCard.badge', {
+              type: isTruth ? t('common.truth') : t('common.dare'),
+              name: playerName,
+            })}
           </Text>
         </Box>
         <Text
-          fontSize={18}
-          fontWeight="600"
+          variant="heading"
           color="white"
           textAlign="center"
-          lineHeight={26}
+          lineHeight={device.scaleHeight(26)}
         >
           {question}
         </Text>

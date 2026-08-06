@@ -6,7 +6,9 @@ import { Pressable, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Box, Text } from '@src';
+import { useTranslation } from 'react-i18next';
 import { useGame } from '../context/GameContext';
+import { useDeviceHelper } from '../hooks/useDeviceHelper';
 
 type Props = {
   navigation: any;
@@ -16,6 +18,8 @@ const MEDALS = ['\u{1F947}', '\u{1F948}', '\u{1F949}'];
 
 export default function GameOverScreen({ navigation }: Props) {
   const { players, scores, resetGame, setPlayers } = useGame();
+  const { t } = useTranslation();
+  const device = useDeviceHelper();
 
   const sorted = [...players].sort(
     (a, b) => (scores[b.name] || 0) - (scores[a.name] || 0),
@@ -30,7 +34,7 @@ export default function GameOverScreen({ navigation }: Props) {
   function handleHome() {
     resetGame();
     setPlayers([]);
-    navigation.reset({ index: 0, routes: [{ name: 'HomeMenu' }] });
+    navigation.reset({ index: 0, routes: [{ name: 'MainMenu' }] });
   }
 
   return (
@@ -38,37 +42,36 @@ export default function GameOverScreen({ navigation }: Props) {
       <Box flex={1} backgroundColor="background">
         <ScrollView
           contentContainerStyle={{
-            paddingHorizontal: 24,
-            paddingTop: 24,
-            paddingBottom: 40,
+            paddingHorizontal: device.scaleWidth(24),
+            paddingTop: device.scaleHeight(24),
+            paddingBottom: device.scaleHeight(40),
           }}
         >
           {/* Title */}
           <Box alignItems="center" marginBottom={8}>
             <Text
-              fontSize={40}
-              fontWeight="800"
+              variant="hero"
               color="white"
               letterSpacing={2}
             >
-              GAME OVER
+              {t('gameOver.title')}
             </Text>
-            <Text fontSize={14} color="textSecondary" marginTop={4}>
-              Final Scores
+            <Text color="textSecondary" marginTop={4}>
+              {t('gameOver.subtitle')}
             </Text>
           </Box>
 
           {/* Trophy */}
-          <Box alignItems="center" marginBottom={32}>
-            <Text fontSize={56}>{'\u{1F3C6}'}</Text>
+          <Box alignItems="center" marginBottom={device.scaleHeight(32)}>
+            <Text variant="hero">{'\u{1F3C6}'}</Text>
           </Box>
 
           {/* Leaderboard */}
           <Box
             backgroundColor="surface"
             borderRadius="lg"
-            padding={16}
-            marginBottom={32}
+            padding={device.scaleWidth(16)}
+            marginBottom={device.scaleHeight(32)}
           >
             {sorted.map((player, index) => {
               const score = scores[player.name] || 0;
@@ -78,17 +81,16 @@ export default function GameOverScreen({ navigation }: Props) {
                   key={player.name}
                   flexDirection="row"
                   alignItems="center"
-                  paddingVertical={12}
+                  paddingVertical={device.scaleHeight(12)}
                   style={{
                     borderBottomWidth: index < sorted.length - 1 ? 1 : 0,
                     borderBottomColor: 'rgba(255,255,255,0.06)',
                   }}
                 >
                   {/* Rank */}
-                  <Box width={40} alignItems="center">
+                  <Box width={device.scaleWidth(40)} alignItems="center">
                     <Text
-                      fontSize={20}
-                      fontWeight="700"
+                      variant="title"
                       color={isFirst ? 'purple' : 'textSecondary'}
                     >
                       {index < 3 ? MEDALS[index] : `#${index + 1}`}
@@ -97,12 +99,12 @@ export default function GameOverScreen({ navigation }: Props) {
 
                   {/* Avatar */}
                   <Box
-                    width={36}
-                    height={36}
+                    width={device.scaleWidth(36)}
+                    height={device.scaleHeight(36)}
                     borderRadius="circle"
                     justifyContent="center"
                     alignItems="center"
-                    marginRight={12}
+                    marginRight={device.scaleWidth(12)}
                     style={{
                       backgroundColor: player.color,
                       shadowColor: player.color,
@@ -112,7 +114,7 @@ export default function GameOverScreen({ navigation }: Props) {
                       elevation: isFirst ? 6 : 3,
                     }}
                   >
-                    <Text fontSize={15} fontWeight="700" color="bgDeep">
+                    <Text variant="bodyBold" color="bgDeep">
                       {player.name[0]}
                     </Text>
                   </Box>
@@ -120,8 +122,7 @@ export default function GameOverScreen({ navigation }: Props) {
                   {/* Name */}
                   <Box flex={1}>
                     <Text
-                      fontSize={15}
-                      fontWeight={isFirst ? '700' : '600'}
+                      variant="bodyBold"
                       color="white"
                     >
                       {player.name}
@@ -131,7 +132,7 @@ export default function GameOverScreen({ navigation }: Props) {
                   {/* Score */}
                   <Box
                     borderRadius="md"
-                    paddingHorizontal={12}
+                    paddingHorizontal={device.scaleWidth(12)}
                     paddingVertical={4}
                     style={{
                       backgroundColor: isFirst
@@ -140,8 +141,7 @@ export default function GameOverScreen({ navigation }: Props) {
                     }}
                   >
                     <Text
-                      fontSize={18}
-                      fontWeight="800"
+                      variant="heading"
                       style={{ color: isFirst ? '#818CF8' : player.color }}
                     >
                       {score}
@@ -155,11 +155,11 @@ export default function GameOverScreen({ navigation }: Props) {
           {/* Actions */}
           <Pressable onPress={handleRestart}>
             <Box
-              height={54}
+              height={device.scaleHeight(54)}
               borderRadius="lg"
               justifyContent="center"
               alignItems="center"
-              marginBottom={12}
+              marginBottom={device.scaleHeight(12)}
               style={{
                 backgroundColor: '#818CF8',
                 shadowColor: '#818CF8',
@@ -170,19 +170,18 @@ export default function GameOverScreen({ navigation }: Props) {
               }}
             >
               <Text
-                fontSize={16}
-                fontWeight="700"
+                variant="bodyBold"
                 color="white"
                 letterSpacing={1}
               >
-                RESTART GAME
+                {t('gameOver.restart')}
               </Text>
             </Box>
           </Pressable>
 
           <Pressable onPress={handleHome}>
             <Box
-              height={54}
+              height={device.scaleHeight(54)}
               borderRadius="lg"
               justifyContent="center"
               alignItems="center"
@@ -192,12 +191,11 @@ export default function GameOverScreen({ navigation }: Props) {
               }}
             >
               <Text
-                fontSize={16}
-                fontWeight="700"
+                variant="bodyBold"
                 style={{ color: '#818CF8' }}
                 letterSpacing={1}
               >
-                GO TO HOME
+                {t('gameOver.home')}
               </Text>
             </Box>
           </Pressable>

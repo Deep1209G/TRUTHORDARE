@@ -9,12 +9,16 @@ import {
   Modal,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
 } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Box, Text } from '@src';
+import { useTranslation } from 'react-i18next';
 import { useGame, getRandomColor, Player } from '../context/GameContext';
+import { useDeviceHelper } from '../hooks/useDeviceHelper';
+
 import AddPlayerIcon from '../assets/icon/addplayer.svg';
 import BackIcon from '../assets/icon/back.svg';
 
@@ -43,6 +47,9 @@ function getAvailablePresets(players: Player[]) {
 
 export default function PlayerSetupScreen({ navigation }: Props) {
   const { setPlayers } = useGame();
+  const { t } = useTranslation();
+  const device = useDeviceHelper();
+
   const [players, setLocalPlayers] = useState<Player[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [newName, setNewName] = useState('');
@@ -56,35 +63,53 @@ export default function PlayerSetupScreen({ navigation }: Props) {
 
   function addPlayerToModal() {
     const name = newName.trim();
+
     if (!name) return;
+
     const allPlayers = [...players, ...modalPlayers];
+
     if (allPlayers.length >= 10) {
-      Alert.alert('Max 10 players');
+      Alert.alert(t('players.maxAlert'));
       return;
     }
+
     if (allPlayers.some(p => p.name.toLowerCase() === name.toLowerCase())) {
-      Alert.alert('Name already exists');
+      Alert.alert(t('players.existsAlert'));
       return;
     }
+
     setModalPlayers(prev => [
       ...prev,
-      { name, color: getRandomColor(allPlayers.length) },
+      {
+        name,
+        color: getRandomColor(allPlayers.length),
+      },
     ]);
+
     setNewName('');
   }
 
   function quickAddToModal() {
     const allPlayers = [...players, ...modalPlayers];
+
     if (allPlayers.length >= 10) {
-      Alert.alert('Max 10 players');
+      Alert.alert(t('players.maxAlert'));
       return;
     }
+
     const available = getAvailablePresets(allPlayers);
+
     const name =
-      available.length > 0 ? available[0] : `Player ${allPlayers.length + 1}`;
+      available.length > 0
+        ? available[0]
+        : t('players.playerFallback', { number: allPlayers.length + 1 });
+
     setModalPlayers(prev => [
       ...prev,
-      { name, color: getRandomColor(allPlayers.length) },
+      {
+        name,
+        color: getRandomColor(allPlayers.length),
+      },
     ]);
   }
 
@@ -94,24 +119,27 @@ export default function PlayerSetupScreen({ navigation }: Props) {
 
   function doneModal() {
     setLocalPlayers(prev => [...prev, ...modalPlayers]);
+
     setModalVisible(false);
   }
 
   function removePlayer(index: number) {
     if (players.length <= 2) {
-      Alert.alert('Minimum 2 players');
+      Alert.alert(t('players.minAlert'));
       return;
     }
+
     setLocalPlayers(players.filter((_, i) => i !== index));
   }
 
   function startGame() {
     if (players.length < 2) {
-      Alert.alert('Need at least 2 players');
+      Alert.alert(t('players.needMinAlert'));
       return;
     }
+
     setPlayers(players);
-    navigation.navigate('Home');
+    navigation.navigate('Game');
   }
 
   function renderItem({ item, index }: { item: Player; index: number }) {
@@ -120,44 +148,49 @@ export default function PlayerSetupScreen({ navigation }: Props) {
         flexDirection="row"
         alignItems="center"
         backgroundColor="surface"
-        paddingHorizontal={16}
-        paddingVertical={14}
-        marginBottom={16}
+        paddingHorizontal={device.scaleWidth(16)}
+        paddingVertical={device.scaleHeight(14)}
+        marginBottom={device.scaleHeight(16)}
         style={{ borderRadius: 20 }}
       >
-        {/* Avatar */}
         <Box
-          width={44}
-          height={44}
+          width={device.scaleWidth(44)}
+          height={device.scaleHeight(44)}
           borderRadius="circle"
           justifyContent="center"
           alignItems="center"
-          marginRight={14}
-          style={{ backgroundColor: item.color }}
+          marginRight={device.scaleWidth(14)}
+          style={{
+            backgroundColor: item.color,
+          }}
         >
-          <Text fontSize={18} fontWeight="700" color="bgDeep">
+          <Text variant="heading" color="bgDeep">
             {item.name[0]}
           </Text>
         </Box>
 
-        {/* Name */}
         <Box flex={1} alignItems="center">
-          <Text fontSize={16} fontWeight="600" color="white">
+          <Text variant="bodyBold" color="white">
             {item.name}
           </Text>
         </Box>
 
-        {/* Remove */}
         <Pressable onPress={() => removePlayer(index)}>
           <Box
-            width={28}
-            height={28}
+            width={device.scaleWidth(28)}
+            height={device.scaleHeight(28)}
             borderRadius="circle"
             justifyContent="center"
             alignItems="center"
-            style={{ backgroundColor: 'rgba(239,68,68,0.15)' }}
+            style={{
+              backgroundColor: 'rgba(239,68,68,0.15)',
+            }}
           >
-            <Text fontSize={14} fontWeight="600" style={{ color: '#EF4444' }}>
+            <Text
+              style={{
+                color: '#EF4444',
+              }}
+            >
               x
             </Text>
           </Box>
@@ -167,88 +200,109 @@ export default function PlayerSetupScreen({ navigation }: Props) {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#120826' }}>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        backgroundColor: '#120826',
+      }}
+    >
       <Box flex={1} backgroundColor="background">
         {/* Header */}
-        <Box paddingHorizontal={24} paddingTop={16}>
+        <Box paddingHorizontal={device.scaleWidth(24)} paddingTop={device.scaleHeight(16)}>
           <Box flexDirection="row" alignItems="center">
-            <Box width={42}>
+            <Box width={device.scaleWidth(42)}>
               <Pressable onPress={() => navigation.goBack()}>
                 <Box
-                  width={42}
-                  height={42}
+                  width={device.scaleWidth(42)}
+                  height={device.scaleHeight(42)}
                   borderRadius="md"
                   backgroundColor="surface"
                   justifyContent="center"
                   alignItems="center"
                 >
-                  <BackIcon width={18} height={18} color="white" />
+                  <BackIcon
+                    width={device.scaleWidth(18)}
+                    height={device.scaleHeight(18)}
+                    color="white"
+                  />
                 </Box>
               </Pressable>
             </Box>
+
             <Box alignItems="center" flex={1}>
-              <Text variant="title" fontSize={28} textAlign="center">
-                Add Players{' '}
+              <Text variant="screenTitle" color="yellow" textAlign="center">
+                {t('players.title')}
               </Text>
             </Box>
-            <Box width={42} />
+
+            <Box width={device.scaleWidth(42)} />
           </Box>
         </Box>
-
+        {/* Player header */}
         <Box
           flexDirection="row"
           alignItems="center"
-          paddingHorizontal={24}
+          paddingHorizontal={device.scaleWidth(24)}
           paddingTop={8}
         >
           <Box flex={1}>
-            <Text fontSize={22} fontWeight="700" color="white">
-              Players
+            <Text variant="title" color="white">
+              {t('players.section')}
             </Text>
-            <Text fontSize={13} color="textSecondary" marginTop={2}>
-              Add at least 2 players
+
+            <Text variant="note" color="textSecondary" marginTop={2}>
+              {t('players.minNote')}
             </Text>
           </Box>
+
           <Pressable onPress={openModal}>
             <Box
-              width={48}
-              height={48}
+              width={device.scaleWidth(48)}
+              height={device.scaleHeight(48)}
               borderRadius="circle"
               justifyContent="center"
               alignItems="center"
               style={{
                 backgroundColor: '#818CF8',
                 shadowColor: '#818CF8',
-                shadowOffset: { width: 0, height: 4 },
+                shadowOffset: {
+                  width: 0,
+                  height: 4,
+                },
                 shadowOpacity: 0.4,
                 shadowRadius: 12,
                 elevation: 8,
               }}
             >
-              <AddPlayerIcon width={25} height={25} color="white" />
+              <AddPlayerIcon
+                width={device.scaleWidth(25)}
+                height={device.scaleHeight(25)}
+                color="white"
+              />
             </Box>
           </Pressable>
         </Box>
 
-        {/* Player list or empty state */}
-        <Box flex={1} paddingHorizontal={24} paddingTop={24}>
+        {/* Player list */}
+        <Box flex={1} paddingHorizontal={device.scaleWidth(24)} paddingTop={device.scaleHeight(24)}>
           {players.length === 0 ? (
             <Box
               flex={1}
               justifyContent="center"
               alignItems="center"
-              paddingBottom={60}
+              paddingBottom={device.scaleHeight(60)}
             >
-              <Text fontSize={14} color="textSecondary">
-                No players added yet
+              <Text color="textSecondary">
+                {t('players.emptyTitle')}
               </Text>
+
               <Text
-                fontSize={12}
+                variant="label"
                 color="textSecondary"
                 marginTop={4}
                 opacity={0.6}
               >
-                Tap + to add players
+                {t('players.emptyHint')}
               </Text>
             </Box>
           ) : (
@@ -256,24 +310,28 @@ export default function PlayerSetupScreen({ navigation }: Props) {
               data={players}
               keyExtractor={(item, i) => `${item.name}-${i}`}
               renderItem={renderItem}
-              contentContainerStyle={{ paddingBottom: 20 }}
+              contentContainerStyle={{
+                paddingBottom: device.scaleHeight(20),
+              }}
             />
           )}
         </Box>
 
-        {/* Bottom section */}
-        <Box paddingHorizontal={24} paddingBottom={32}>
-          {/* Start button */}
+        {/* Bottom */}
+        <Box paddingHorizontal={device.scaleWidth(24)} paddingBottom={device.scaleHeight(32)}>
           <Pressable onPress={startGame}>
             <Box
-              height={58}
+              height={device.scaleHeight(58)}
               borderRadius="lg"
               justifyContent="center"
               alignItems="center"
               style={{
                 backgroundColor: players.length >= 2 ? '#818CF8' : '#334155',
                 shadowColor: '#818CF8',
-                shadowOffset: { width: 0, height: 4 },
+                shadowOffset: {
+                  width: 0,
+                  height: 4,
+                },
                 shadowOpacity: players.length >= 2 ? 0.4 : 0,
                 shadowRadius: 12,
                 elevation: players.length >= 2 ? 8 : 0,
@@ -281,23 +339,24 @@ export default function PlayerSetupScreen({ navigation }: Props) {
               }}
             >
               <Text
-                fontSize={18}
-                fontWeight="700"
+                variant="heading"
                 letterSpacing={1}
-                style={{ color: players.length >= 2 ? '#FFF' : '#64748B' }}
+                style={{
+                  color: players.length >= 2 ? '#FFF' : '#64748B',
+                }}
               >
-                START GAME
+                {t('players.startGame')}
               </Text>
             </Box>
           </Pressable>
 
           <Text
-            fontSize={12}
+            variant="label"
             color="textSecondary"
             textAlign="center"
-            marginTop={14}
+            marginTop={device.scaleHeight(14)}
           >
-            {players.length} / 10 players
+            {t('players.count', { count: players.length })}
           </Text>
         </Box>
 
@@ -305,171 +364,191 @@ export default function PlayerSetupScreen({ navigation }: Props) {
         <Modal visible={modalVisible} transparent animationType="fade">
           <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-            style={{ flex: 1 }}
+            style={{
+              flex: 1,
+            }}
           >
             <Box
               flex={1}
-              style={{ backgroundColor: 'rgba(12,4,24,0.88)' }}
+              style={{
+                backgroundColor: 'rgba(12,4,24,0.88)',
+              }}
               justifyContent="center"
-              paddingHorizontal={20}
+              paddingHorizontal={device.scaleWidth(20)}
             >
               <Box
                 backgroundColor="bgDeep"
                 borderRadius="xl"
-                padding={24}
+                padding={device.scaleWidth(24)}
                 maxHeight="80%"
               >
-                {/* Title */}
-                <Text
-                  fontSize={20}
-                  fontWeight="700"
-                  color="white"
-                  textAlign="center"
-                  marginBottom={20}
+                <ScrollView
+                  showsVerticalScrollIndicator={false}
+                  keyboardShouldPersistTaps="handled"
                 >
-                  Add Players
-                </Text>
+                  <Text
+                    variant="title"
+                    color="white"
+                    textAlign="center"
+                    marginBottom={device.scaleHeight(20)}
+                  >
+                    {t('players.title')}
+                  </Text>
 
-                {/* Input row */}
-                <Box
-                  flexDirection="row"
-                  alignItems="center"
-                  backgroundColor="surface"
-                  borderRadius="md"
-                  paddingHorizontal={14}
-                  paddingVertical={4}
-                  marginBottom={12}
-                  style={{
-                    borderWidth: 1,
-                    borderColor: 'rgba(255,255,255,0.1)',
-                  }}
-                >
-                  <Box flex={1}>
-                    <TextInput
-                      value={newName}
-                      onChangeText={setNewName}
-                      placeholder="Enter name..."
-                      placeholderTextColor="rgba(255,255,255,0.3)"
-                      style={{
-                        color: '#FFF',
-                        fontSize: 15,
-                        paddingVertical: 8,
-                      }}
-                      returnKeyType="done"
-                      onSubmitEditing={addPlayerToModal}
-                    />
+                  {/* Input */}
+                  <Box
+                    flexDirection="row"
+                    alignItems="center"
+                    backgroundColor="surface"
+                    borderRadius="md"
+                    paddingHorizontal={device.scaleWidth(14)}
+                    paddingVertical={4}
+                    marginBottom={12}
+                    style={{
+                      borderWidth: 1,
+                      borderColor: 'rgba(255,255,255,0.1)',
+                    }}
+                  >
+                    <Box flex={1}>
+                      <TextInput
+                        value={newName}
+                        onChangeText={setNewName}
+                        placeholder={t('common.enterName')}
+                        placeholderTextColor="rgba(255,255,255,0.3)"
+                        style={{
+                          color: '#FFF',
+                          fontSize: device.scaleWidth(15),
+                          paddingVertical: 8,
+                        }}
+                        returnKeyType="done"
+                        onSubmitEditing={addPlayerToModal}
+                      />
+                    </Box>
+
+                    <Pressable onPress={addPlayerToModal}>
+                      <Box
+                        width={device.scaleWidth(34)}
+                        height={device.scaleHeight(34)}
+                        borderRadius="circle"
+                        backgroundColor="purple"
+                        justifyContent="center"
+                        alignItems="center"
+                      >
+                        <AddPlayerIcon
+                          width={device.scaleWidth(18)}
+                          height={device.scaleHeight(18)}
+                          color="white"
+                        />
+                      </Box>
+                    </Pressable>
                   </Box>
-                  <Pressable onPress={addPlayerToModal}>
+
+                  {/* Quick add */}
+                  <Pressable onPress={quickAddToModal}>
                     <Box
-                      width={34}
-                      height={34}
-                      borderRadius="circle"
-                      backgroundColor="purple"
+                      height={device.scaleHeight(42)}
+                      borderRadius="md"
                       justifyContent="center"
                       alignItems="center"
-                    >
-                      <AddPlayerIcon width={18} height={18} color="white" />
-                    </Box>
-                  </Pressable>
-                </Box>
-
-                {/* Quick Add */}
-                <Pressable onPress={quickAddToModal}>
-                  <Box
-                    height={42}
-                    borderRadius="md"
-                    justifyContent="center"
-                    alignItems="center"
-                    marginBottom={16}
-                    style={{
-                      borderWidth: 1.5,
-                      borderColor: 'rgba(129,140,248,0.35)',
-                      borderStyle: 'dashed',
-                      borderRadius: 12,
-                    }}
-                  >
-                    <Text
-                      fontSize={13}
-                      fontWeight="600"
-                      style={{ color: '#818CF8' }}
-                    >
-                      + Quick Add
-                    </Text>
-                  </Box>
-                </Pressable>
-
-                {/* Preview list */}
-                {modalPlayers.length > 0 && (
-                  <Box marginBottom={16}>
-                    <Text
-                      fontSize={11}
-                      fontWeight="700"
-                      color="textSecondary"
-                      letterSpacing={1}
-                      marginBottom={8}
-                    >
-                      ADDED ({modalPlayers.length})
-                    </Text>
-                    {modalPlayers.map((p, i) => (
-                      <Box
-                        key={`${p.name}-${i}`}
-                        flexDirection="row"
-                        alignItems="center"
-                        paddingVertical={6}
-                      >
-                        <Box
-                          width={28}
-                          height={28}
-                          borderRadius="circle"
-                          justifyContent="center"
-                          alignItems="center"
-                          marginRight={10}
-                          style={{ backgroundColor: p.color }}
-                        >
-                          <Text fontSize={12} fontWeight="700" color="bgDeep">
-                            {p.name[0]}
-                          </Text>
-                        </Box>
-                        <Box flex={1}>
-                          <Text fontSize={14} fontWeight="500" color="white">
-                            {p.name}
-                          </Text>
-                        </Box>
-                        <Pressable onPress={() => removeModalPlayer(i)}>
-                          <Text fontSize={14} style={{ color: '#EF4444' }}>
-                            x
-                          </Text>
-                        </Pressable>
-                      </Box>
-                    ))}
-                  </Box>
-                )}
-
-                {/* Done button */}
-                <Pressable onPress={doneModal}>
-                  <Box
-                    height={50}
-                    borderRadius="lg"
-                    justifyContent="center"
-                    alignItems="center"
-                    style={{
-                      backgroundColor:
-                        modalPlayers.length > 0 ? '#818CF8' : '#334155',
-                      borderRadius: 14,
-                    }}
-                  >
-                    <Text
-                      fontSize={16}
-                      fontWeight="700"
-                      letterSpacing={1}
+                      marginBottom={16}
                       style={{
-                        color: modalPlayers.length > 0 ? '#FFF' : '#64748B',
+                        borderWidth: 1.5,
+                        borderColor: 'rgba(129,140,248,0.35)',
+                        borderStyle: 'dashed',
+                        borderRadius: 12,
                       }}
                     >
-                      DONE ({modalPlayers.length})
-                    </Text>
-                  </Box>
-                </Pressable>
+                      <Text
+                        variant="micro"
+                        style={{
+                          color: '#818CF8',
+                        }}
+                      >
+                        {t('common.quickAdd')}
+                      </Text>
+                    </Box>
+                  </Pressable>
+
+                  {/* Preview */}
+                  {modalPlayers.length > 0 && (
+                    <Box marginBottom={16}>
+                      <Text
+                        variant="caption"
+                        color="textSecondary"
+                        letterSpacing={1}
+                        marginBottom={8}
+                      >
+                        {t('players.added', { count: modalPlayers.length })}
+                      </Text>
+
+                      {modalPlayers.map((p, i) => (
+                        <Box
+                          key={`${p.name}-${i}`}
+                          flexDirection="row"
+                          alignItems="center"
+                          paddingVertical={6}
+                        >
+                          <Box
+                            width={device.scaleWidth(28)}
+                            height={device.scaleHeight(28)}
+                            borderRadius="circle"
+                            justifyContent="center"
+                            alignItems="center"
+                            marginRight={device.scaleWidth(10)}
+                            style={{
+                              backgroundColor: p.color,
+                            }}
+                          >
+                            <Text variant="label" color="bgDeep">
+                              {p.name[0]}
+                            </Text>
+                          </Box>
+
+                          <Box flex={1}>
+                            <Text color="white">
+                              {p.name}
+                            </Text>
+                          </Box>
+
+                          <Pressable onPress={() => removeModalPlayer(i)}>
+                            <Text
+                              style={{
+                                color: '#EF4444',
+                              }}
+                            >
+                              x
+                            </Text>
+                          </Pressable>
+                        </Box>
+                      ))}
+                    </Box>
+                  )}
+
+                  {/* Done */}
+                  <Pressable onPress={doneModal}>
+                    <Box
+                      height={device.scaleHeight(50)}
+                      borderRadius="lg"
+                      justifyContent="center"
+                      alignItems="center"
+                      style={{
+                        backgroundColor:
+                          modalPlayers.length > 0 ? '#818CF8' : '#334155',
+                        borderRadius: 14,
+                      }}
+                    >
+                      <Text
+                        variant="bodyBold"
+                        letterSpacing={1}
+                        style={{
+                          color: modalPlayers.length > 0 ? '#FFF' : '#64748B',
+                        }}
+                      >
+                        {t('players.done', { count: modalPlayers.length })}
+                      </Text>
+                    </Box>
+                  </Pressable>
+                </ScrollView>
               </Box>
             </Box>
           </KeyboardAvoidingView>

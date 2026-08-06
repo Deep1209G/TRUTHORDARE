@@ -5,7 +5,9 @@ import { Pressable, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Box, Text } from '@src';
+import { useTranslation } from 'react-i18next';
 import { useGame, Difficulty } from '../context/GameContext';
+import { useDeviceHelper } from '../hooks/useDeviceHelper';
 import TickIcon from '../assets/icon/tick.svg';
 import ResetIcon from '../assets/icon/reset.svg';
 import CloseIcon from '../assets/icon/close.svg';
@@ -16,13 +18,13 @@ type Props = {
 };
 
 const DIFFICULTIES: {
-  label: string;
+  labelKey: string;
   value: Difficulty;
-  description: string;
+  descKey: string;
 }[] = [
-  { label: 'Mild', value: 'mild', description: 'Playful & fun' },
-  { label: 'Medium', value: 'medium', description: 'A bit spicy' },
-  { label: 'Wild', value: 'wild', description: 'Full chaos' },
+  { labelKey: 'difficulty.mild', value: 'mild', descKey: 'difficulty.mildDesc' },
+  { labelKey: 'difficulty.medium', value: 'medium', descKey: 'difficulty.mediumDesc' },
+  { labelKey: 'difficulty.wild', value: 'wild', descKey: 'difficulty.wildDesc' },
 ];
 
 export default function SettingsScreen({ navigation }: Props) {
@@ -34,15 +36,17 @@ export default function SettingsScreen({ navigation }: Props) {
     resetGame,
     endGame,
   } = useGame();
+  const { t } = useTranslation();
+  const device = useDeviceHelper();
 
   function handleReset() {
     Alert.alert(
-      'Reset Game',
-      'This will clear all scores and reset settings. Are you sure?',
+      t('settings.resetTitle'),
+      t('settings.resetMsg'),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: 'Reset',
+          text: t('settings.resetBtn'),
           style: 'destructive',
           onPress: () => {
             resetGame();
@@ -55,12 +59,12 @@ export default function SettingsScreen({ navigation }: Props) {
 
   function handleLeave() {
     Alert.alert(
-      'End Game',
-      'Are you sure you want to end the game? All progress will be lost and the entire game will stop.',
+      t('settings.endTitle'),
+      t('settings.endMsg'),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: 'End Game',
+          text: t('settings.endBtn'),
           style: 'destructive',
           onPress: () => {
             endGame();
@@ -74,30 +78,30 @@ export default function SettingsScreen({ navigation }: Props) {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#120826' }}>
       <Box flex={1} backgroundColor="background">
-        <Box paddingHorizontal={24} paddingTop={16} paddingBottom={40}>
-          <Box flexDirection="row" alignItems="center" marginBottom={32}>
+        <Box paddingHorizontal={device.scaleWidth(24)} paddingTop={device.scaleHeight(16)} paddingBottom={device.scaleHeight(40)}>
+          <Box flexDirection="row" alignItems="center" marginBottom={device.scaleHeight(32)}>
             <Pressable onPress={() => navigation.goBack()}>
               <Box
-                width={40}
-                height={40}
+                width={device.scaleWidth(40)}
+                height={device.scaleHeight(40)}
                 borderRadius="md"
                 backgroundColor="surface"
                 justifyContent="center"
                 alignItems="center"
-                marginRight={16}
+                marginRight={device.scaleWidth(16)}
               >
-                <BackIcon width={18} height={18} color="white" />
+                <BackIcon width={device.scaleWidth(18)} height={device.scaleHeight(18)} color="white" />
               </Box>
             </Pressable>
-            <Text variant="header" fontSize={28}>
-              Settings
+            <Text variant="screenTitle">
+              {t('settings.title')}
             </Text>
           </Box>
 
           {/* Difficulty */}
-          <Box marginBottom={32}>
-            <Text variant="subtitle" marginBottom={16}>
-              DIFFICULTY
+          <Box marginBottom={device.scaleHeight(32)}>
+            <Text variant="caption" color="textSecondary" letterSpacing={2} marginBottom={16}>
+              {t('settings.difficulty')}
             </Text>
             {DIFFICULTIES.map(item => {
               const active = difficulty === item.value;
@@ -111,8 +115,8 @@ export default function SettingsScreen({ navigation }: Props) {
                     alignItems="center"
                     backgroundColor="surface"
                     borderRadius="md"
-                    paddingHorizontal={16}
-                    paddingVertical={14}
+                    paddingHorizontal={device.scaleWidth(16)}
+                    paddingVertical={device.scaleHeight(14)}
                     marginBottom={8}
                     style={{
                       borderWidth: 1,
@@ -121,26 +125,25 @@ export default function SettingsScreen({ navigation }: Props) {
                   >
                     <Box flex={1}>
                       <Text
-                        fontSize={15}
-                        fontWeight="600"
+                        variant="bodyBold"
                         color={active ? 'white' : 'textSecondary'}
                       >
-                        {item.label}
+                        {t(item.labelKey)}
                       </Text>
-                      <Text fontSize={12} color="textSecondary" marginTop={2}>
-                        {item.description}
+                      <Text variant="label" color="textSecondary" marginTop={2}>
+                        {t(item.descKey)}
                       </Text>
                     </Box>
                     {active && (
                       <Box
-                        width={22}
-                        height={22}
+                        width={device.scaleWidth(22)}
+                        height={device.scaleHeight(22)}
                         borderRadius="circle"
                         backgroundColor="purple"
                         justifyContent="center"
                         alignItems="center"
                       >
-                        <TickIcon width={12} height={12} color="white" />
+                        <TickIcon width={device.scaleWidth(12)} height={device.scaleHeight(12)} color="white" />
                       </Box>
                     )}
                   </Box>
@@ -150,9 +153,9 @@ export default function SettingsScreen({ navigation }: Props) {
           </Box>
 
           {/* Sound */}
-          <Box marginBottom={32}>
-            <Text variant="subtitle" marginBottom={16}>
-              AUDIO
+          <Box marginBottom={device.scaleHeight(32)}>
+            <Text variant="caption" color="textSecondary" letterSpacing={2} marginBottom={16}>
+              {t('settings.audio')}
             </Text>
             <Pressable onPress={() => setSoundEnabled(!soundEnabled)}>
               <Box
@@ -160,21 +163,21 @@ export default function SettingsScreen({ navigation }: Props) {
                 alignItems="center"
                 backgroundColor="surface"
                 borderRadius="md"
-                paddingHorizontal={16}
-                paddingVertical={14}
+                paddingHorizontal={device.scaleWidth(16)}
+                paddingVertical={device.scaleHeight(14)}
                 marginBottom={8}
               >
                 <Box flex={1}>
-                  <Text fontSize={15} fontWeight="600" color="white">
-                    Sound Effects
+                  <Text variant="bodyBold" color="white">
+                    {t('settings.soundEffects')}
                   </Text>
-                  <Text fontSize={12} color="textSecondary" marginTop={2}>
-                    Spin sounds, button taps, and celebration effects
+                  <Text variant="label" color="textSecondary" marginTop={2}>
+                    {t('settings.soundEffectsDesc')}
                   </Text>
                 </Box>
                 <Box
-                  width={48}
-                  height={28}
+                  width={device.scaleWidth(48)}
+                  height={device.scaleHeight(28)}
                   borderRadius="circle"
                   justifyContent="center"
                   paddingHorizontal={3}
@@ -183,8 +186,8 @@ export default function SettingsScreen({ navigation }: Props) {
                   }}
                 >
                   <Box
-                    width={22}
-                    height={22}
+                    width={device.scaleWidth(22)}
+                    height={device.scaleHeight(22)}
                     borderRadius="circle"
                     backgroundColor="white"
                     style={{
@@ -197,17 +200,17 @@ export default function SettingsScreen({ navigation }: Props) {
           </Box>
 
           {/* Reset */}
-          <Box marginBottom={16}>
-            <Text variant="subtitle" marginBottom={16}>
-              GAME DATA
+          <Box marginBottom={device.scaleHeight(16)}>
+            <Text variant="caption" color="textSecondary" letterSpacing={2} marginBottom={16}>
+              {t('settings.gameData')}
             </Text>
             <Pressable onPress={handleReset}>
               <Box
                 flexDirection="row"
                 alignItems="center"
                 borderRadius="md"
-                paddingHorizontal={16}
-                paddingVertical={14}
+                paddingHorizontal={device.scaleWidth(16)}
+                paddingVertical={device.scaleHeight(14)}
                 style={{
                   backgroundColor: 'rgba(239,68,68,0.1)',
                   borderWidth: 1,
@@ -216,17 +219,16 @@ export default function SettingsScreen({ navigation }: Props) {
               >
                 <Box flex={1}>
                   <Text
-                    fontSize={15}
-                    fontWeight="600"
+                    variant="bodyBold"
                     style={{ color: '#EF4444' }}
                   >
-                    Reset Game
+                    {t('settings.reset')}
                   </Text>
-                  <Text fontSize={12} color="textSecondary" marginTop={2}>
-                    Clear scores, reset difficulty and sound settings
+                  <Text variant="label" color="textSecondary" marginTop={2}>
+                    {t('settings.resetDesc')}
                   </Text>
                 </Box>
-                <ResetIcon width={20} height={20} color="#EF4444" />
+                <ResetIcon width={device.scaleWidth(20)} height={device.scaleHeight(20)} color="#EF4444" />
               </Box>
             </Pressable>
           </Box>
@@ -238,8 +240,8 @@ export default function SettingsScreen({ navigation }: Props) {
                 flexDirection="row"
                 alignItems="center"
                 borderRadius="md"
-                paddingHorizontal={16}
-                paddingVertical={14}
+                paddingHorizontal={device.scaleWidth(16)}
+                paddingVertical={device.scaleHeight(14)}
                 style={{
                   backgroundColor: 'rgba(220,38,38,0.12)',
                   borderWidth: 1,
@@ -248,17 +250,16 @@ export default function SettingsScreen({ navigation }: Props) {
               >
                 <Box flex={1}>
                   <Text
-                    fontSize={15}
-                    fontWeight="600"
+                    variant="bodyBold"
                     style={{ color: '#EF4444' }}
                   >
-                    Leave Game
+                    {t('settings.leave')}
                   </Text>
-                  <Text fontSize={12} color="textSecondary" marginTop={2}>
-                    End the current game and show final scores
+                  <Text variant="label" color="textSecondary" marginTop={2}>
+                    {t('settings.leaveDesc')}
                   </Text>
                 </Box>
-                <CloseIcon width={20} height={20} color="#EF4444" />
+                <CloseIcon width={device.scaleWidth(20)} height={device.scaleHeight(20)} color="#EF4444" />
               </Box>
             </Pressable>
           </Box>
