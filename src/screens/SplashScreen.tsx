@@ -148,10 +148,10 @@ export default function SplashScreen({ navigation }: Props) {
 
           <Box position="absolute" alignItems="center" justifyContent="center">
             <Image
-              source={require('../assets/images/vodka.png')}
+              source={require('../assets/bottle_stock/b1.png')}
               style={{
                 width: device.scaleWidth(60),
-                height: device.scaleHeight(120),
+                height: device.scaleHeight(110),
                 resizeMode: 'contain',
               }}
             />

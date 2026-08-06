@@ -163,7 +163,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const aiCallsRef = useRef(0);
   const [lastPlayerIndex, setLastPlayerIndex] = useState(-1);
   const [round, setRound] = useState(1);
-  const [selectedBottleId, setSelectedBottleIdState] = useState<string>('b1');
+  const [selectedBottleId, setSelectedBottleIdState] = useState<string>('b2');
   const [selectedBoardId, setSelectedBoardIdState] = useState<string>('classic');
 
   const selectedBottle = getBottleById(selectedBottleId);

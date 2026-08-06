@@ -62,13 +62,14 @@ export default function GameBoard({ rotation }: Props) {
   const highlightAnim = useSharedValue(0);
 
   const board = Math.min(
-    device.scaleWidth(360),
-    device.width * 0.92,
-    device.height * 0.47,
+    device.scaleWidth(320),
+    device.width * 0.86,
+    device.height * 0.4,
   );
   const c = board / 2;
   const outerR = board * (170 / 360);
   const innerR = board * (108 / 360);
+  const bottleR = board * (66 / 360);
   const avatarR = board * (142 / 360);
   const d2 = board * (2 / 360);
   const d3 = board * (3 / 360);
@@ -339,17 +340,18 @@ export default function GameBoard({ rotation }: Props) {
         {/* Spinning bottle */}
         <Box
           position="absolute"
-          width={innerR * 2}
-          height={innerR * 2}
-          style={{ left: c - innerR, top: c - innerR }}
+          width={bottleR * 2}
+          height={bottleR * 2}
+          style={{ left: c - bottleR, top: c - bottleR }}
           justifyContent="center"
           alignItems="center">
-          <Animated.View style={bottleStyle}>
+          <Animated.View
+            style={[bottleStyle, { width: bottleR * 2, height: bottleR * 2 }]}>
             <Image
               source={selectedBottle.image}
               style={{
-                width: board * (70 / 360),
-                height: board * (180 / 360),
+                width: bottleR * 2,
+                height: bottleR * 2,
                 resizeMode: 'contain',
               }}
             />

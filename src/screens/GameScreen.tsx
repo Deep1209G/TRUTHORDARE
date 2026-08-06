@@ -30,6 +30,8 @@ import TruthOrDareModal from '../components/TruthOrDareModal';
 import QuestionModal from '../components/QuestionModal';
 import BottleIcon from '../assets/icon/bottle.svg';
 import BoardIcon from '../assets/icon/gameboard.svg';
+import VolumeIcon from '../assets/icon/volume.svg';
+import MuteIcon from '../assets/icon/mute.svg';
 
 export default function GameScreen({ navigation }: any) {
   const {
@@ -40,6 +42,7 @@ export default function GameScreen({ navigation }: any) {
     spin,
     resolvePlayer,
     soundEnabled,
+    setSoundEnabled,
     selectedPlayerIndex,
     lastPlayerIndex,
     resetGame,
@@ -268,6 +271,7 @@ export default function GameScreen({ navigation }: any) {
               flexDirection="row"
               alignItems="center"
               justifyContent="center"
+              gap={device.scaleWidth(28)}
               marginTop={20}
             >
               <Pressable
@@ -281,7 +285,6 @@ export default function GameScreen({ navigation }: any) {
                   width={44}
                   height={44}
                   borderRadius="circle"
-                  marginRight={14}
                   justifyContent="center"
                   alignItems="center"
                   opacity={spinning ? 0.5 : 1}
@@ -324,6 +327,41 @@ export default function GameScreen({ navigation }: any) {
                     height={device.scaleHeight(28)}
                     color="white"
                   />
+                </Box>
+              </Pressable>
+
+              <Pressable
+                onPress={() => {
+                  lightTap();
+                  setSoundEnabled(!soundEnabled);
+                }}
+              >
+                <Box
+                  width={44}
+                  height={44}
+                  borderRadius="circle"
+                  justifyContent="center"
+                  alignItems="center"
+                  opacity={spinning ? 0.5 : 1}
+                  style={{
+                    backgroundColor: 'rgba(124,92,255,0.15)',
+                    borderWidth: 1,
+                    borderColor: 'rgba(255,255,255,0.12)',
+                  }}
+                >
+                  {soundEnabled ? (
+                    <VolumeIcon
+                      width={device.scaleWidth(30)}
+                      height={device.scaleHeight(30)}
+                      color="white"
+                    />
+                  ) : (
+                    <MuteIcon
+                      width={device.scaleWidth(30)}
+                      height={device.scaleHeight(30)}
+                      color="white"
+                    />
+                  )}
                 </Box>
               </Pressable>
             </Box>

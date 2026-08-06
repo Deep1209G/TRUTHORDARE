@@ -256,7 +256,7 @@ export default function MainMenuScreen({ navigation }: Props) {
               >
                 <AnimatedRN.View style={bottleStyle}>
                   <Image
-                    source={require('../assets/images/vodka.png')}
+                    source={require('../assets/bottle_stock/b1.png')}
                     style={{
                       width: device.scaleWidth(55),
                       height: device.scaleHeight(140),

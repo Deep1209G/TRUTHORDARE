@@ -12,6 +12,7 @@ import { lightTap } from '../services/HapticService';
 import { playSound } from '../services/SoundService';
 import { useDeviceHelper } from '../hooks/useDeviceHelper';
 import CloseIcon from '../assets/icon/close.svg';
+import TickIcon from '../assets/icon/tick.svg';
 
 type Props = {
   visible: boolean;
@@ -171,9 +172,11 @@ export default function BoardBottomSheet({ visible, onClose }: Props) {
                         }}
                       >
                         {isActive && (
-                          <Text variant="micro" color="bgDeep">
-                            {'\u2713'}
-                          </Text>
+                          <TickIcon
+                            width={device.scaleWidth(12)}
+                            height={device.scaleHeight(12)}
+                            color="#241249"
+                          />
                         )}
                       </Box>
 

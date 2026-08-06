@@ -11,6 +11,7 @@ import { lightTap } from '../services/HapticService';
 import { playSound } from '../services/SoundService';
 import { useDeviceHelper } from '../hooks/useDeviceHelper';
 import CloseIcon from '../assets/icon/close.svg';
+import TickIcon from '../assets/icon/tick.svg';
 
 type Props = {
   visible: boolean;
@@ -38,7 +39,7 @@ export default function BottleBottomSheet({ visible, onClose }: Props) {
           backgroundColor="bgDeep"
           borderTopLeftRadius="xl"
           borderTopRightRadius="xl"
-          paddingHorizontal={device.scaleWidth(16)}
+          paddingHorizontal={device.scaleWidth(20)}
           paddingTop={device.scaleHeight(12)}
           paddingBottom={device.scaleHeight(28)}
           maxHeight="72%"
@@ -93,19 +94,23 @@ export default function BottleBottomSheet({ visible, onClose }: Props) {
 
           {/* Bottle grid */}
           <ScrollView showsVerticalScrollIndicator={false}>
-            <Box flexDirection="row" flexWrap="wrap" marginTop={device.scaleHeight(10)}>
+            <Box
+              flexDirection="row"
+              flexWrap="wrap"
+              gap={device.scaleWidth(10)}
+              marginTop={device.scaleHeight(10)}
+            >
               {BOTTLES.map(bottle => {
                 const isActive = bottle.id === selectedBottle.id;
                 return (
                   <Pressable
                     key={bottle.id}
                     onPress={() => handleSelect(bottle.id)}
-                    style={{ width: '50%' }}
+                    style={{ width: '31%' }}
                   >
                     <Box
                       flex={1}
                       marginBottom={device.scaleHeight(12)}
-                      marginHorizontal={device.scaleWidth(6)}
                       borderRadius="lg"
                       paddingVertical={device.scaleHeight(10)}
                       alignItems="center"
@@ -115,11 +120,11 @@ export default function BottleBottomSheet({ visible, onClose }: Props) {
                         borderColor: isActive
                           ? bottle.color
                           : 'rgba(255,255,255,0.08)',
-                        shadowColor: isActive ? bottle.color : 'transparent',
-                        shadowOffset: { width: 0, height: 0 },
-                        shadowOpacity: isActive ? 0.6 : 0,
-                        shadowRadius: isActive ? 12 : 0,
-                        elevation: isActive ? 8 : 0,
+                        // shadowColor: isActive ? bottle.color : 'transparent',
+                        // shadowOffset: { width: 0, height: 0 },
+                        // shadowOpacity: isActive ? 0.6 : 0,
+                        // shadowRadius: isActive ? 12 : 0,
+                        // elevation: isActive ? 8 : 0,
                       }}
                     >
                       <Box
@@ -138,20 +143,29 @@ export default function BottleBottomSheet({ visible, onClose }: Props) {
                         }}
                       >
                         {isActive && (
-                          <Text variant="micro" color="bgDeep">
-                            {'\u2713'}
-                          </Text>
+                          <TickIcon
+                            width={device.scaleWidth(12)}
+                            height={device.scaleHeight(12)}
+                            color="#241249"
+                          />
                         )}
                       </Box>
 
-                      <Image
-                        source={bottle.image}
-                        style={{
-                          width: device.scaleWidth(44),
-                          height: device.scaleHeight(110),
-                          resizeMode: 'contain',
-                        }}
-                      />
+                      <Box
+                        width={device.scaleWidth(60)}
+                        height={device.scaleHeight(100)}
+                        justifyContent="center"
+                        alignItems="center"
+                      >
+                        <Image
+                          source={bottle.image}
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            resizeMode: 'contain',
+                          }}
+                        />
+                      </Box>
 
                       <Text
                         variant="caption"
