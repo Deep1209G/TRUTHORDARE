@@ -6,8 +6,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Box, Text } from '@src';
 import BackIcon from '../assets/icon/back.svg';
+import { useTranslation } from 'react-i18next';
 import { useGame } from '../context/GameContext';
 import { lightTap } from '../services/HapticService';
+import { useDeviceHelper } from '../hooks/useDeviceHelper';
 
 type Props = {
   navigation: any;
@@ -15,12 +17,14 @@ type Props = {
 
 export default function SoundScreen({ navigation }: Props) {
   const { soundEnabled, setSoundEnabled } = useGame();
+  const { t } = useTranslation();
+  const device = useDeviceHelper();
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#120826' }}>
       <Box flex={1} backgroundColor="background">
-        <Box paddingHorizontal={24} paddingTop={16} paddingBottom={40}>
-          <Box flexDirection="row" alignItems="center" marginBottom={32}>
+        <Box paddingHorizontal={device.scaleWidth(24)} paddingTop={device.scaleHeight(16)} paddingBottom={device.scaleHeight(40)}>
+          <Box flexDirection="row" alignItems="center" marginBottom={device.scaleHeight(32)}>
             <Pressable
               onPress={() => {
                 lightTap();
@@ -28,19 +32,19 @@ export default function SoundScreen({ navigation }: Props) {
               }}
             >
               <Box
-                width={40}
-                height={40}
+                width={device.scaleWidth(40)}
+                height={device.scaleHeight(40)}
                 borderRadius="md"
                 backgroundColor="surface"
                 justifyContent="center"
                 alignItems="center"
-                marginRight={16}
+                marginRight={device.scaleWidth(16)}
               >
-                <BackIcon width={18} height={18} color="white" />
+                <BackIcon width={device.scaleWidth(18)} height={device.scaleHeight(18)} color="white" />
               </Box>
             </Pressable>
-            <Text variant="header" fontSize={28}>
-              Sound
+            <Text variant="screenTitle">
+              {t('sound.title')}
             </Text>
           </Box>
 
@@ -55,21 +59,21 @@ export default function SoundScreen({ navigation }: Props) {
               alignItems="center"
               backgroundColor="surface"
               borderRadius="md"
-              paddingHorizontal={16}
-              paddingVertical={16}
+              paddingHorizontal={device.scaleWidth(16)}
+              paddingVertical={device.scaleHeight(16)}
               style={{ borderWidth: 1, borderColor: 'rgba(255,255,255,0.06)' }}
             >
               <Box flex={1}>
-                <Text fontSize={16} fontWeight="600" color="white">
-                  Sound Effects
+                <Text variant="bodyBold" color="white">
+                  {t('sound.effects')}
                 </Text>
-                <Text fontSize={12} color="textSecondary" marginTop={4}>
-                  Spin sounds, button taps, and celebration effects
+                <Text variant="label" color="textSecondary" marginTop={4}>
+                  {t('sound.effectsDesc')}
                 </Text>
               </Box>
               <Box
-                width={52}
-                height={30}
+                width={device.scaleWidth(52)}
+                height={device.scaleHeight(30)}
                 borderRadius="circle"
                 justifyContent="center"
                 paddingHorizontal={4}
@@ -78,8 +82,8 @@ export default function SoundScreen({ navigation }: Props) {
                 }}
               >
                 <Box
-                  width={22}
-                  height={22}
+                  width={device.scaleWidth(22)}
+                  height={device.scaleHeight(22)}
                   borderRadius="circle"
                   backgroundColor="white"
                   style={{
@@ -91,15 +95,14 @@ export default function SoundScreen({ navigation }: Props) {
           </Pressable>
 
           <Box
-            marginTop={24}
+            marginTop={device.scaleHeight(24)}
             backgroundColor="surface"
             borderRadius="md"
-            padding={16}
+            padding={device.scaleWidth(16)}
             style={{ borderWidth: 1, borderColor: 'rgba(255,255,255,0.06)' }}
           >
-            <Text fontSize={13} color="textSecondary" lineHeight={20}>
-              Sound effects play during bottle spins, button presses, and when
-              revealing truth or dare questions.
+            <Text variant="note" color="textSecondary" lineHeight={device.scaleHeight(20)}>
+              {t('sound.info')}
             </Text>
           </Box>
         </Box>

@@ -25,13 +25,7 @@ const AnimatedPath = Animated.createAnimatedComponent(Path);
 
 import { Box, Text } from '@src';
 import { useGame } from '../context/GameContext';
-
-
-const BOARD = 360;
-const C = BOARD / 2;
-const OUTER_R = 170;
-const INNER_R = 108;
-const AVATAR_R = 142;
+import { useDeviceHelper } from '../hooks/useDeviceHelper';
 
 type Props = {
   rotation: number;
@@ -62,8 +56,24 @@ const softColors = ['#FBBF24', '#34D399', '#F472B6', '#FB923C', '#A78BFA', '#67E
 
 export default function GameBoard({ rotation }: Props) {
   const { players, selectedPlayerIndex, spinning } = useGame();
+  const device = useDeviceHelper();
   const bottleRotation = useSharedValue(0);
   const highlightAnim = useSharedValue(0);
+
+  const board = Math.min(
+    device.scaleWidth(360),
+    device.width * 0.92,
+    device.height * 0.47,
+  );
+  const c = board / 2;
+  const outerR = board * (170 / 360);
+  const innerR = board * (108 / 360);
+  const avatarR = board * (142 / 360);
+  const d2 = board * (2 / 360);
+  const d3 = board * (3 / 360);
+  const d6 = board * (6 / 360);
+  const d12 = board * (12 / 360);
+  const d14 = board * (14 / 360);
 
   useEffect(() => {
     bottleRotation.value = withTiming(rotation, { duration: 4200 });
@@ -90,7 +100,7 @@ export default function GameBoard({ rotation }: Props) {
   }, [spinning, selectedPlayerIndex]);
 
   const bottleStyle = useAnimatedStyle(() => ({
-    transform: [{ rotate: `${interpolate(bottleRotation.value, [0, 360 * 20], [0, 7200])}deg` }],
+    transform: [{ rotate: `${bottleRotation.value}deg` }],
   }));
 
   const pathProps = useAnimatedProps(() => ({
@@ -115,10 +125,10 @@ export default function GameBoard({ rotation }: Props) {
         end,
         mid,
         index: i,
-        avatarPos: pol(C, C, AVATAR_R, mid),
+        avatarPos: pol(c, c, avatarR, mid),
       };
     });
-  }, [seg, players]);
+  }, [seg, players, c, avatarR]);
 
   const hasSelection = !spinning && selectedPlayerIndex >= 0;
 
@@ -126,22 +136,22 @@ export default function GameBoard({ rotation }: Props) {
     <View style={{ alignItems: 'center' }}>
       {/* Pointer */}
       <Svg
-        width={24}
-        height={22}
+        width={device.scaleWidth(24)}
+        height={device.scaleHeight(22)}
         viewBox="0 0 24 22"
-        style={{ position: 'absolute', top: 16, zIndex: 10 }}>
+        style={{ position: 'absolute', top: board * (16 / 360), zIndex: 10 }}>
         <Path d="M12,22 L2,0 L22,0 Z" fill="#E2E8F0" />
       </Svg>
 
       {/* Board */}
       <View
         style={{
-          width: BOARD,
-          height: BOARD,
-          borderRadius: BOARD / 2,
+          width: board,
+          height: board,
+          borderRadius: board / 2,
           overflow: 'hidden',
         }}>
-        <Svg width={BOARD} height={BOARD} viewBox={`0 0 ${BOARD} ${BOARD}`}>
+        <Svg width={board} height={board} viewBox={`0 0 ${board} ${board}`}>
           <Defs>
             <RadialGradient id="boardBg" cx="50%" cy="50%" r="50%">
               <Stop offset="0%" stopColor="#1E293B" />
@@ -166,14 +176,14 @@ export default function GameBoard({ rotation }: Props) {
           </Defs>
 
           {/* Board background */}
-          <Circle cx={C} cy={C} r={OUTER_R + 6} fill="#0F172A" />
-          <Circle cx={C} cy={C} r={OUTER_R + 3} fill="url(#boardBg)" />
+          <Circle cx={c} cy={c} r={outerR + d6} fill="#0F172A" />
+          <Circle cx={c} cy={c} r={outerR + d3} fill="url(#boardBg)" />
 
           {/* Thin outer glow border */}
           <Circle
-            cx={C}
-            cy={C}
-            r={OUTER_R + 2}
+            cx={c}
+            cy={c}
+            r={outerR + d2}
             fill="none"
             stroke="url(#borderGrad)"
             strokeWidth="1.5"
@@ -183,7 +193,7 @@ export default function GameBoard({ rotation }: Props) {
           {data.map(({ player, start, end }) => (
             <Path
               key={player.name}
-              d={arcPath(C, C, INNER_R + 14, OUTER_R, start, end)}
+              d={arcPath(c, c, innerR + d14, outerR, start, end)}
               fill={player.color}
               opacity={0.18}
             />
@@ -194,10 +204,10 @@ export default function GameBoard({ rotation }: Props) {
             <AnimatedPath
               animatedProps={pathProps}
               d={arcPath(
-                C,
-                C,
-                INNER_R + 14,
-                OUTER_R,
+                c,
+                c,
+                innerR + d14,
+                outerR,
                 data[selectedPlayerIndex].start,
                 data[selectedPlayerIndex].end,
               )}
@@ -207,8 +217,8 @@ export default function GameBoard({ rotation }: Props) {
 
           {/* Soft dividers */}
           {data.map(({ start }, i) => {
-            const p1 = pol(C, C, INNER_R + 14, start);
-            const p2 = pol(C, C, OUTER_R - 1, start);
+            const p1 = pol(c, c, innerR + d14, start);
+            const p2 = pol(c, c, outerR - board * (1 / 360), start);
             return (
               <Path
                 key={`d-${i}`}
@@ -223,25 +233,25 @@ export default function GameBoard({ rotation }: Props) {
 
           {/* Inner ring border */}
           <Circle
-            cx={C}
-            cy={C}
-            r={INNER_R + 12}
+            cx={c}
+            cy={c}
+            r={innerR + d12}
             fill="none"
             stroke="#334155"
             strokeWidth="1"
           />
 
           {/* Inner glow */}
-          <Circle cx={C} cy={C} r={INNER_R + 6} fill="url(#softGlow)" />
+          <Circle cx={c} cy={c} r={innerR + d6} fill="url(#softGlow)" />
 
           {/* Center dark circle */}
-          <Circle cx={C} cy={C} r={INNER_R} fill="url(#centerBg)" />
+          <Circle cx={c} cy={c} r={innerR} fill="url(#centerBg)" />
 
           {/* Center border */}
           <Circle
-            cx={C}
-            cy={C}
-            r={INNER_R}
+            cx={c}
+            cy={c}
+            r={innerR}
             fill="none"
             stroke="#334155"
             strokeWidth="0.75"
@@ -251,21 +261,23 @@ export default function GameBoard({ rotation }: Props) {
         {/* Player avatars */}
         {data.map(({ player, avatarPos, index }) => {
           const isSelected = hasSelection && index === selectedPlayerIndex;
+          const avatarSlot = board * (52 / 360);
+          const avatarOffset = board * (26 / 360);
           return (
             <Box
               key={`p-${player.name}`}
               position="absolute"
               alignItems="center"
               style={{
-                left: avatarPos.x - 26,
-                top: avatarPos.y - 26,
-                width: 52,
+                left: avatarPos.x - avatarOffset,
+                top: avatarPos.y - avatarOffset,
+                width: avatarSlot,
               }}>
               {isSelected ? (
                 <Animated.View style={avatarHighlightStyle}>
                   <Box
-                    width={32}
-                    height={32}
+                    width={board * (32 / 360)}
+                    height={board * (32 / 360)}
                     borderRadius="circle"
                     justifyContent="center"
                     alignItems="center"
@@ -274,10 +286,12 @@ export default function GameBoard({ rotation }: Props) {
                       shadowColor: player.color,
                       shadowOffset: { width: 0, height: 0 },
                       shadowOpacity: 0.7,
-                      shadowRadius: 10,
+                      shadowRadius: board * (10 / 360),
                       elevation: 8,
                     }}>
-                    <Text fontSize={14} fontWeight="700" color="bgDeep">
+                    <Text
+                      variant="bodyBold"
+                      color="bgDeep">
                       {player.name[0]}
                     </Text>
                   </Box>
@@ -285,8 +299,8 @@ export default function GameBoard({ rotation }: Props) {
               ) : (
                 <View style={{ transform: [{ scale: 1 }] }}>
                   <Box
-                    width={32}
-                    height={32}
+                    width={board * (32 / 360)}
+                    height={board * (32 / 360)}
                     borderRadius="circle"
                     justifyContent="center"
                     alignItems="center"
@@ -295,24 +309,25 @@ export default function GameBoard({ rotation }: Props) {
                       shadowColor: player.color,
                       shadowOffset: { width: 0, height: 0 },
                       shadowOpacity: 0.25,
-                      shadowRadius: 6,
+                      shadowRadius: board * (6 / 360),
                       elevation: 4,
                     }}>
-                    <Text fontSize={14} fontWeight="700" color="bgDeep">
+                    <Text
+                      variant="bodyBold"
+                      color="bgDeep">
                       {player.name[0]}
                     </Text>
                   </Box>
                 </View>
               )}
               <Text
-                fontSize={9}
-                fontWeight="600"
+                variant="micro"
                 color={isSelected ? 'white' : 'textSecondary'}
-                marginTop={4}
+                marginTop={board * (4 / 360)}
                 style={{
                   textShadowColor: isSelected ? player.color : 'rgba(0,0,0,0.7)',
                   textShadowOffset: { width: 0, height: 1 },
-                  textShadowRadius: isSelected ? 6 : 2,
+                  textShadowRadius: isSelected ? board * (6 / 360) : board * (2 / 360),
                 }}>
                 {player.name}
               </Text>
@@ -323,15 +338,19 @@ export default function GameBoard({ rotation }: Props) {
         {/* Spinning bottle */}
         <Box
           position="absolute"
-          width={INNER_R * 2}
-          height={INNER_R * 2}
-          style={{ left: C - INNER_R, top: C - INNER_R }}
+          width={innerR * 2}
+          height={innerR * 2}
+          style={{ left: c - innerR, top: c - innerR }}
           justifyContent="center"
           alignItems="center">
           <Animated.View style={bottleStyle}>
             <Image
               source={require('../assets/images/vodka.png')}
-              style={{ width: 70, height: 180, resizeMode: 'contain' }}
+              style={{
+                width: board * (70 / 360),
+                height: board * (180 / 360),
+                resizeMode: 'contain',
+              }}
             />
           </Animated.View>
         </Box>

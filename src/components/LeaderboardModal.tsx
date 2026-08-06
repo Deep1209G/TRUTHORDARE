@@ -4,8 +4,10 @@ import React from 'react';
 import { Modal, Pressable } from 'react-native';
 
 import { Box, Text } from '@src';
+import { useTranslation } from 'react-i18next';
 import { useGame } from '../context/GameContext';
 import { lightTap } from '../services/HapticService';
+import { useDeviceHelper } from '../hooks/useDeviceHelper';
 import CloseIcon from '../assets/icon/close.svg';
 import LeaderboardIcon from '../assets/icon/leaderboard.svg';
 
@@ -18,6 +20,8 @@ const MEDALS = ['\u{1F947}', '\u{1F948}', '\u{1F949}'];
 
 export default function LeaderboardModal({ visible, onClose }: Props) {
   const { players, scores } = useGame();
+  const { t } = useTranslation();
+  const device = useDeviceHelper();
 
   const sorted = [...players].sort(
     (a, b) => (scores[b.name] || 0) - (scores[a.name] || 0),
@@ -35,7 +39,7 @@ export default function LeaderboardModal({ visible, onClose }: Props) {
         <Box
           backgroundColor="bgDeep"
           borderRadius="xl"
-          padding={20}
+          padding={device.scaleWidth(20)}
           width="100%"
           style={{
             borderWidth: 1,
@@ -44,10 +48,10 @@ export default function LeaderboardModal({ visible, onClose }: Props) {
         >
           <Box flexDirection="row" alignItems="center" marginBottom={4}>
             <Box marginRight={6}>
-              <LeaderboardIcon width={16} height={16} color="#7C5CFF" />
+              <LeaderboardIcon width={device.scaleWidth(16)} height={device.scaleHeight(16)} color="#7C5CFF" />
             </Box>
-            <Text fontSize={11} fontWeight="700" letterSpacing={2} color="purple">
-              LEADERBOARD
+            <Text variant="caption" letterSpacing={2} color="purple">
+              {t('leaderboard.title')}
             </Text>
             <Box flex={1} />
             <Pressable
@@ -57,14 +61,14 @@ export default function LeaderboardModal({ visible, onClose }: Props) {
               }}
             >
               <Box
-                width={36}
-                height={36}
+                width={device.scaleWidth(36)}
+                height={device.scaleHeight(36)}
                 borderRadius="md"
                 backgroundColor="surface"
                 justifyContent="center"
                 alignItems="center"
               >
-                <CloseIcon width={16} height={16} color="white" />
+                <CloseIcon width={device.scaleWidth(16)} height={device.scaleHeight(16)} color="white" />
               </Box>
             </Pressable>
           </Box>
@@ -83,10 +87,9 @@ export default function LeaderboardModal({ visible, onClose }: Props) {
                   borderBottomColor: 'rgba(255,255,255,0.06)',
                 }}
               >
-                <Box width={36} alignItems="center">
+                <Box width={device.scaleWidth(36)} alignItems="center">
                   <Text
-                    fontSize={17}
-                    fontWeight="700"
+                    variant="heading"
                     color={isFirst ? 'purple' : 'textSecondary'}
                   >
                     {index < 3 ? MEDALS[index] : `#${index + 1}`}
@@ -94,12 +97,12 @@ export default function LeaderboardModal({ visible, onClose }: Props) {
                 </Box>
 
                 <Box
-                  width={32}
-                  height={32}
+                  width={device.scaleWidth(32)}
+                  height={device.scaleHeight(32)}
                   borderRadius="circle"
                   justifyContent="center"
                   alignItems="center"
-                  marginRight={12}
+                  marginRight={device.scaleWidth(12)}
                   style={{
                     backgroundColor: player.color,
                     shadowColor: player.color,
@@ -109,15 +112,14 @@ export default function LeaderboardModal({ visible, onClose }: Props) {
                     elevation: isFirst ? 6 : 3,
                   }}
                 >
-                  <Text fontSize={13} fontWeight="700" color="bgDeep">
+                  <Text variant="note" color="bgDeep">
                     {player.name[0]}
                   </Text>
                 </Box>
 
                 <Box flex={1}>
                   <Text
-                    fontSize={14}
-                    fontWeight={isFirst ? '700' : '600'}
+                    variant="bodyBold"
                     color="white"
                   >
                     {player.name}
@@ -126,7 +128,7 @@ export default function LeaderboardModal({ visible, onClose }: Props) {
 
                 <Box
                   borderRadius="md"
-                  paddingHorizontal={12}
+                  paddingHorizontal={device.scaleWidth(12)}
                   paddingVertical={4}
                   style={{
                     backgroundColor: isFirst
@@ -135,8 +137,7 @@ export default function LeaderboardModal({ visible, onClose }: Props) {
                   }}
                 >
                   <Text
-                    fontSize={16}
-                    fontWeight="800"
+                    variant="bodyBold"
                     style={{ color: isFirst ? '#818CF8' : player.color }}
                   >
                     {score}

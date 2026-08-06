@@ -1,0 +1,242 @@
+{
+  "app": {
+    "title": "TRUTH OR DARE",
+    "tagline": "SPIN THE BOTTLE",
+    "play": "PLAY"
+  },
+  "common": {
+    "continue": "CONTINUE",
+    "cancel": "CANCEL",
+    "close": "CLOSE",
+    "remove": "REMOVE",
+    "quickAdd": "+ Quick Add",
+    "enterName": "Enter name...",
+    "namePlaceholder": "Name...",
+    "truth": "TRUTH",
+    "dare": "DARE",
+    "truthLower": "truth",
+    "dareLower": "dare"
+  },
+  "language": {
+    "title": "Language",
+    "english": "English",
+    "hindi": "Hindi",
+    "gujarati": "Gujarati",
+    "info": "Language selection changes the app text. English, Hindi, and Gujarati are currently supported."
+  },
+  "menu": {
+    "rules": "Game Rules",
+    "sound": "Sound",
+    "share": "Share App",
+    "shareMessage": "Truth or Dare - the ultimate party game! Spin the bottle and take on challenges!"
+  },
+  "host": {
+    "title": "Game Host",
+    "subtitle": "Who should ask the Truths and Dares?",
+    "appHost": "App Host",
+    "appHostDesc": "The app asks all Truth and Dare questions",
+    "playerHost": "Player Host",
+    "playerHostDesc": "Players create and ask their own Truths and Dares"
+  },
+  "age": {
+    "title": "Who's Playing?",
+    "subtitle": "Enjoy questions designed just for your group.",
+    "kids": "Kids",
+    "kidsDesc": "Fun and family-friendly",
+    "teens": "Teens",
+    "teensDesc": "A little more playful and daring",
+    "adults": "Adults",
+    "adultsDesc": "Full party mode",
+    "family": "Family",
+    "familyDesc": "For the whole family to enjoy together",
+    "couple": "Couple",
+    "coupleDesc": "Romantic and spicy questions for two"
+  },
+  "difficulty": {
+    "title": "Challenge Level",
+    "subtitle": "Pick the intensity level for this game",
+    "mild": "Mild",
+    "mildDesc": "Playful & fun",
+    "medium": "Medium",
+    "mediumDesc": "A bit spicy",
+    "wild": "Wild",
+    "wildDesc": "Full chaos"
+  },
+  "topic": {
+    "title": "Choose a Topic",
+    "subtitle": "Select one or more types for this game",
+    "selected_one": "{{count}} selected",
+    "selected_other": "{{count}} selected",
+    "Funny": "Funny",
+    "Family": "Family",
+    "School": "School",
+    "Adventure": "Adventure",
+    "Silly": "Silly",
+    "Animals": "Animals",
+    "Cartoons": "Cartoons",
+    "Superheroes": "Superheroes",
+    "Food": "Food",
+    "Games": "Games",
+    "Music": "Music",
+    "Storybooks": "Storybooks",
+    "Space": "Space",
+    "Nature": "Nature",
+    "Friends": "Friends",
+    "Party": "Party",
+    "Embarrassing": "Embarrassing",
+    "Challenge": "Challenge",
+    "Romantic": "Romantic",
+    "Spicy": "Spicy",
+    "Extreme": "Extreme",
+    "Gaming": "Gaming",
+    "Movies & TV": "Movies & TV",
+    "Social Media": "Social Media",
+    "Dreams & Goals": "Dreams & Goals",
+    "Love & Romance": "Love & Romance",
+    "Career & Work": "Career & Work",
+    "Travel": "Travel",
+    "Food & Drinks": "Food & Drinks",
+    "Health & Fitness": "Health & Fitness",
+    "Opinions & Choices": "Opinions & Choices",
+    "Hobbies & Creativity": "Hobbies & Creativity",
+    "Lifestyle": "Lifestyle",
+    "Family Memories": "Family Memories",
+    "Favorites": "Favorites",
+    "Movies & Cartoons": "Movies & Cartoons",
+    "Music & Dance": "Music & Dance",
+    "Travel & Adventure": "Travel & Adventure",
+    "Creativity": "Creativity",
+    "Fun Challenges": "Fun Challenges",
+    "Relationship Memories": "Relationship Memories",
+    "Compliments": "Compliments",
+    "Flirting": "Flirting",
+    "Trust": "Trust",
+    "Dreams & Future": "Dreams & Future",
+    "Surprises": "Surprises",
+    "Food & Dates": "Food & Dates",
+    "Movies & Music": "Movies & Music",
+    "Couple Challenges": "Couple Challenges",
+    "Would You Rather": "Would You Rather",
+    "Celebrations": "Celebrations",
+    "Sweet Confessions": "Sweet Confessions"
+  },
+  "timer": {
+    "title": "Choose Turn Timer",
+    "subtitle": "Countdown for each player's turn",
+    "noTimer": "No Timer",
+    "seconds_one": "{{count}} Second",
+    "seconds_other": "{{count}} Seconds",
+    "custom": "Custom Time",
+    "customDesc": "Set your own duration",
+    "placeholder": "Enter seconds...",
+    "unit": "s",
+    "error": "Enter a value between {{min}} and {{max}} seconds"
+  },
+  "players": {
+    "title": "Add Players",
+    "section": "Players",
+    "minNote": "Add at least 2 players",
+    "emptyTitle": "No players added yet",
+    "emptyHint": "Tap + to add players",
+    "startGame": "START GAME",
+    "count": "{{count}} / 10 players",
+    "added_one": "ADDED ({{count}})",
+    "added_other": "ADDED ({{count}})",
+    "done_one": "DONE ({{count}})",
+    "done_other": "DONE ({{count}})",
+    "playerFallback": "Player {{number}}",
+    "maxAlert": "Max 10 players",
+    "existsAlert": "Name already exists",
+    "minAlert": "Minimum 2 players",
+    "needMinAlert": "Need at least 2 players"
+  },
+  "game": {
+    "spinning": "SPINNING...",
+    "tapToSpin": "TAP TO SPIN",
+    "noQuestions": "No questions available",
+    "makeUp": "Make up a {{type}} for the group!"
+  },
+  "tord": {
+    "yourTurn": "IT'S YOUR TURN"
+  },
+  "question": {
+    "nowPlaying": "NOW PLAYING",
+    "startTimer": "START TIMER",
+    "timeLeft": "TIME LEFT",
+    "generating": "GENERATING YOUR {{type}}...",
+    "forfeit": "FORFEIT",
+    "nailedIt": "NAILED IT"
+  },
+  "gameOver": {
+    "title": "GAME OVER",
+    "subtitle": "Final Scores",
+    "restart": "RESTART GAME",
+    "home": "GO TO HOME"
+  },
+  "rules": {
+    "title": "Game Rules",
+    "rule1Title": "Setup",
+    "rule1Body": "Gather 2-10 players. Each player gets a unique color. Arrange yourselves in a circle around the device.",
+    "rule2Title": "Spin the Bottle",
+    "rule2Body": "Tap the PLAY button to spin the bottle. When it stops, it points to one player — that player is IT!",
+    "rule3Title": "Choose Truth or Dare",
+    "rule3Body": "The selected player must choose: answer a TRUTH question honestly, or complete a DARE challenge. No backing out!",
+    "rule4Title": "Scoring",
+    "rule4Body": "Complete a dare or answer a truth to earn 1 point. Forfeit and you get nothing. The player with the most points at the end wins!",
+    "rule5Title": "Difficulty Levels",
+    "rule5Body": "MILD — fun and lighthearted. MEDIUM — a bit spicy. WILD — full chaos. Choose wisely in Settings.",
+    "rule6Title": "Fair Play",
+    "rule6Body": "Be a good sport. Keep it fun for everyone. Skip any question or dare that makes you truly uncomfortable."
+  },
+  "sound": {
+    "title": "Sound",
+    "effects": "Sound Effects",
+    "effectsDesc": "Spin sounds, button taps, and celebration effects",
+    "info": "Sound effects play during bottle spins, button presses, and when revealing truth or dare questions."
+  },
+  "settings": {
+    "title": "Settings",
+    "difficulty": "DIFFICULTY",
+    "audio": "AUDIO",
+    "gameData": "GAME DATA",
+    "soundEffects": "Sound Effects",
+    "soundEffectsDesc": "Spin sounds, button taps, and celebration effects",
+    "reset": "Reset Game",
+    "resetDesc": "Clear scores, reset difficulty and sound settings",
+    "leave": "Leave Game",
+    "leaveDesc": "End the current game and show final scores",
+    "resetTitle": "Reset Game",
+    "resetMsg": "This will clear all scores and reset settings. Are you sure?",
+    "resetBtn": "Reset",
+    "endTitle": "End Game",
+    "endMsg": "Are you sure you want to end the game? All progress will be lost and the entire game will stop.",
+    "endBtn": "End Game"
+  },
+  "header": {
+    "round": "ROUND",
+    "category": "Category",
+    "categoryDesc": "Pick the difficulty for questions",
+    "leaveTitle": "Leave the game?",
+    "leaveBody": "Your progress will be lost.",
+    "leaveBtn": "LEAVE GAME"
+  },
+  "leaderboard": {
+    "title": "LEADERBOARD"
+  },
+  "playerModal": {
+    "players": "PLAYERS",
+    "errorExists": "Name already exists or max 10 players reached.",
+    "errorMax": "Max 10 players reached.",
+    "errorEmpty": "Name cannot be empty or already in use.",
+    "errorMin": "Minimum 2 players.",
+    "removeTitle": "Remove player?",
+    "removeBody": "Remove {{name}} from the game?"
+  },
+  "questionCard": {
+    "badge": "{{type}} — {{name}}"
+  },
+  "ai": {
+    "truth": "Truth",
+    "dare": "Dare"
+  }
+}

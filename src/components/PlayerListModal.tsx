@@ -11,8 +11,10 @@ import {
 } from 'react-native';
 
 import { Box, Text } from '@src';
+import { useTranslation } from 'react-i18next';
 import { useGame } from '../context/GameContext';
 import { lightTap } from '../services/HapticService';
+import { useDeviceHelper } from '../hooks/useDeviceHelper';
 import CloseIcon from '../assets/icon/close.svg';
 import AddPlayerIcon from '../assets/icon/addplayer.svg';
 
@@ -36,6 +38,8 @@ const PRESET_NAMES = [
 
 export default function PlayerListModal({ visible, onClose }: Props) {
   const { players, addPlayer, removePlayer, renamePlayer } = useGame();
+  const { t } = useTranslation();
+  const device = useDeviceHelper();
   const [newName, setNewName] = useState('');
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editingName, setEditingName] = useState('');
@@ -60,7 +64,7 @@ export default function PlayerListModal({ visible, onClose }: Props) {
     const name = newName.trim();
     if (!name) return;
     if (!addPlayer(name)) {
-      showError('Name already exists or max 10 players reached.');
+      showError(t('playerModal.errorExists'));
       return;
     }
     setNewName('');
@@ -71,9 +75,9 @@ export default function PlayerListModal({ visible, onClose }: Props) {
     const used = new Set(players.map(p => p.name.toLowerCase()));
     const name =
       PRESET_NAMES.find(n => !used.has(n.toLowerCase())) ||
-      `Player ${players.length + 1}`;
+      t('players.playerFallback', { number: players.length + 1 });
     if (!addPlayer(name)) {
-      showError('Max 10 players reached.');
+      showError(t('playerModal.errorMax'));
     }
   }
 
@@ -92,7 +96,7 @@ export default function PlayerListModal({ visible, onClose }: Props) {
     lightTap();
     if (editingIndex === null) return;
     if (!renamePlayer(editingIndex, editingName)) {
-      showError('Name cannot be empty or already in use.');
+      showError(t('playerModal.errorEmpty'));
       return;
     }
     cancelRename();
@@ -102,7 +106,7 @@ export default function PlayerListModal({ visible, onClose }: Props) {
     lightTap();
     if (confirmIndex === null) return;
     if (!removePlayer(confirmIndex)) {
-      showError('Minimum 2 players.');
+      showError(t('playerModal.errorMin'));
     }
     setConfirmIndex(null);
   }
@@ -124,7 +128,7 @@ export default function PlayerListModal({ visible, onClose }: Props) {
           <Box
             backgroundColor="bgDeep"
             borderRadius="xl"
-            padding={20}
+            padding={device.scaleWidth(20)}
             maxHeight="82%"
             style={{
               borderWidth: 1,
@@ -133,18 +137,18 @@ export default function PlayerListModal({ visible, onClose }: Props) {
           >
             {/* Header */}
             <Box flexDirection="row" alignItems="center" marginBottom={16}>
-              <Text fontSize={11} fontWeight="700" letterSpacing={2} color="purple">
-                {'\u{1F465}'} PLAYERS
+              <Text variant="caption" letterSpacing={2} color="purple">
+                {'\u{1F465}'} {t('players.section')}
               </Text>
               <Box flex={1} />
               <Box
                 borderRadius="md"
-                paddingHorizontal={10}
+                paddingHorizontal={device.scaleWidth(10)}
                 paddingVertical={4}
-                marginRight={8}
+                marginRight={device.scaleWidth(8)}
                 style={{ backgroundColor: 'rgba(129,140,248,0.15)' }}
               >
-                <Text fontSize={12} fontWeight="700" style={{ color: '#818CF8' }}>
+                <Text variant="label" style={{ color: '#818CF8' }}>
                   {players.length} / 10
                 </Text>
               </Box>
@@ -155,14 +159,14 @@ export default function PlayerListModal({ visible, onClose }: Props) {
                 }}
               >
                 <Box
-                  width={36}
-                  height={36}
+                  width={device.scaleWidth(36)}
+                  height={device.scaleHeight(36)}
                   borderRadius="md"
                   backgroundColor="surface"
                   justifyContent="center"
                   alignItems="center"
                 >
-                  <CloseIcon width={16} height={16} color="white" />
+                  <CloseIcon width={device.scaleWidth(16)} height={device.scaleHeight(16)} color="white" />
                 </Box>
               </Pressable>
             </Box>
@@ -173,7 +177,7 @@ export default function PlayerListModal({ visible, onClose }: Props) {
               alignItems="center"
               backgroundColor="surface"
               borderRadius="md"
-              paddingHorizontal={14}
+              paddingHorizontal={device.scaleWidth(14)}
               paddingVertical={4}
               marginBottom={10}
               style={{
@@ -185,11 +189,11 @@ export default function PlayerListModal({ visible, onClose }: Props) {
                 <TextInput
                   value={newName}
                   onChangeText={setNewName}
-                  placeholder="Enter name..."
+                  placeholder={t('common.enterName')}
                   placeholderTextColor="rgba(255,255,255,0.3)"
                   style={{
                     color: '#FFF',
-                    fontSize: 14,
+                    fontSize: device.scaleWidth(14),
                     paddingVertical: 8,
                   }}
                   returnKeyType="done"
@@ -198,21 +202,21 @@ export default function PlayerListModal({ visible, onClose }: Props) {
               </Box>
               <Pressable onPress={handleAdd}>
                 <Box
-                  width={32}
-                  height={32}
+                  width={device.scaleWidth(32)}
+                  height={device.scaleHeight(32)}
                   borderRadius="circle"
                   backgroundColor="purple"
                   justifyContent="center"
                   alignItems="center"
                 >
-                  <AddPlayerIcon width={16} height={16} color="white" />
+                  <AddPlayerIcon width={device.scaleWidth(16)} height={device.scaleHeight(16)} color="white" />
                 </Box>
               </Pressable>
             </Box>
 
             <Pressable onPress={handleQuickAdd}>
               <Box
-                height={38}
+                height={device.scaleHeight(38)}
                 borderRadius="md"
                 justifyContent="center"
                 alignItems="center"
@@ -224,8 +228,8 @@ export default function PlayerListModal({ visible, onClose }: Props) {
                   borderRadius: 12,
                 }}
               >
-                <Text fontSize={12} fontWeight="600" style={{ color: '#818CF8' }}>
-                  + Quick Add
+                <Text variant="label" style={{ color: '#818CF8' }}>
+                  {t('common.quickAdd')}
                 </Text>
               </Box>
             </Pressable>
@@ -233,7 +237,7 @@ export default function PlayerListModal({ visible, onClose }: Props) {
             {errorMsg && (
               <Box
                 borderRadius="md"
-                paddingHorizontal={12}
+                paddingHorizontal={device.scaleWidth(12)}
                 paddingVertical={8}
                 marginBottom={12}
                 style={{
@@ -242,7 +246,7 @@ export default function PlayerListModal({ visible, onClose }: Props) {
                   borderColor: 'rgba(239,68,68,0.3)',
                 }}
               >
-                <Text fontSize={12} fontWeight="600" style={{ color: '#EF4444' }}>
+                <Text variant="label" style={{ color: '#EF4444' }}>
                   {errorMsg}
                 </Text>
               </Box>
@@ -263,10 +267,9 @@ export default function PlayerListModal({ visible, onClose }: Props) {
                       borderBottomColor: 'rgba(255,255,255,0.06)',
                     }}
                   >
-                    <Box width={34} alignItems="center" marginRight={10}>
+                    <Box width={device.scaleWidth(34)} alignItems="center" marginRight={device.scaleWidth(10)}>
                       <Text
-                        fontSize={11}
-                        fontWeight="700"
+                        variant="caption"
                         color="textSecondary"
                         style={{ fontVariant: ['tabular-nums'] }}
                       >
@@ -275,12 +278,12 @@ export default function PlayerListModal({ visible, onClose }: Props) {
                     </Box>
 
                     <Box
-                      width={36}
-                      height={36}
+                      width={device.scaleWidth(36)}
+                      height={device.scaleHeight(36)}
                       borderRadius="circle"
                       justifyContent="center"
                       alignItems="center"
-                      marginRight={12}
+                      marginRight={device.scaleWidth(12)}
                       style={{
                         backgroundColor: player.color,
                         shadowColor: player.color,
@@ -290,7 +293,7 @@ export default function PlayerListModal({ visible, onClose }: Props) {
                         elevation: 4,
                       }}
                     >
-                      <Text fontSize={14} fontWeight="700" color="bgDeep">
+                      <Text variant="bodyBold" color="bgDeep">
                         {player.name[0]}
                       </Text>
                     </Box>
@@ -302,17 +305,17 @@ export default function PlayerListModal({ visible, onClose }: Props) {
                         alignItems="center"
                         backgroundColor="surface"
                         borderRadius="md"
-                        paddingHorizontal={10}
+                        paddingHorizontal={device.scaleWidth(10)}
                         paddingVertical={2}
                       >
                         <TextInput
                           value={editingName}
                           onChangeText={setEditingName}
-                          placeholder="Name..."
+                          placeholder={t('common.namePlaceholder')}
                           placeholderTextColor="rgba(255,255,255,0.3)"
                           style={{
                             color: '#FFF',
-                            fontSize: 14,
+                            fontSize: device.scaleWidth(14),
                             paddingVertical: 6,
                             flex: 1,
                           }}
@@ -321,19 +324,19 @@ export default function PlayerListModal({ visible, onClose }: Props) {
                           autoFocus
                         />
                         <Pressable onPress={saveRename} style={{ marginRight: 8 }}>
-                          <Text fontSize={15} fontWeight="700" style={{ color: '#34D399' }}>
+                          <Text variant="bodyBold" style={{ color: '#34D399' }}>
                             {'\u2713'}
                           </Text>
                         </Pressable>
                         <Pressable onPress={cancelRename}>
-                          <Text fontSize={14} fontWeight="700" style={{ color: '#EF4444' }}>
+                          <Text variant="bodyBold" style={{ color: '#EF4444' }}>
                             {'\u2715'}
                           </Text>
                         </Pressable>
                       </Box>
                     ) : (
                       <Box flex={1}>
-                        <Text fontSize={15} fontWeight="600" color="white">
+                        <Text variant="bodyBold" color="white">
                           {player.name}
                         </Text>
                       </Box>
@@ -343,29 +346,29 @@ export default function PlayerListModal({ visible, onClose }: Props) {
                       <>
                         <Pressable onPress={() => startRename(index, player.name)}>
                           <Box
-                            width={30}
-                            height={30}
+                            width={device.scaleWidth(30)}
+                            height={device.scaleHeight(30)}
                             borderRadius="circle"
                             justifyContent="center"
                             alignItems="center"
-                            marginRight={10}
+                            marginRight={device.scaleWidth(10)}
                             style={{ backgroundColor: 'rgba(129,140,248,0.15)' }}
                           >
-                            <Text fontSize={13} style={{ color: '#818CF8' }}>
+                            <Text variant="note" style={{ color: '#818CF8' }}>
                               {'\u270E'}
                             </Text>
                           </Box>
                         </Pressable>
                         <Pressable onPress={() => { lightTap(); setConfirmIndex(index); }}>
                           <Box
-                            width={30}
-                            height={30}
+                            width={device.scaleWidth(30)}
+                            height={device.scaleHeight(30)}
                             borderRadius="circle"
                             justifyContent="center"
                             alignItems="center"
                             style={{ backgroundColor: 'rgba(239,68,68,0.15)' }}
                           >
-                            <Text fontSize={14} fontWeight="600" style={{ color: '#EF4444' }}>
+                            <Text style={{ color: '#EF4444' }}>
                               x
                             </Text>
                           </Box>
@@ -393,7 +396,7 @@ export default function PlayerListModal({ visible, onClose }: Props) {
               <Box
                 backgroundColor="bgDeep"
                 borderRadius="xl"
-                padding={24}
+                padding={device.scaleWidth(24)}
                 width="80%"
                 style={{
                   borderWidth: 1,
@@ -401,26 +404,25 @@ export default function PlayerListModal({ visible, onClose }: Props) {
                 }}
               >
                 <Text
-                  fontSize={17}
-                  fontWeight="700"
+                  variant="heading"
                   color="white"
                   textAlign="center"
                   marginBottom={6}
                 >
-                  Remove player?
+                  {t('playerModal.removeTitle')}
                 </Text>
                 <Text
-                  fontSize={13}
+                  variant="note"
                   color="textSecondary"
                   textAlign="center"
-                  marginBottom={20}
+                  marginBottom={device.scaleHeight(20)}
                 >
-                  Remove {confirmPlayer.name} from the game?
+                  {t('playerModal.removeBody', { name: confirmPlayer.name })}
                 </Text>
 
                 <Pressable onPress={confirmRemove}>
                   <Box
-                    height={50}
+                    height={device.scaleHeight(50)}
                     borderRadius="lg"
                     justifyContent="center"
                     alignItems="center"
@@ -434,8 +436,8 @@ export default function PlayerListModal({ visible, onClose }: Props) {
                       elevation: 8,
                     }}
                   >
-                    <Text fontSize={15} fontWeight="700" color="white" letterSpacing={1}>
-                      REMOVE
+                    <Text variant="bodyBold" color="white" letterSpacing={1}>
+                      {t('common.remove')}
                     </Text>
                   </Box>
                 </Pressable>
@@ -447,7 +449,7 @@ export default function PlayerListModal({ visible, onClose }: Props) {
                   }}
                 >
                   <Box
-                    height={50}
+                    height={device.scaleHeight(50)}
                     borderRadius="lg"
                     justifyContent="center"
                     alignItems="center"
@@ -456,8 +458,8 @@ export default function PlayerListModal({ visible, onClose }: Props) {
                       borderColor: 'rgba(255,255,255,0.15)',
                     }}
                   >
-                    <Text fontSize={15} fontWeight="700" color="white">
-                      CANCEL
+                    <Text variant="bodyBold" color="white">
+                      {t('common.cancel')}
                     </Text>
                   </Box>
                 </Pressable>

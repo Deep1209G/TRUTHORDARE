@@ -6,8 +6,10 @@ import { Pressable, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Box, Text } from '@src';
+import { useTranslation } from 'react-i18next';
 import { useGame } from '../context/GameContext';
 import { lightTap } from '../services/HapticService';
+import { useDeviceHelper } from '../hooks/useDeviceHelper';
 import TickIcon from '../assets/icon/tick.svg';
 import BackIcon from '../assets/icon/back.svg';
 
@@ -16,11 +18,11 @@ type Props = {
 };
 
 const PRESETS = [
-  { label: 'No Timer', seconds: 0 },
-  { label: '15 Seconds', seconds: 15 },
-  { label: '30 Seconds', seconds: 30 },
-  { label: '45 Seconds', seconds: 45 },
-  { label: '60 Seconds', seconds: 60 },
+  { seconds: 0 },
+  { seconds: 15 },
+  { seconds: 30 },
+  { seconds: 45 },
+  { seconds: 60 },
 ];
 
 const CUSTOM_MIN = 1;
@@ -28,6 +30,8 @@ const CUSTOM_MAX = 3600;
 
 export default function TurnTimerScreen({ navigation }: Props) {
   const { setTurnTimer } = useGame();
+  const { t } = useTranslation();
+  const device = useDeviceHelper();
   const [selected, setSelected] = useState<number | null>(null);
   const [customActive, setCustomActive] = useState(false);
   const [customInput, setCustomInput] = useState('');
@@ -63,9 +67,9 @@ export default function TurnTimerScreen({ navigation }: Props) {
     <SafeAreaView style={{ flex: 1, backgroundColor: '#120826' }}>
       <Box flex={1} backgroundColor="background">
         {/* Header */}
-        <Box paddingHorizontal={24} paddingTop={16}>
+        <Box paddingHorizontal={device.scaleWidth(24)} paddingTop={device.scaleHeight(16)}>
           <Box flexDirection="row" alignItems="center">
-            <Box width={42}>
+            <Box width={device.scaleWidth(42)}>
               <Pressable
                 onPress={() => {
                   lightTap();
@@ -73,38 +77,38 @@ export default function TurnTimerScreen({ navigation }: Props) {
                 }}
               >
                 <Box
-                  width={42}
-                  height={42}
+                  width={device.scaleWidth(42)}
+                  height={device.scaleHeight(42)}
                   borderRadius="md"
                   backgroundColor="surface"
                   justifyContent="center"
                   alignItems="center"
                 >
-                  <BackIcon width={18} height={18} color="white" />
+                  <BackIcon width={device.scaleWidth(18)} height={device.scaleHeight(18)} color="white" />
                 </Box>
               </Pressable>
             </Box>
             <Box alignItems="center" flex={1}>
-              <Text variant="title" fontSize={28} textAlign="center">
-                TRUTH OR DARE
+              <Text variant="screenTitle" color="yellow" textAlign="center">
+                {t('app.title')}
               </Text>
             </Box>
-            <Box width={42} />
+            <Box width={device.scaleWidth(42)} />
           </Box>
         </Box>
 
         {/* Title */}
-        <Box paddingHorizontal={24} paddingTop={32}>
-          <Text fontSize={24} fontWeight="700" color="white">
-            Choose Turn Timer
+        <Box paddingHorizontal={device.scaleWidth(24)} paddingTop={device.scaleHeight(32)}>
+          <Text variant="title" color="white">
+            {t('timer.title')}
           </Text>
-          <Text fontSize={13} color="textSecondary" marginTop={4}>
-            Countdown for each player's turn
+          <Text variant="note" color="textSecondary" marginTop={4}>
+            {t('timer.subtitle')}
           </Text>
         </Box>
 
         {/* Timer options */}
-        <Box paddingHorizontal={24} paddingTop={24}>
+        <Box paddingHorizontal={device.scaleWidth(24)} paddingTop={device.scaleHeight(24)}>
           {PRESETS.map(item => {
             const active = !customActive && selected === item.seconds;
             return (
@@ -113,7 +117,7 @@ export default function TurnTimerScreen({ navigation }: Props) {
                   flexDirection="row"
                   alignItems="center"
                   borderRadius="lg"
-                  padding={16}
+                  padding={device.scaleWidth(16)}
                   marginBottom={12}
                   style={
                     active
@@ -136,14 +140,17 @@ export default function TurnTimerScreen({ navigation }: Props) {
                 >
                   <Box flex={1}>
                     <Text
-                      fontSize={16}
-                      fontWeight="700"
+                      variant="bodyBold"
                       color={active ? 'white' : 'textSecondary'}
                     >
-                      {item.label}
+                      {item.seconds > 0
+                        ? t('timer.seconds', { count: item.seconds })
+                        : t('timer.noTimer')}
                     </Text>
                   </Box>
-                  {active && <TickIcon width={24} height={24} color="white" />}
+                  {active && (
+                    <TickIcon width={device.scaleWidth(24)} height={device.scaleHeight(24)} color="white" />
+                  )}
                 </Box>
               </Pressable>
             );
@@ -153,7 +160,7 @@ export default function TurnTimerScreen({ navigation }: Props) {
           <Pressable onPress={selectCustom}>
             <Box
               borderRadius="lg"
-              padding={16}
+              padding={device.scaleWidth(16)}
               style={
                 customActive
                   ? {
@@ -176,22 +183,21 @@ export default function TurnTimerScreen({ navigation }: Props) {
               <Box flexDirection="row" alignItems="center">
                 <Box flex={1}>
                   <Text
-                    fontSize={16}
-                    fontWeight="700"
+                    variant="bodyBold"
                     color={customActive ? 'white' : 'textSecondary'}
                   >
-                    Custom Time
+                    {t('timer.custom')}
                   </Text>
                   <Text
-                    fontSize={12}
+                    variant="label"
                     color={customActive ? 'white' : 'textSecondary'}
                     opacity={customActive ? 0.8 : 0.6}
                   >
-                    Set your own duration
+                    {t('timer.customDesc')}
                   </Text>
                 </Box>
                 {customActive && (
-                  <TickIcon width={24} height={24} color="white" />
+                  <TickIcon width={device.scaleWidth(24)} height={device.scaleHeight(24)} color="white" />
                 )}
               </Box>
 
@@ -202,7 +208,7 @@ export default function TurnTimerScreen({ navigation }: Props) {
                   marginTop={14}
                   backgroundColor="bgDeep"
                   borderRadius="md"
-                  paddingHorizontal={14}
+                  paddingHorizontal={device.scaleWidth(14)}
                   paddingVertical={4}
                   style={{
                     borderWidth: 1,
@@ -213,22 +219,20 @@ export default function TurnTimerScreen({ navigation }: Props) {
                     <TextInput
                       value={customInput}
                       onChangeText={setCustomInput}
-                      placeholder="Enter seconds..."
+                      placeholder={t('timer.placeholder')}
                       placeholderTextColor="rgba(255,255,255,0.3)"
                       keyboardType="number-pad"
                       style={{
                         color: '#FFF',
-                        fontSize: 15,
+                        fontSize: device.scaleWidth(15),
                         paddingVertical: 8,
                       }}
                     />
                   </Box>
                   <Text
-                    fontSize={14}
-                    fontWeight="600"
                     color={customValid ? 'white' : 'textSecondary'}
                   >
-                    s
+                    {t('timer.unit')}
                   </Text>
                 </Box>
               )}
@@ -237,21 +241,24 @@ export default function TurnTimerScreen({ navigation }: Props) {
 
           {customActive && !customValid && customInput.length > 0 && (
             <Text
-              fontSize={11}
+              variant="caption"
               color="orange"
               marginTop={6}
               paddingLeft={6}
             >
-              Enter a value between {CUSTOM_MIN} and {CUSTOM_MAX} seconds
+              {t('timer.error', {
+                min: CUSTOM_MIN,
+                max: CUSTOM_MAX,
+              })}
             </Text>
           )}
         </Box>
 
         {/* Bottom section */}
-        <Box flex={1} justifyContent="flex-end" paddingHorizontal={24} paddingBottom={32}>
+        <Box flex={1} justifyContent="flex-end" paddingHorizontal={device.scaleWidth(24)} paddingBottom={device.scaleHeight(32)}>
           <Pressable onPress={handleContinue}>
             <Box
-              height={58}
+              height={device.scaleHeight(58)}
               borderRadius="lg"
               justifyContent="center"
               alignItems="center"
@@ -266,12 +273,11 @@ export default function TurnTimerScreen({ navigation }: Props) {
               }}
             >
               <Text
-                fontSize={18}
-                fontWeight="700"
+                variant="heading"
                 letterSpacing={1}
                 style={{ color: canContinue ? '#FFF' : '#64748B' }}
               >
-                CONTINUE
+                {t('common.continue')}
               </Text>
             </Box>
           </Pressable>

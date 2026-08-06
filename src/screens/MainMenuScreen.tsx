@@ -21,8 +21,10 @@ import Svg, {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Box, Text } from '@src';
+import { useTranslation } from 'react-i18next';
 import { useGame } from '../context/GameContext';
 import { lightTap } from '../services/HapticService';
+import { useDeviceHelper } from '../hooks/useDeviceHelper';
 import RulebookIcon from '../assets/icon/rulebook.svg';
 import VolumeIcon from '../assets/icon/volume.svg';
 import GlobalIcon from '../assets/icon/global.svg';
@@ -43,13 +45,15 @@ const BOARD_COLORS = [
 ];
 
 const MENU_BUTTONS = [
-  { key: 'Rules', icon: 'Rules', label: 'Game Rules', screen: 'Rules' },
-  { key: 'Sound', icon: 'Sound', label: 'Sound', screen: 'Sound' },
-  { key: 'Share', icon: 'Share', label: 'Share App', screen: null },
+  { key: 'Rules', icon: 'Rules', labelKey: 'menu.rules', screen: 'Rules' },
+  { key: 'Sound', icon: 'Sound', labelKey: 'menu.sound', screen: 'Sound' },
+  { key: 'Share', icon: 'Share', labelKey: 'menu.share', screen: null },
 ];
 
-export default function HomeMenuScreen({ navigation }: Props) {
+export default function MainMenuScreen({ navigation }: Props) {
   const { setPlayers, resetGame } = useGame();
+  const { t } = useTranslation();
+  const device = useDeviceHelper();
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const playScale = useRef(new Animated.Value(0.5)).current;
   const buttonsAnim = useRef(new Animated.Value(0)).current;
@@ -100,8 +104,7 @@ export default function HomeMenuScreen({ navigation }: Props) {
   function handleShare() {
     lightTap();
     Share.share({
-      message:
-        'Truth or Dare - the ultimate party game! Spin the bottle and take on challenges!',
+      message: t('menu.shareMessage'),
     });
   }
 
@@ -135,8 +138,8 @@ export default function HomeMenuScreen({ navigation }: Props) {
           top={0}
           left={0}
           right={0}
-          paddingHorizontal={22}
-          paddingTop={20}
+          paddingHorizontal={device.scaleWidth(22)}
+          paddingTop={device.scaleHeight(20)}
           flexDirection="row"
           justifyContent="flex-end"
           alignItems="center"
@@ -149,15 +152,15 @@ export default function HomeMenuScreen({ navigation }: Props) {
             }}
           >
             <Box
-              width={42}
-              height={42}
+              width={device.scaleWidth(42)}
+              height={device.scaleHeight(42)}
               borderRadius="md"
               backgroundColor="surface"
               justifyContent="center"
               alignItems="center"
-              marginRight={10}
+              marginRight={device.scaleWidth(10)}
             >
-              <GlobalIcon width={20} height={20} color="white" />
+              <GlobalIcon width={device.scaleWidth(20)} height={device.scaleHeight(20)} color="white" />
             </Box>
           </Pressable>
           <Pressable
@@ -167,14 +170,14 @@ export default function HomeMenuScreen({ navigation }: Props) {
             }}
           >
             <Box
-              width={42}
-              height={42}
+              width={device.scaleWidth(42)}
+              height={device.scaleHeight(42)}
               borderRadius="md"
               backgroundColor="surface"
               justifyContent="center"
               alignItems="center"
             >
-              <SettingIcon width={24} height={24} color="white" />
+              <SettingIcon width={device.scaleWidth(24)} height={device.scaleHeight(24)} color="white" />
             </Box>
           </Pressable>
         </Box>
@@ -182,14 +185,18 @@ export default function HomeMenuScreen({ navigation }: Props) {
         <ScrollView
           contentContainerStyle={{
             flexGrow: 1,
-            paddingHorizontal: 24,
-            paddingVertical: 40,
+            paddingHorizontal: device.scaleWidth(24),
+            paddingVertical: device.scaleHeight(40),
           }}
         >
           <Box flex={1} justifyContent="center" alignItems="center">
             {/* Game board centered */}
             <Animated.View style={{ opacity: fadeAnim, alignItems: 'center' }}>
-              <Svg width={220} height={220} viewBox="0 0 280 280">
+              <Svg
+                width={device.scaleWidth(220)}
+                height={device.scaleWidth(220)}
+                viewBox="0 0 280 280"
+              >
                 <Defs>
                   <RadialGradient id="boardBg" cx="50%" cy="50%" r="50%">
                     <Stop offset="0%" stopColor="#1E293B" />
@@ -250,7 +257,11 @@ export default function HomeMenuScreen({ navigation }: Props) {
                 <AnimatedRN.View style={bottleStyle}>
                   <Image
                     source={require('../assets/images/vodka.png')}
-                    style={{ width: 55, height: 140, resizeMode: 'contain' }}
+                    style={{
+                      width: device.scaleWidth(55),
+                      height: device.scaleHeight(140),
+                      resizeMode: 'contain',
+                    }}
                   />
                 </AnimatedRN.View>
               </Box>
@@ -261,20 +272,20 @@ export default function HomeMenuScreen({ navigation }: Props) {
               style={{ opacity: fadeAnim, alignItems: 'center', marginTop: 8 }}
             >
               <Text
-                variant="header"
-                fontSize={28}
+                variant="screenTitle"
                 textAlign="center"
                 letterSpacing={3}
               >
-                TRUTH OR DARE
+                {t('app.title')}
               </Text>
               <Text
-                variant="subtitle"
-                fontSize={11}
+                variant="caption"
+                color="textSecondary"
+                letterSpacing={2}
                 textAlign="center"
                 marginTop={2}
               >
-                SPIN THE BOTTLE
+                {t('app.tagline')}
               </Text>
             </Animated.View>
 
@@ -283,13 +294,13 @@ export default function HomeMenuScreen({ navigation }: Props) {
               style={{
                 transform: [{ scale: playScale }],
                 alignItems: 'center',
-                marginVertical: 20,
+                marginVertical: device.scaleHeight(20),
               }}
             >
               <Pressable onPress={handlePlay}>
                 <Box
-                  width={180}
-                  height={56}
+                  width={device.scaleWidth(180)}
+                  height={device.scaleHeight(56)}
                   borderRadius="lg"
                   justifyContent="center"
                   alignItems="center"
@@ -303,8 +314,7 @@ export default function HomeMenuScreen({ navigation }: Props) {
                   }}
                 >
                   <Text
-                    fontSize={18}
-                    fontWeight="800"
+                    variant="heading"
                     color="white"
                     letterSpacing={3}
                     style={{
@@ -313,7 +323,7 @@ export default function HomeMenuScreen({ navigation }: Props) {
                       textShadowRadius: 8,
                     }}
                   >
-                    PLAY
+                    {t('app.play')}
                   </Text>
                 </Box>
               </Pressable>
@@ -321,7 +331,7 @@ export default function HomeMenuScreen({ navigation }: Props) {
           </Box>
 
           {/* Bottom buttons: Rules, Sound, Share */}
-          <Animated.View style={{ opacity: buttonsAnim, paddingBottom: 20 }}>
+          <Animated.View style={{ opacity: buttonsAnim, paddingBottom: device.scaleHeight(20) }}>
             <Box flexDirection="row" justifyContent="center">
               {MENU_BUTTONS.map(btn => {
                 const translateY = buttonsAnim.interpolate({
@@ -334,24 +344,24 @@ export default function HomeMenuScreen({ navigation }: Props) {
                     style={{
                       opacity: buttonsAnim,
                       transform: [{ translateY }],
-                      marginHorizontal: 14,
+                      marginHorizontal: device.scaleWidth(14),
                     }}
                   >
                     <Pressable onPress={() => handleMenuPress(btn.screen)}>
                       <Box
-                        width={42}
-                        height={42}
+                        width={device.scaleWidth(42)}
+                        height={device.scaleHeight(42)}
                         borderRadius="md"
                         backgroundColor="surface"
                         justifyContent="center"
                         alignItems="center"
                       >
                         {btn.key === 'Rules' ? (
-                          <RulebookIcon width={15} height={15} color="white" />
+                          <RulebookIcon width={device.scaleWidth(15)} height={device.scaleHeight(15)} color="white" />
                         ) : btn.key === 'Sound' ? (
-                          <VolumeIcon width={20} height={20} color="white" />
+                          <VolumeIcon width={device.scaleWidth(20)} height={device.scaleHeight(20)} color="white" />
                         ) : (
-                          <ShareIcon width={20} height={20} color="white" />
+                          <ShareIcon width={device.scaleWidth(20)} height={device.scaleHeight(20)} color="white" />
                         )}
                       </Box>
                     </Pressable>

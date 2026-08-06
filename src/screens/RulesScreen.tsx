@@ -7,45 +7,32 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Box, Text } from '@src';
 import BackIcon from '../assets/icon/back.svg';
+import { useTranslation } from 'react-i18next';
 import { lightTap } from '../services/HapticService';
+import { useDeviceHelper } from '../hooks/useDeviceHelper';
 
 type Props = {
   navigation: any;
 };
 
 const RULES = [
-  {
-    title: 'Setup',
-    body: 'Gather 2-10 players. Each player gets a unique color. Arrange yourselves in a circle around the device.',
-  },
-  {
-    title: 'Spin the Bottle',
-    body: 'Tap the PLAY button to spin the bottle. When it stops, it points to one player — that player is IT!',
-  },
-  {
-    title: 'Choose Truth or Dare',
-    body: 'The selected player must choose: answer a TRUTH question honestly, or complete a DARE challenge. No backing out!',
-  },
-  {
-    title: 'Scoring',
-    body: 'Complete a dare or answer a truth to earn 1 point. Forfeit and you get nothing. The player with the most points at the end wins!',
-  },
-  {
-    title: 'Difficulty Levels',
-    body: 'MILD — fun and lighthearted. MEDIUM — a bit spicy. WILD — full chaos. Choose wisely in Settings.',
-  },
-  {
-    title: 'Fair Play',
-    body: 'Be a good sport. Keep it fun for everyone. Skip any question or dare that makes you truly uncomfortable.',
-  },
+  { titleKey: 'rules.rule1Title', bodyKey: 'rules.rule1Body' },
+  { titleKey: 'rules.rule2Title', bodyKey: 'rules.rule2Body' },
+  { titleKey: 'rules.rule3Title', bodyKey: 'rules.rule3Body' },
+  { titleKey: 'rules.rule4Title', bodyKey: 'rules.rule4Body' },
+  { titleKey: 'rules.rule5Title', bodyKey: 'rules.rule5Body' },
+  { titleKey: 'rules.rule6Title', bodyKey: 'rules.rule6Body' },
 ];
 
 export default function RulesScreen({ navigation }: Props) {
+  const { t } = useTranslation();
+  const device = useDeviceHelper();
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#120826' }}>
       <Box flex={1} backgroundColor="background">
-        <Box paddingHorizontal={24} paddingTop={16} paddingBottom={40} flex={1}>
-          <Box flexDirection="row" alignItems="center" marginBottom={24}>
+        <Box paddingHorizontal={device.scaleWidth(24)} paddingTop={device.scaleHeight(16)} paddingBottom={device.scaleHeight(40)} flex={1}>
+          <Box flexDirection="row" alignItems="center" marginBottom={device.scaleHeight(24)}>
             <Pressable
               onPress={() => {
                 lightTap();
@@ -53,19 +40,19 @@ export default function RulesScreen({ navigation }: Props) {
               }}
             >
               <Box
-                width={40}
-                height={40}
+                width={device.scaleWidth(40)}
+                height={device.scaleHeight(40)}
                 borderRadius="md"
                 backgroundColor="surface"
                 justifyContent="center"
                 alignItems="center"
-                marginRight={16}
+                marginRight={device.scaleWidth(16)}
               >
-                <BackIcon width={18} height={18} color="white" />
+                <BackIcon width={device.scaleWidth(18)} height={device.scaleHeight(18)} color="white" />
               </Box>
             </Pressable>
-            <Text variant="header" fontSize={28}>
-              Game Rules
+            <Text variant="screenTitle">
+              {t('rules.title')}
             </Text>
           </Box>
 
@@ -75,7 +62,7 @@ export default function RulesScreen({ navigation }: Props) {
                 key={i}
                 backgroundColor="surface"
                 borderRadius="md"
-                padding={16}
+                padding={device.scaleWidth(16)}
                 marginBottom={12}
                 style={{
                   borderWidth: 1,
@@ -84,29 +71,29 @@ export default function RulesScreen({ navigation }: Props) {
               >
                 <Box flexDirection="row" alignItems="center" marginBottom={8}>
                   <Box
-                    width={26}
-                    height={26}
+                    width={device.scaleWidth(26)}
+                    height={device.scaleHeight(26)}
                     borderRadius="circle"
                     backgroundColor="purple"
                     justifyContent="center"
                     alignItems="center"
-                    marginRight={12}
+                    marginRight={device.scaleWidth(12)}
                   >
-                    <Text fontSize={13} fontWeight="700" color="white">
+                    <Text variant="note" color="white">
                       {i + 1}
                     </Text>
                   </Box>
-                  <Text fontSize={16} fontWeight="700" color="white">
-                    {rule.title}
+                  <Text variant="bodyBold" color="white">
+                    {t(rule.titleKey)}
                   </Text>
                 </Box>
                 <Text
-                  fontSize={13}
+                  variant="note"
                   color="textSecondary"
-                  lineHeight={20}
-                  paddingLeft={32}
+                  lineHeight={device.scaleHeight(20)}
+                  paddingLeft={device.scaleWidth(32)}
                 >
-                  {rule.body}
+                  {t(rule.bodyKey)}
                 </Text>
               </Box>
             ))}

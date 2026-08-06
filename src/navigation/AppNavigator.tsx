@@ -6,14 +6,15 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import {
   SplashScreen,
-  HomeMenuScreen,
+  MainMenuScreen,
   HostModeScreen,
   AgeSelectionScreen,
-  CategorySelectionScreen,
+  DifficultySelectionScreen,
   QuestionTypeScreen,
   TurnTimerScreen,
   PlayerSetupScreen,
-  HomeScreen,
+  GameScreen,
+  TruthOrDareScreen,
   QuestionScreen,
   SettingsScreen,
   RulesScreen,
@@ -31,19 +32,21 @@ export default function AppNavigator() {
         initialRouteName="Splash"
         screenOptions={{
           headerShown: false,
+          animation: 'slide_from_right',
         }}>
         <Stack.Screen name="Splash" component={SplashScreen} />
-        <Stack.Screen name="HomeMenu" component={HomeMenuScreen} />
+        <Stack.Screen name="MainMenu" component={MainMenuScreen} />
         <Stack.Screen name="HostMode" component={HostModeScreen} />
         <Stack.Screen name="TurnTimer" component={TurnTimerScreen} />
         <Stack.Screen name="AgeSelection" component={AgeSelectionScreen} />
         <Stack.Screen
-          name="CategorySelection"
-          component={CategorySelectionScreen}
+          name="DifficultySelection"
+          component={DifficultySelectionScreen}
         />
         <Stack.Screen name="QuestionType" component={QuestionTypeScreen} />
         <Stack.Screen name="PlayerSetup" component={PlayerSetupScreen} />
-        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Game" component={GameScreen} />
+        <Stack.Screen name="TruthOrDare" component={TruthOrDareScreen} />
         <Stack.Screen name="Question" component={QuestionScreen} />
         <Stack.Screen name="Settings" component={SettingsScreen} />
         <Stack.Screen name="Rules" component={RulesScreen} />

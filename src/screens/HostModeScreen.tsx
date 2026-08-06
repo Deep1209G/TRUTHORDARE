@@ -6,8 +6,11 @@ import { Pressable, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Box, Text } from '@src';
+import { useTranslation } from 'react-i18next';
 import { useGame } from '../context/GameContext';
 import { lightTap } from '../services/HapticService';
+import { useDeviceHelper } from '../hooks/useDeviceHelper';
+
 import BackIcon from '../assets/icon/back.svg';
 
 type Props = {
@@ -18,29 +21,31 @@ const MODES = [
   {
     key: 'standard',
     image: require('../assets/images/robot.png'),
-    title: 'App Host',
-    description: 'The app asks all Truth and Dare questions',
+    titleKey: 'host.appHost',
+    descKey: 'host.appHostDesc',
     screen: 'AgeSelection',
   },
   {
     key: 'physical',
     image: require('../assets/images/people.png'),
-    title: 'Player Host',
-    description: 'Players create and ask their own Truths and Dares',
+    titleKey: 'host.playerHost',
+    descKey: 'host.playerHostDesc',
     screen: 'TurnTimer',
   },
 ];
 
 export default function HostModeScreen({ navigation }: Props) {
   const { setGameMode } = useGame();
+  const { t } = useTranslation();
+  const device = useDeviceHelper();
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#120826' }}>
       <Box flex={1} backgroundColor="background">
         {/* Header */}
-        <Box paddingHorizontal={24} paddingTop={16}>
+        <Box paddingHorizontal={device.scaleWidth(24)} paddingTop={device.scaleHeight(16)}>
           <Box flexDirection="row" alignItems="center">
-            <Box width={42}>
+            <Box width={device.scaleWidth(42)}>
               <Pressable
                 onPress={() => {
                   lightTap();
@@ -48,38 +53,41 @@ export default function HostModeScreen({ navigation }: Props) {
                 }}
               >
                 <Box
-                  width={42}
-                  height={42}
+                  width={device.scaleWidth(42)}
+                  height={device.scaleHeight(42)}
                   borderRadius="md"
                   backgroundColor="surface"
                   justifyContent="center"
                   alignItems="center"
                 >
-                  <BackIcon width={18} height={18} color="white" />
+                  <BackIcon
+                    width={device.scaleWidth(18)}
+                    height={device.scaleHeight(18)}
+                    color="white"
+                  />
                 </Box>
               </Pressable>
             </Box>
+
             <Box alignItems="center" flex={1}>
-              <Text variant="title" fontSize={28} textAlign="center">
-                Game Host
+              <Text variant="screenTitle" color="yellow" textAlign="center">
+                {t('host.title')}
               </Text>
             </Box>
-            <Box width={42} />
+
+            <Box width={device.scaleWidth(42)} />
           </Box>
         </Box>
 
         {/* Title */}
-        <Box paddingHorizontal={24} paddingTop={16}>
-          {/* <Text fontSize={24} fontWeight="700" color="white">
-            Choose Host Mode
-          </Text> */}
-          <Text fontSize={13} color="textSecondary" marginTop={4}>
-            Who should ask the Truths and Dares?
+        <Box paddingHorizontal={device.scaleWidth(24)} paddingTop={device.scaleHeight(16)}>
+          <Text variant="note" color="textSecondary" marginTop={4}>
+            {t('host.subtitle')}
           </Text>
         </Box>
 
         {/* Mode options */}
-        <Box paddingHorizontal={24} paddingTop={24}>
+        <Box paddingHorizontal={device.scaleWidth(24)} paddingTop={device.scaleHeight(24)}>
           {MODES.map(mode => (
             <Pressable
               key={mode.key}
@@ -93,7 +101,7 @@ export default function HostModeScreen({ navigation }: Props) {
                 flexDirection="row"
                 alignItems="center"
                 borderRadius="lg"
-                padding={16}
+                padding={device.scaleWidth(16)}
                 marginBottom={12}
                 style={{
                   backgroundColor: 'rgba(255,255,255,0.07)',
@@ -101,10 +109,10 @@ export default function HostModeScreen({ navigation }: Props) {
                 }}
               >
                 <Box
-                  width={52}
-                  height={52}
+                  width={device.scaleWidth(52)}
+                  height={device.scaleHeight(52)}
                   borderRadius="circle"
-                  marginRight={14}
+                  marginRight={device.scaleWidth(14)}
                   justifyContent="center"
                   alignItems="center"
                   style={{
@@ -113,15 +121,21 @@ export default function HostModeScreen({ navigation }: Props) {
                 >
                   <Image
                     source={mode.image}
-                    style={{ width: 40, height: 40, resizeMode: 'contain' }}
+                    style={{
+                      width: device.scaleWidth(40),
+                      height: device.scaleHeight(40),
+                      resizeMode: 'contain',
+                    }}
                   />
                 </Box>
+
                 <Box flex={1}>
-                  <Text fontSize={16} fontWeight="700" color="white">
-                    {mode.title}
+                  <Text variant="bodyBold" color="white">
+                    {t(mode.titleKey)}
                   </Text>
-                  <Text fontSize={12} color="textSecondary" marginTop={2}>
-                    {mode.description}
+
+                  <Text variant="label" color="textSecondary" marginTop={2}>
+                    {t(mode.descKey)}
                   </Text>
                 </Box>
               </Box>

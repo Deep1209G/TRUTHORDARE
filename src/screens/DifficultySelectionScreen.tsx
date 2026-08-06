@@ -1,10 +1,16 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
+
 import { Pressable } from 'react-native';
+
 import { SafeAreaView } from 'react-native-safe-area-context';
+
 import { Box, Text } from '@src';
+import { useTranslation } from 'react-i18next';
 import { useGame, Difficulty } from '../context/GameContext';
 import { lightTap } from '../services/HapticService';
+import { useDeviceHelper } from '../hooks/useDeviceHelper';
+
 import TickIcon from '../assets/icon/tick.svg';
 import BackIcon from '../assets/icon/back.svg';
 
@@ -13,25 +19,27 @@ type Props = {
 };
 
 const CATEGORIES: {
-  label: string;
+  labelKey: string;
   value: Difficulty;
-  description: string;
+  descKey: string;
 }[] = [
-  { label: 'Mild', value: 'mild', description: 'Playful & fun' },
-  { label: 'Medium', value: 'medium', description: 'A bit spicy' },
-  { label: 'Wild', value: 'wild', description: 'Full chaos' },
+  { labelKey: 'difficulty.mild', value: 'mild', descKey: 'difficulty.mildDesc' },
+  { labelKey: 'difficulty.medium', value: 'medium', descKey: 'difficulty.mediumDesc' },
+  { labelKey: 'difficulty.wild', value: 'wild', descKey: 'difficulty.wildDesc' },
 ];
 
-export default function CategorySelectionScreen({ navigation }: Props) {
+export default function DifficultySelectionScreen({ navigation }: Props) {
   const { difficulty, setDifficulty } = useGame();
+  const { t } = useTranslation();
+  const device = useDeviceHelper();
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#120826' }}>
       <Box flex={1} backgroundColor="background">
         {/* Header */}
-        <Box paddingHorizontal={24} paddingTop={16}>
+        <Box paddingHorizontal={device.scaleWidth(24)} paddingTop={device.scaleHeight(16)}>
           <Box flexDirection="row" alignItems="center">
-            <Box width={42}>
+            <Box width={device.scaleWidth(42)}>
               <Pressable
                 onPress={() => {
                   lightTap();
@@ -39,40 +47,44 @@ export default function CategorySelectionScreen({ navigation }: Props) {
                 }}
               >
                 <Box
-                  width={42}
-                  height={42}
+                  width={device.scaleWidth(42)}
+                  height={device.scaleHeight(42)}
                   borderRadius="md"
                   backgroundColor="surface"
                   justifyContent="center"
                   alignItems="center"
                 >
-                  <BackIcon width={18} height={18} color="white" />
+                  <BackIcon
+                    width={device.scaleWidth(18)}
+                    height={device.scaleHeight(18)}
+                    color="white"
+                  />
                 </Box>
               </Pressable>
             </Box>
+
             <Box alignItems="center" flex={1}>
-              <Text variant="title" fontSize={28} textAlign="center">
-                Challenge Level
+              <Text variant="screenTitle" color="yellow" textAlign="center">
+                {t('difficulty.title')}
               </Text>
             </Box>
-            <Box width={42} />
+
+            <Box width={device.scaleWidth(42)} />
           </Box>
         </Box>
 
         {/* Title */}
-        <Box paddingHorizontal={24} paddingTop={16}>
-          {/* <Text fontSize={24} fontWeight="700" color="white">
-            Choose Category
-          </Text> */}
-          <Text fontSize={13} color="textSecondary" marginTop={4}>
-            Pick the intensity level for this game
+        <Box paddingHorizontal={device.scaleWidth(24)} paddingTop={device.scaleHeight(16)}>
+          <Text variant="note" color="textSecondary" marginTop={4}>
+            {t('difficulty.subtitle')}
           </Text>
         </Box>
 
         {/* Category options */}
-        <Box paddingHorizontal={24} paddingTop={24}>
+        <Box paddingHorizontal={device.scaleWidth(24)} paddingTop={device.scaleHeight(24)}>
           {CATEGORIES.map(item => {
             const active = difficulty === item.value;
+
             return (
               <Pressable
                 key={item.value}
@@ -86,7 +98,7 @@ export default function CategorySelectionScreen({ navigation }: Props) {
                   flexDirection="row"
                   alignItems="center"
                   borderRadius="lg"
-                  padding={16}
+                  padding={device.scaleWidth(16)}
                   marginBottom={12}
                   style={
                     active
@@ -109,22 +121,27 @@ export default function CategorySelectionScreen({ navigation }: Props) {
                 >
                   <Box flex={1}>
                     <Text
-                      fontSize={16}
-                      fontWeight="700"
+                      variant="bodyBold"
                       color={active ? 'white' : 'textSecondary'}
                     >
-                      {item.label}
+                      {t(item.labelKey)}
                     </Text>
+
                     <Text
-                      fontSize={12}
+                      variant="label"
                       color={active ? 'white' : 'textSecondary'}
                       opacity={active ? 0.8 : 0.6}
                     >
-                      {item.description}
+                      {t(item.descKey)}
                     </Text>
                   </Box>
+
                   {active && (
-                    <TickIcon width={24} height={24} color="white" />
+                    <TickIcon
+                      width={device.scaleWidth(24)}
+                      height={device.scaleHeight(24)}
+                      color="white"
+                    />
                   )}
                 </Box>
               </Pressable>
