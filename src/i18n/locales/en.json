@@ -213,6 +213,9 @@
     "endMsg": "Are you sure you want to end the game? All progress will be lost and the entire game will stop.",
     "endBtn": "End Game"
   },
+  "gameMenu": {
+    "title": "Game Menu"
+  },
   "header": {
     "round": "ROUND",
     "category": "Category",

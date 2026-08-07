@@ -28,6 +28,8 @@ import BottleBottomSheet from '../components/BottleBottomSheet';
 import BoardBottomSheet from '../components/BoardBottomSheet';
 import TruthOrDareModal from '../components/TruthOrDareModal';
 import QuestionModal from '../components/QuestionModal';
+import LeaderboardModal from '../components/LeaderboardModal';
+import GameSettingsModal from '../components/GameSettingsModal';
 import BottleIcon from '../assets/icon/bottle.svg';
 import BoardIcon from '../assets/icon/gameboard.svg';
 import VolumeIcon from '../assets/icon/volume.svg';
@@ -45,8 +47,6 @@ export default function GameScreen({ navigation }: any) {
     setSoundEnabled,
     selectedPlayerIndex,
     lastPlayerIndex,
-    resetGame,
-    setPlayers,
   } = useGame();
   const rotationRef = useRef(rotation);
   const [revealed, setRevealed] = useState(false);
@@ -54,6 +54,8 @@ export default function GameScreen({ navigation }: any) {
   const [isBoardSheetVisible, setIsBoardSheetVisible] = useState(false);
   const [isTruthOrDareVisible, setIsTruthOrDareVisible] = useState(false);
   const [isQuestionVisible, setIsQuestionVisible] = useState(false);
+  const [isLeaderboardVisible, setIsLeaderboardVisible] = useState(false);
+  const [isSettingsVisible, setIsSettingsVisible] = useState(false);
   const [showLeave, setShowLeave] = useState(false);
   const pulseAnim = useSharedValue(1);
   const glowAnim = useSharedValue(0);
@@ -122,7 +124,7 @@ export default function GameScreen({ navigation }: any) {
   }, [pulseAnim, glowAnim]);
 
   useEffect(() => {
-    if (showLeave || isBottleSheetVisible || isBoardSheetVisible || isTruthOrDareVisible || isQuestionVisible) {
+    if (showLeave || isBottleSheetVisible || isBoardSheetVisible || isTruthOrDareVisible || isQuestionVisible || isLeaderboardVisible || isSettingsVisible) {
       return;
     }
     const subscription = BackHandler.addEventListener(
@@ -139,14 +141,14 @@ export default function GameScreen({ navigation }: any) {
     isBoardSheetVisible,
     isTruthOrDareVisible,
     isQuestionVisible,
+    isLeaderboardVisible,
+    isSettingsVisible,
   ]);
 
   function handleLeave() {
     lightTap();
     setShowLeave(false);
-    resetGame();
-    setPlayers([]);
-    navigation?.reset({ index: 0, routes: [{ name: 'MainMenu' }] });
+    setIsLeaderboardVisible(true);
   }
 
   const pulseStyle = useAnimatedStyle(() => ({
@@ -171,6 +173,7 @@ export default function GameScreen({ navigation }: any) {
         <GameHeader
           navigation={navigation}
           onLeaveRequest={() => setShowLeave(true)}
+          onSettingsPress={() => setIsSettingsVisible(true)}
         />
 
         <Box flex={1} justifyContent="center" alignItems="center">
@@ -392,6 +395,24 @@ export default function GameScreen({ navigation }: any) {
         <QuestionModal
           visible={isQuestionVisible}
           onClose={() => setIsQuestionVisible(false)}
+        />
+
+        <LeaderboardModal
+          visible={isLeaderboardVisible}
+          onClose={() => setIsLeaderboardVisible(false)}
+        />
+
+        <GameSettingsModal
+          visible={isSettingsVisible}
+          onClose={() => setIsSettingsVisible(false)}
+          onOpenLeaderboard={() => {
+            setIsSettingsVisible(false);
+            setIsLeaderboardVisible(true);
+          }}
+          onNavigate={screen => {
+            setIsSettingsVisible(false);
+            navigation.navigate(screen);
+          }}
         />
 
         <Modal visible={showLeave} transparent animationType="fade" onRequestClose={() => setShowLeave(false)}>

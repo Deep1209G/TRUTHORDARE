@@ -1,17 +1,16 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, { useState } from 'react';
-
 import { Modal, Pressable } from 'react-native';
-
 import { Box, Text } from '@src';
 import { useTranslation } from 'react-i18next';
 import { useGame } from '../context/GameContext';
 import { lightTap } from '../services/HapticService';
 import { useDeviceHelper } from '../hooks/useDeviceHelper';
-import BackIcon from '../assets/icon/back.svg';
+// import BackIcon from '../assets/icon/back.svg';
 import PeopleIcon from '../assets/icon/people.svg';
 import LeaderboardIcon from '../assets/icon/leaderboard.svg';
-// import SettingIcon from '../assets/icon/setting.svg';
+import ExitIcon from '../assets/icon/exit.svg';
+import SettingIcon from '../assets/icon/setting.svg';
 import PlayerListModal from './PlayerListModal';
 import LeaderboardModal from './LeaderboardModal';
 
@@ -28,17 +27,16 @@ const CATEGORIES: {
 type Props = {
   navigation?: any;
   onLeaveRequest?: () => void;
+  onSettingsPress?: () => void;
 };
 
-export default function GameHeader({ navigation, onLeaveRequest }: Props) {
+export default function GameHeader({ navigation, onLeaveRequest, onSettingsPress }: Props) {
   const {
     players,
     selectedPlayerIndex,
     round,
     difficulty,
     setDifficulty,
-    resetGame,
-    setPlayers,
     spinning,
   } = useGame();
   const [showPlayers, setShowPlayers] = useState(false);
@@ -56,9 +54,7 @@ export default function GameHeader({ navigation, onLeaveRequest }: Props) {
   function handleLeave() {
     lightTap();
     setShowLeave(false);
-    resetGame();
-    setPlayers([]);
-    navigation?.reset({ index: 0, routes: [{ name: 'MainMenu' }] });
+    setShowLeaderboard(true);
   }
 
   return (
@@ -70,7 +66,7 @@ export default function GameHeader({ navigation, onLeaveRequest }: Props) {
       alignItems="center"
       justifyContent="space-between"
     >
-      <Pressable
+      {/* <Pressable
         onPress={() => {
           lightTap();
           if (onLeaveRequest) {
@@ -91,7 +87,30 @@ export default function GameHeader({ navigation, onLeaveRequest }: Props) {
         >
           <BackIcon width={device.scaleWidth(18)} height={device.scaleHeight(18)} color="white" />
         </Box>
-      </Pressable>
+      </Pressable> */}
+
+       <Pressable
+          onPress={() => {
+            lightTap();
+            if (onLeaveRequest) {
+              onLeaveRequest();
+            } else {
+              setShowLeave(true);
+            }
+          }}
+          disabled={spinning}
+        >
+          <Box
+            width={iconButton}
+            height={iconButtonH}
+            borderRadius="md"
+            backgroundColor="surface"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <ExitIcon width={device.scaleWidth(20)} height={device.scaleHeight(20)} color="white" />
+          </Box>
+        </Pressable>
 
       <Box flexDirection="row" alignItems="center">
         <Box
@@ -177,13 +196,18 @@ export default function GameHeader({ navigation, onLeaveRequest }: Props) {
             <LeaderboardIcon width={device.scaleWidth(22)} height={device.scaleHeight(22)} color="white" />
           </Box>
         </Pressable>
+       
         <Pressable
           onPress={() => {
             lightTap();
-            navigation?.navigate('Settings');
+            if (onSettingsPress) {
+              onSettingsPress();
+            } else {
+              navigation?.navigate('Settings');
+            }
           }}
         >
-          {/* <Box
+          <Box
             width={iconButton}
             height={iconButtonH}
             borderRadius="md"
@@ -191,8 +215,8 @@ export default function GameHeader({ navigation, onLeaveRequest }: Props) {
             justifyContent="center"
             alignItems="center"
           >
-            <SettingIcon width={device.scaleWidth(24)} height={device.scaleHeight(24)} color="white" />
-          </Box> */}
+            <SettingIcon width={device.scaleWidth(22)} height={device.scaleHeight(22)} color="white" />
+          </Box>
         </Pressable>
       </Box>
 
