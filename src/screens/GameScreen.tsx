@@ -280,6 +280,7 @@ export default function GameScreen({ navigation }: any) {
                   playSound('tap', soundEnabled);
                   setIsBoardSheetVisible(true);
                 }}
+                disabled={spinning || revealed}
               >
                 <Box
                   width={44}
@@ -308,6 +309,7 @@ export default function GameScreen({ navigation }: any) {
                   playSound('tap', soundEnabled);
                   setIsBottleSheetVisible(true);
                 }}
+                disabled={spinning || revealed}
               >
                 <Box
                   width={44}
@@ -335,6 +337,7 @@ export default function GameScreen({ navigation }: any) {
                   lightTap();
                   setSoundEnabled(!soundEnabled);
                 }}
+                disabled={spinning || revealed}
               >
                 <Box
                   width={44}

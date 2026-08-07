@@ -39,6 +39,7 @@ export default function GameHeader({ navigation, onLeaveRequest }: Props) {
     setDifficulty,
     resetGame,
     setPlayers,
+    spinning,
   } = useGame();
   const [showPlayers, setShowPlayers] = useState(false);
   const [showLeave, setShowLeave] = useState(false);
@@ -78,6 +79,7 @@ export default function GameHeader({ navigation, onLeaveRequest }: Props) {
             setShowLeave(true);
           }
         }}
+        disabled={spinning}
       >
         <Box
           width={iconButton}
@@ -127,6 +129,7 @@ export default function GameHeader({ navigation, onLeaveRequest }: Props) {
             lightTap();
             setShowPlayers(true);
           }}
+          disabled={spinning}
         >
           <Box
             width={device.scaleWidth(55)}
@@ -160,6 +163,7 @@ export default function GameHeader({ navigation, onLeaveRequest }: Props) {
             lightTap();
             setShowLeaderboard(true);
           }}
+          disabled={spinning}
         >
           <Box
             width={iconButton}
