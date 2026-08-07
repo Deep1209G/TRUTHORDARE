@@ -4,7 +4,11 @@ Sound.setCategory('Playback');
 
 type SoundName = 'tap' | 'spin' | 'result';
 
+const names: SoundName[] = ['tap', 'spin', 'result'];
+
 const sounds: Partial<Record<SoundName, Sound>> = {};
+
+let loadPromise: Promise<void> | null = null;
 
 function loadSound(name: SoundName): Promise<void> {
   return new Promise((resolve) => {
@@ -19,27 +23,41 @@ function loadSound(name: SoundName): Promise<void> {
   });
 }
 
-let loaded = false;
+function allLoaded(): boolean {
+  return names.every((name) => sounds[name]);
+}
 
-async function ensureLoaded() {
-  if (loaded) return;
-  loaded = true;
-  await Promise.all([loadSound('tap'), loadSound('spin'), loadSound('result')]);
+function ensureLoaded(): Promise<void> {
+  if (allLoaded()) return Promise.resolve();
+  let promise = loadPromise;
+  if (!promise) {
+    promise = Promise.all(names.map(loadSound))
+      .then(() => undefined)
+      .finally(() => {
+        loadPromise = null;
+      });
+    loadPromise = promise;
+  }
+  return promise;
 }
 
 export function playSound(name: SoundName, soundEnabled: boolean) {
   if (!soundEnabled) return;
-  ensureLoaded();
-  const sound = sounds[name];
-  if (sound) {
-    sound.stop(() => {
-      sound.currentTime = 0;
-      sound.play();
-    });
-  }
+  ensureLoaded().then(() => {
+    const sound = sounds[name];
+    if (sound) {
+      sound.stop(() => {
+        sound.currentTime = 0;
+        sound.play();
+      });
+    }
+  });
 }
 
-export function releaseSounds() {
-  Object.values(sounds).forEach((s) => s?.release());
-  loaded = false;
+export async function releaseSounds() {
+  await ensureLoaded();
+  names.forEach((name) => {
+    sounds[name]?.release();
+    delete sounds[name];
+  });
 }

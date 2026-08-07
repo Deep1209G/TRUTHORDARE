@@ -1,7 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, { useEffect, useState } from 'react';
 
-import { Modal, Pressable, ActivityIndicator } from 'react-native';
+import { Modal, Pressable, ActivityIndicator, BackHandler } from 'react-native';
 
 import { Box, Text } from '@src';
 import { useTranslation } from 'react-i18next';
@@ -47,6 +47,12 @@ export default function QuestionModal({ visible, onClose }: Props) {
 
   useEffect(() => {
     if (!visible) return;
+    const sub = BackHandler.addEventListener('hardwareBackPress', () => true);
+    return () => sub.remove();
+  }, [visible]);
+
+  useEffect(() => {
+    if (!visible) return;
     setTimeLeft(duration ?? 0);
     setTimerStarted(gameMode !== 'physical');
   }, [visible, duration, gameMode]);
@@ -88,7 +94,7 @@ export default function QuestionModal({ visible, onClose }: Props) {
   ).padStart(2, '0')}`;
 
   return (
-    <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
+    <Modal visible={visible} transparent animationType="fade" onRequestClose={() => {}}>
       <Box
         flex={1}
         backgroundColor="background"

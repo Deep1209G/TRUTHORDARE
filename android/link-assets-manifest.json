@@ -1,0 +1,17 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "src/assets/sounds/result.wav",
+      "sha1": "06e44c1d26a5a89a467162d533b805f78203ba12"
+    },
+    {
+      "path": "src/assets/sounds/spin.wav",
+      "sha1": "d235e6e042990f8d9a8f5ce51d64d2c5e092c6e1"
+    },
+    {
+      "path": "src/assets/sounds/tap.wav",
+      "sha1": "a314e5ad0912e7ac567a0b45df9ea388c0bae537"
+    }
+  ]
+}

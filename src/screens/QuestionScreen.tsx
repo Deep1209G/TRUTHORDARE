@@ -89,7 +89,11 @@ export default function QuestionScreen({ navigation }: Props) {
         <GameHeader navigation={navigation} />
 
         {/* Body */}
-        <Box flex={1} paddingHorizontal={device.scaleWidth(24)} paddingTop={device.scaleHeight(32)}>
+        <Box
+          flex={1}
+          paddingHorizontal={device.scaleWidth(24)}
+          paddingTop={device.scaleHeight(32)}
+        >
           {/* Player + timer */}
           <Box flexDirection="row" alignItems="center" marginBottom={16}>
             <Box
@@ -105,7 +109,7 @@ export default function QuestionScreen({ navigation }: Props) {
               <Text
                 variant="micro"
                 color="textSecondary"
-                alignSelf='center'
+                alignSelf="center"
                 letterSpacing={2}
                 marginBottom={2}
               >
@@ -113,7 +117,7 @@ export default function QuestionScreen({ navigation }: Props) {
               </Text>
               <Text
                 variant="bodyBold"
-                alignSelf='center'
+                alignSelf="center"
                 color="white"
                 numberOfLines={1}
                 style={{
@@ -140,10 +144,7 @@ export default function QuestionScreen({ navigation }: Props) {
                     borderColor: '#818CF8',
                   }}
                 >
-                  <Text
-                    variant="note"
-                    letterSpacing={1}
-                  >
+                  <Text variant="note" letterSpacing={1}>
                     {t('question.startTimer')}
                   </Text>
                 </Box>
@@ -190,11 +191,7 @@ export default function QuestionScreen({ navigation }: Props) {
                   backgroundColor: accentColor,
                 }}
               >
-                <Text
-                  variant="note"
-                  color="white"
-                  letterSpacing={2}
-                >
+                <Text variant="note" color="white" letterSpacing={2}>
                   {selectedType === 'truth'
                     ? t('common.truth')
                     : t('common.dare')}
@@ -215,9 +212,10 @@ export default function QuestionScreen({ navigation }: Props) {
                   letterSpacing={1}
                 >
                   {t('question.generating', {
-                    type: selectedType === 'truth'
-                      ? t('common.truth')
-                      : t('common.dare'),
+                    type:
+                      selectedType === 'truth'
+                        ? t('common.truth')
+                        : t('common.dare'),
                   })}
                 </Text>
               </Box>
@@ -237,11 +235,7 @@ export default function QuestionScreen({ navigation }: Props) {
                     elevation: 8,
                   }}
                 >
-                  <Text
-                    variant="bodyBold"
-                    color="white"
-                    letterSpacing={3}
-                  >
+                  <Text variant="bodyBold" color="white" letterSpacing={3}>
                     {selectedType === 'truth'
                       ? t('common.truth')
                       : t('common.dare')}
@@ -303,11 +297,7 @@ export default function QuestionScreen({ navigation }: Props) {
                   backgroundColor: accentColor,
                 }}
               >
-                <Text
-                  variant="bodyBold"
-                  color="white"
-                  letterSpacing={1}
-                >
+                <Text variant="bodyBold" color="white" letterSpacing={1}>
                   {t('question.nailedIt')}
                 </Text>
               </Box>

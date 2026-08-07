@@ -51,3 +51,44 @@ Create a production-ready, reusable DeviceHelper for the React Native (TypeScrip
 ## Open decisions (defaults chosen)
 - **Notch/status-bar heuristics**: included, clearly heuristic (no device-info). Can drop if undesired.
 - **No code comments** per repo convention; can add brief JSDoc to exported types if requested.
+
+---
+
+# Plan: Fix in-app sounds (sound button plays no audio)
+
+## Goal
+Fix the sound feature added to the Game screen (volume/mute button beside the board/bottle buttons) so taps, spins, and results are audible. Current state: the button toggles `soundEnabled` but no audio plays.
+
+## Root cause
+The `.wav` files exist in `src/assets/sounds/` (`tap.wav`, `spin.wav`, `result.wav`) but are **never bundled into the native app**. `SoundService.ts` loads them via `new Sound('<name>.wav', Sound.MAIN_BUNDLE, ...)`, and `MAIN_BUNDLE` resolves to:
+- **Android** → `android/app/src/main/res/raw/` (folder does not exist)
+- **iOS** → main bundle resources (`.wav` files not referenced in `project.pbxproj`)
+
+So every `new Sound()` fails, `sounds[name]` is never populated, and `playSound()` silently does nothing.
+
+## Approach
+1. Register the sounds dir as a native asset so a bundler copies them into the platform resource dirs.
+2. Make `SoundService` loading robust (shared load promise; await before play; allow retry after a failed load).
+
+## Files & changes
+
+1. **`react-native.config.js`** (new — repo root)
+   - `module.exports = { assets: ['./src/assets/sounds'] };`
+   - Installed via **`react-native-asset`** (new devDependency, run `npx react-native-asset`), which copies the `.wav` files into `android/app/src/main/res/raw/` (and would wire iOS bundle resources). Target platform: **Android**.
+   - File names are valid Android resource names (lowercase `[a-z0-9_]`): `tap`, `spin`, `result`.
+   - Requires a **full native rebuild** (`npx react-native run-android`) — Metro reload alone won't pick up native resources.
+
+2. **`src/services/SoundService.ts`** (modify)
+   - Replace the `loaded` boolean guard (set `true` before loading finishes, making failures permanent) with a shared `loadingPromise`.
+   - `playSound(name, soundEnabled)` awaits the load promise before looking up `sounds[name]`, so the first tap isn't lost and a failed load can be retried on the next call.
+   - Keep signatures unchanged: `playSound(name, soundEnabled)`, `releaseSounds()`; keep `Sound.setCategory('Playback')`.
+
+## Verification
+- `npx tsc --noEmit`
+- `npx eslint src/services/SoundService.ts`
+- Confirm `android/app/src/main/res/raw/` contains `tap.wav`, `spin.wav`, `result.wav` after `npx react-native-asset`.
+- Manual: rebuild & run on Android; tap a button, spin, and land on a result → audio plays; mute toggle silences them.
+
+## Open decisions (defaults chosen)
+- **Android only**: iOS wiring is handled by the same `react-native-asset` step but will be verified later.
+- **`react-native-asset` as devDependency** over manual copying to `res/raw`.
